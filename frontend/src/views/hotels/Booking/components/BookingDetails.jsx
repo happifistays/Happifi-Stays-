@@ -7,6 +7,7 @@ import LoginAdvantages from "./LoginAdvantages";
 import OfferAndDiscounts from "./OfferAndDiscounts";
 import PaymentOptions from "./PaymentOptions";
 import PriceSummary from "./PriceSummary";
+import { BACKEND_URL } from "../../../../config/api";
 
 const BookingDetails = () => {
   const location = useLocation();
@@ -40,7 +41,7 @@ const BookingDetails = () => {
   const onSubmit = async (data) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/customer/booking/${propertyId}/${roomId}`,
+        `${BACKEND_URL}/api/v1/customer/booking/${propertyId}/${roomId}`,
         {
           method: "POST",
           headers: {

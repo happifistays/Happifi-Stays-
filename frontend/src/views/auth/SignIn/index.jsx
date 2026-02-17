@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { useAuthContext } from "../../../states/useAuthContext";
 import axios from "axios";
 import { signInWithGoogle } from "@/firebase";
+import { BACKEND_URL } from "../../../config/api";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const SignIn = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/v1/auth/signin", {
+      const response = await fetch(`${BACKEND_URL}/api/v1/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,7 +36,7 @@ const SignIn = () => {
 
       const result = await response.json();
 
-      if (result.status === 200) {  
+      if (result.status === 200) {
         const sessionData = {
           ...result.user,
           token: result.token,
@@ -70,45 +71,45 @@ const SignIn = () => {
     }
   };
 
-const handleGoogleLogin = async () => {
-  try {
-    setLoading(true);
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
 
-    const idToken = await signInWithGoogle();
+      const idToken = await signInWithGoogle();
 
-    const res = await axios.post(
-      "http://localhost:5000/api/v1/auth/google-login",
-      { idToken },
-      { withCredentials: true }
-    );
+      const res = await axios.post(
+        `${BACKEND_URL}/api/v1/auth/google-login`,
+        { idToken },
+        { withCredentials: true }
+      );
 
-    if (res.status === 200) {
-      saveSession({
-        ...res.data.user,
-        token: res.data.token,
-      });
+      if (res.status === 200) {
+        saveSession({
+          ...res.data.user,
+          token: res.data.token,
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        navigate("/agent/dashboard");
+      }
+    } catch (error) {
+      console.error("Google login failed:", error);
 
       Swal.fire({
-        icon: "success",
-        title: "Login Successful",
-        timer: 1500,
-        showConfirmButton: false,
+        icon: "error",
+        title: "Google Login Failed",
+        text: error.response?.data?.message || "Something went wrong",
       });
-
-      navigate("/agent/dashboard");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Google login failed:", error);
-
-    Swal.fire({
-      icon: "error",
-      title: "Google Login Failed",
-      text: error.response?.data?.message || "Something went wrong",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <>
@@ -178,7 +179,11 @@ const handleGoogleLogin = async () => {
             </div>
 
             <div className="vstack gap-3">
-              <button type="button" className="btn btn-light mb-0" onClick={handleGoogleLogin}>
+              <button
+                type="button"
+                className="btn btn-light mb-0"
+                onClick={handleGoogleLogin}
+              >
                 <FcGoogle size={16} className="fab fa-fw me-2" />
                 Continue with Google
               </button>

@@ -1,11 +1,12 @@
 import React from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../config/api";
 
 const PaymentButton = () => {
   const handlePayment = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/v1/customer/create-order",
+        `${BACKEND_URL}/api/v1/customer/create-order`,
         {
           method: "POST",
           headers: {

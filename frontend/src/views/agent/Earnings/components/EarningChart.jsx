@@ -4,6 +4,7 @@ import { Card, Col, Row } from "react-bootstrap";
 import { BsArrowDown, BsArrowUp } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../../../../config/api";
 
 const EarningChart = () => {
   const [earningData, setEarningData] = useState({
@@ -16,7 +17,7 @@ const EarningChart = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/api/v1/shops/earning-statuses`,
+          `${BACKEND_URL}/api/v1/shops/earning-statuses`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

@@ -20,6 +20,7 @@ import Flatpicker from "@/components/Flatpicker";
 import { useAuthContext } from "../../../../states/useAuthContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { BACKEND_URL } from "../../../../config/api";
 
 const EditProfile = () => {
   const { user } = useAuthContext();
@@ -62,7 +63,7 @@ const EditProfile = () => {
       console.log("data----------", data);
       const token = localStorage.getItem("token");
       const response = await axios.patch(
-        `http://localhost:5000/api/v1/users/profile`,
+        `${BACKEND_URL}/api/v1/users/profile`,
         { ...data, birthday },
         {
           headers: { Authorization: `Bearer ${token}` },

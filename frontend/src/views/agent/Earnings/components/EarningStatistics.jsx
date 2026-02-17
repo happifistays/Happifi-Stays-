@@ -23,6 +23,7 @@ import { currency } from "@/states";
 import visa from "@/assets/images/element/visa.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../../../../config/api";
 
 const EarningStatistics = () => {
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ const EarningStatistics = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/api/v1/shops/earning-statuses`,
+          `${BACKEND_URL}/api/v1/shops/earning-statuses`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

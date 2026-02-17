@@ -13,6 +13,7 @@ import clsx from "clsx";
 import { BsBookmarkHeart } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useEffect, useState, useCallback } from "react";
+import { BACKEND_URL } from "../../../config/api";
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -27,7 +28,7 @@ const Bookings = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/v1/shops/bookings?page=${page}`,
+          `${BACKEND_URL}/api/v1/shops/bookings?page=${page}`,
           {
             method: "GET",
             headers: {
