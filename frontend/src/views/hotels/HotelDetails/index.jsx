@@ -5,7 +5,8 @@ import FooterWithLinks from "./components/FooterWithLinks";
 import HotelGallery from "./components/HotelGallery";
 import TopNavBar4 from "./components/TopNavBar4";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react"; 
+import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../../../config/api";
 const HotelDetails = () => {
   const { id } = useParams();
 
@@ -17,7 +18,7 @@ const HotelDetails = () => {
       const fetchHotelDetails = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/api/v1/customer/property/${id}`
+            `${BACKEND_URL}/api/v1/customer/property/${id}`
           );
           const result = await response.json();
 

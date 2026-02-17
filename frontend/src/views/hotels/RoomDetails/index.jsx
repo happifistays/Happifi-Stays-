@@ -7,6 +7,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HotelMediaGallery from "../HotelDetails/components/HotelMediaGallery";
 import axios from "axios";
+import { BACKEND_URL } from "../../../config/api";
 
 const RoomDetails = () => {
   const location = useLocation();
@@ -24,7 +25,7 @@ const RoomDetails = () => {
     const getRoomDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/v1/customer/rooms/${roomId}`
+          `${BACKEND_URL}/api/v1/customer/rooms/${roomId}`
         );
 
         // If API returns single room → wrap in array
@@ -46,7 +47,7 @@ const RoomDetails = () => {
         try {
           setLoading(true);
           const response = await fetch(
-            `http://localhost:5000/api/v1/customer/rooms/property/${propertyId}`
+            `${BACKEND_URL}/api/v1/customer/rooms/property/${propertyId}`
           );
           const result = await response.json();
 

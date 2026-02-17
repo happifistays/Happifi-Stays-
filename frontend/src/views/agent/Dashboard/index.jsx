@@ -13,24 +13,22 @@ import UpcomingBookings from "./components/UpcomingBookings";
 
 import { PageMetaData } from "@/components";
 import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../../../config/api";
 const Dashboard = () => {
   const [statistics, setStatistics] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
- 
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/v1/shops/stats",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${BACKEND_URL}/api/v1/shops/stats`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const result = await response.json();
 
         if (result.success) {

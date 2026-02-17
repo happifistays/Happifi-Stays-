@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { FaSearch } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
+import { BACKEND_URL } from "../../../../config/api";
 
 const UpcomingBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -34,7 +35,7 @@ const UpcomingBookings = () => {
         });
 
         const response = await fetch(
-          `http://localhost:5000/api/v1/shops/bookings?${queryParams.toString()}`,
+          `${BACKEND_URL}/api/v1/shops/bookings?${queryParams.toString()}`,
           {
             method: "GET",
             headers: {

@@ -9,6 +9,7 @@ import { Wizard, useWizard } from "react-use-wizard";
 import { useAuthContext } from "../../../../states/useAuthContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../../../../config/api";
 
 const Header = () => {
   const { goToStep, activeStep } = useWizard();
@@ -192,17 +193,14 @@ const ListingForms = () => {
       };
 
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/v1/shops/property",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(transformedData),
-          }
-        );
+        const response = await fetch(`${BACKEND_URL}/api/v1/shops/property`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(transformedData),
+        });
 
         const result = await response.json();
 

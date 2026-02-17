@@ -13,6 +13,7 @@ import ListingCard from "./components/ListingCard";
 import { PageMetaData } from "@/components";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../../../config/api";
 const Listings = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,17 +25,14 @@ const Listings = () => {
       try {
         const token = localStorage.getItem("token");
         setLoading(true);
-        const response = await fetch(
-          "http://localhost:5000/api/v1/shops/rooms",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // 👈 IMPORTANT
-            },
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${BACKEND_URL}/api/v1/shops/rooms`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // 👈 IMPORTANT
+          },
+          credentials: "include",
+        });
 
         const data = await response.json();
         setLoading(false);
@@ -54,7 +52,7 @@ const Listings = () => {
     const fetchStats = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/v1/shops/listings/count",
+          `${BACKEND_URL}/api/v1/shops/listings/count`,
           {
             method: "GET",
             headers: {
