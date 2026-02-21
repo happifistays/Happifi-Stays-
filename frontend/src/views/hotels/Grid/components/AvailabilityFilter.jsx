@@ -22,7 +22,6 @@ import {
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
-import { BACKEND_URL } from "../../../../config/api";
 
 const AvailabilityFilter = () => {
   const initialValue = {
@@ -83,7 +82,7 @@ const AvailabilityFilter = () => {
 
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/customer/search-location`,
+        `${API_BASE_URL}/api/v1/customer/search-location`,
         {
           params: {
             location: formValue.location,

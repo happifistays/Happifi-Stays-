@@ -8,14 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "react-bootstrap";
-import { BACKEND_URL } from "../../../../config/api";
-const PriceSummary = () => {
+import { API_BASE_URL } from "../../../../config/env";
+const PriceSummary = ({ total, discount }) => {
   const [data, setData] = useState([]);
-  console.log("data3333", data);
 
   useEffect(() => {
-    console.log("trigger");
-
     const params = new URLSearchParams(location.search);
     const roomId = params.get("room_id");
 
@@ -23,7 +20,7 @@ const PriceSummary = () => {
       const fetchHotelRooms = async () => {
         try {
           const response = await fetch(
-            `${BACKEND_URL}/api/v1/customer/rooms/${roomId}`
+            `${API_BASE_URL}/api/v1/customer/rooms/${roomId}`
           );
           const result = await response.json();
 
@@ -57,40 +54,44 @@ const PriceSummary = () => {
           <li className="list-group-item d-flex justify-content-between align-items-center">
             <span className="h6 fw-light mb-0">Room Charges</span>
             <span className="fs-5">
-              {currency} {data?.room?.price}
+              {currency} {total}
             </span>
           </li>
           <li className="list-group-item d-flex justify-content-between align-items-center">
             <span className="h6 fw-light mb-0">
               Total Discount
               <span className="badge text-bg-danger smaller mb-0 ms-2">
-                {data?.room?.discount}% off
+                {discount}% off
               </span>
             </span>
             <span className="fs-5 text-success">
               -{currency}
-              {discountAmount}
+              {discount}
             </span>
           </li>
           <li className="list-group-item d-flex justify-content-between align-items-center">
             <span className="h6 fw-light mb-0">Price after discount</span>
             <span className="fs-5">
               {currency}
-              {finalPrice}
+              {total - discount}
             </span>
           </li>
-          <li className="list-group-item d-flex justify-content-between align-items-center">
+          {/* <li className="list-group-item d-flex justify-content-between align-items-center">
             <span className="h6 fw-light mb-0">Taxes % Fees</span>
             <span className="fs-5">{currency}100</span>
-          </li>
+          </li> */}
         </ul>
       </CardBody>
       <CardFooter className="border-top">
         <div className="d-flex justify-content-between align-items-center">
           <span className="h5 mb-0">Payable Now</span>
-          <span className="h5 mb-0">
+          {/* <span className="h5 mb-0">
             {currency}
             {finalPrice + 100}
+          </span> */}
+          <span className="h5 mb-0">
+            {currency}
+            {total - discount}
           </span>
         </div>
       </CardFooter>

@@ -6,7 +6,7 @@ import {
   BsStar,
   BsTrophy,
 } from "react-icons/bs";
-import { BACKEND_URL } from "../../../../config/api";
+import { API_BASE_URL } from "../../../../config/env";
 const ReviewMetrics = () => {
   const [loading, setLoading] = useState(false);
   const [reviews, setReviews] = useState({
@@ -21,7 +21,7 @@ const ReviewMetrics = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/api/v1/shops/reviews`, {
+        const response = await fetch(`${API_BASE_URL}/api/v1/shops/reviews`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

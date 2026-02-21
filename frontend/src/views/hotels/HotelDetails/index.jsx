@@ -6,7 +6,9 @@ import HotelGallery from "./components/HotelGallery";
 import TopNavBar4 from "./components/TopNavBar4";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BACKEND_URL } from "../../../config/api";
+import TopNavBar from "../Home/components/TopNavBar";
+import Footer from "../Home/components/Footer";
+import { API_BASE_URL } from "../../../config/env";
 const HotelDetails = () => {
   const { id } = useParams();
 
@@ -18,7 +20,7 @@ const HotelDetails = () => {
       const fetchHotelDetails = async () => {
         try {
           const response = await fetch(
-            `${BACKEND_URL}/api/v1/customer/property/${id}`
+            `${API_BASE_URL}/api/v1/customer/property/${id}`
           );
           const result = await response.json();
 
@@ -41,7 +43,7 @@ const HotelDetails = () => {
     <>
       <PageMetaData title="Hotel - Details" />
 
-      <TopNavBar4 />
+      <TopNavBar />
 
       <main>
         {loading ? (
@@ -68,12 +70,14 @@ const HotelDetails = () => {
                 totalRooms: hotel?.rooms?.length ?? 0,
                 rooms: hotel?.rooms,
               }}
+              propertyId={hotel?.id}
             />
           </>
         )}
       </main>
 
       <FooterWithLinks />
+      <Footer />
     </>
   );
 };

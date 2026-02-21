@@ -1,9 +1,9 @@
 import express from "express";
 import { createProperty } from "../controllers/shops/createProperty.js";
-import { userVerification } from "../middleware/authMiddleware.js";
+
 import { getProperties } from "../controllers/shops/getProperties.js";
 import { updateProperty } from "../controllers/shops/updateProperty.js";
-import { deleteProperty } from "../controllers/shops/deleteProperty.js";
+import { deleteRoomById } from "../controllers/shops/deleteProperty.js";
 import { getAllBookings } from "../controllers/shops/getAllBookings.js";
 import { getStats } from "../controllers/shops/getStats.js";
 import { getPropertyById } from "../controllers/common/getPropertyById.js";
@@ -12,6 +12,19 @@ import { getGraphStats } from "../controllers/shops/getGraphStats.js";
 import { getReviews } from "../controllers/shops/getReviews.js";
 import { getInvoiceHistory } from "../controllers/shops/getInvoiceHistory.js";
 import { getEarningStats } from "../controllers/shops/getEarningStats.js";
+
+import { updateProfile } from "../controllers/shops/updateProfile.js";
+import { userVerification } from "../middleware/AuthMiddleware.js";
+import { updateRoomById } from "../controllers/shops/updateRoomById.js";
+import { deleteReviewById } from "../controllers/shops/deleteReviewById.js";
+import { replyToReview } from "../controllers/shops/replyToReview.js";
+import {
+  deleteActivity,
+  deleteAllActivities,
+  getUserActivities,
+} from "../controllers/shops/activityController.js";
+import { getTrafficStats } from "../controllers/trafficController.js";
+import { getAllUsers } from "../controllers/shops/getAllUsers.js";
 
 const shopsRouter = express.Router();
 
@@ -22,8 +35,8 @@ shopsRouter.get("/", (req, res) => {
 shopsRouter.post("/property", userVerification, createProperty);
 shopsRouter.get("/property/:propertyId", getPropertyById);
 shopsRouter.get("/rooms", userVerification, getProperties);
-shopsRouter.patch("/rooms", userVerification, updateProperty);
-shopsRouter.delete("/rooms/:propertyId", userVerification, deleteProperty);
+shopsRouter.patch("/property/:propertyId", userVerification, updateProperty);
+shopsRouter.delete("/rooms/:roomId", userVerification, deleteRoomById);
 shopsRouter.get("/bookings", userVerification, getAllBookings);
 shopsRouter.get("/stats", userVerification, getStats);
 shopsRouter.post("/listing", userVerification);
@@ -32,5 +45,14 @@ shopsRouter.get("/stats/graph", userVerification, getGraphStats);
 shopsRouter.get("/reviews", userVerification, getReviews);
 shopsRouter.get("/invoices", userVerification, getInvoiceHistory);
 shopsRouter.get("/earning-statuses", userVerification, getEarningStats);
+shopsRouter.get("/activity", userVerification, getUserActivities);
+shopsRouter.delete("/activity/:activityId", userVerification, deleteActivity);
+shopsRouter.delete("/activity", userVerification, deleteAllActivities);
+shopsRouter.patch("/profile", userVerification, updateProfile);
+shopsRouter.patch("/room/:roomId", userVerification, updateRoomById);
+shopsRouter.delete("/reviews/:id", userVerification, deleteReviewById);
+shopsRouter.patch("/reviews/:id/reply", userVerification, replyToReview);
+shopsRouter.get("/traffic/:shopId", getTrafficStats);
+shopsRouter.get("/users", userVerification, getAllUsers);
 
 export default shopsRouter;

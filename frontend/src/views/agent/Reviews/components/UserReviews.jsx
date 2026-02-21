@@ -1,144 +1,200 @@
-import { Card, CardBody, CardFooter, CardHeader } from "react-bootstrap";
-import { userReviews } from "../data";
+import { Card, CardBody, CardFooter, CardHeader, Form } from "react-bootstrap";
 import ReviewCard from "./ReviewCard";
-import { Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Fragment, useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import NotFound from "../../../../components/NotFound/NotFound";
+import { ToastContainer, toast } from "react-toastify";
+import { API_BASE_URL } from "../../../../config/env";
+
 const UserReviews = () => {
-  const [reviews, setReviews] = useState([
-    {
-      _id: "65cb...f123",
-      fromId: {
-        _id: "65ca...a111",
-        firstName: "John",
-        lastName: "Doe",
-        profilePic: "https://example.com/user.jpg",
-        email: "john@example.com",
-      },
-      propertyId: {
-        _id: "65c9...b222",
-        listingName: "Luxury Beachfront Villa",
-        location: {
-          country: "USA",
-          state: "California",
-          city: "Malibu",
-          street: "123 Ocean Drive",
-          postalCode: "90265",
-        },
-        thumbnail: "https://example.com/property.jpg",
-      },
-      roomId: {
-        _id: "65c8...c333",
-        roomName: "Ocean View Suite",
-        roomThumbnail: "https://example.com/room.jpg",
-        price: 250,
-      },
-      feedback: "Amazing stay, very clean!",
-      rating: 5,
-      reviewImages: [
-        "https://example.com/review1.jpg",
-        "https://example.com/review2.jpg",
-      ],
-      createdAt: "2024-05-15T10:00:00.000Z",
-      updatedAt: "2024-05-15T10:00:00.000Z",
-    },
-    ,
-  ]);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    limit: 5,
+  });
+  const [ratingFilter, setRatingFilter] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  const fetchReviews = useCallback(async (page = 1, rating = "") => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${API_BASE_URL}/api/v1/shops/reviews`, {
+        params: { page, limit: 5, rating },
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  const token = localStorage.getItem("token");
+      if (response.data.success) {
+        setReviews(response.data.reviews);
+        setPagination(response.data.pagination);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   const fetchReviews = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         "http://localhost:5000/api/v1/shops/reviews",
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       const result = await response.json();
+  useEffect(() => {
+    fetchReviews(pagination.currentPage, ratingFilter);
+  }, [pagination.currentPage, ratingFilter, fetchReviews]);
 
-  //       if (result) {
-  //         setReviews(result?.reviews);
-  //       }
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error(error);
-  //       setLoading(false);
-  //     }
-  //   };
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE_URL}/api/v1/shops/reviews/${reviewId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Review deleted successfully");
+      setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+    } catch (error) {
+      toast.error("Failed to delete review");
+    }
+  };
 
-  //   fetchReviews();
-  // }, [token]);
+  const handleReplyReview = async (reviewId, replyText) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.patch(
+        `${API_BASE_URL}/api/v1/shops/reviews/${reviewId}/reply`,
+        { reply: replyText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-  if (loading) return <div>Loading...</div>;
+      if (response.data.success) {
+        toast.success("Reply submitted");
+        setReviews((prev) =>
+          prev.map((r) => (r._id === reviewId ? { ...r, reply: replyText } : r))
+        );
+      }
+    } catch (error) {
+      toast.error("Failed to submit reply");
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      setPagination((prev) => ({ ...prev, currentPage: newPage }));
+    }
+  };
+
+  const handleFilterChange = (e) => {
+    setRatingFilter(e.target.value);
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+  };
+
+  if (!loading && reviews.length === 0) {
+    return (
+      <NotFound
+        title={"No Reviews found!"}
+        description={"No reviews available."}
+      />
+    );
+  }
 
   return (
     <Card className="border rounded-3">
-      <CardHeader className="border-bottom">
+      <CardHeader className="border-bottom d-flex justify-content-between align-items-center">
         <h5 className="card-header-title">User Reviews</h5>
+        <div className="d-flex align-items-center">
+          <span className="me-2 small text-nowrap">Filter:</span>
+          <Form.Select
+            size="sm"
+            value={ratingFilter}
+            onChange={handleFilterChange}
+          >
+            <option value="">All Stars</option>
+            {[5, 4, 3, 2, 1].map((num) => (
+              <option key={num} value={num}>
+                {num} Stars
+              </option>
+            ))}
+          </Form.Select>
+        </div>
       </CardHeader>
+
       <CardBody>
-        {reviews.map((review, idx) => {
-          return (
-            <Fragment key={idx}>
-              <ReviewCard review={review} />
-              {reviews.length - 1 != idx && <hr />}
+        {loading ? (
+          <div className="text-center p-4">Loading...</div>
+        ) : (
+          reviews.map((review, idx) => (
+            <Fragment key={review._id}>
+              <ReviewCard
+                review={review}
+                onDelete={handleDeleteReview}
+                onReply={handleReplyReview}
+              />
+              {reviews.length - 1 !== idx && <hr />}
             </Fragment>
-          );
-        })}
+          ))
+        )}
       </CardBody>
+
       <CardFooter className="pt-0">
         <div className="d-sm-flex justify-content-sm-between align-items-sm-center">
           <p className="mb-sm-0 text-center text-sm-start">
-            Showing 1 to 8 of 20 entries
+            Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
+            {Math.min(
+              pagination.currentPage * pagination.limit,
+              pagination.totalItems
+            )}{" "}
+            of {pagination.totalItems} entries
           </p>
-          <nav
-            className="mb-sm-0 d-flex justify-content-center"
-            aria-label="navigation"
-          >
-            <ul className="pagination pagination-sm pagination-primary-soft mb-0">
-              <li className="page-item disabled">
-                <Link className="page-link" to="" tabIndex={-1}>
-                  Prev
-                </Link>
-              </li>
-              <li className="page-item">
-                <Link className="page-link" to="">
-                  1
-                </Link>
-              </li>
-              <li className="page-item active">
-                <Link className="page-link" to="">
-                  2
-                </Link>
-              </li>
-              <li className="page-item disabled">
-                <Link className="page-link" to="">
-                  ..
-                </Link>
-              </li>
-              <li className="page-item">
-                <Link className="page-link" to="">
-                  15
-                </Link>
-              </li>
-              <li className="page-item">
-                <Link className="page-link" to="">
-                  Next
-                </Link>
-              </li>
-            </ul>
-          </nav>
+
+          {pagination.totalPages > 1 && (
+            <nav className="mb-sm-0 d-flex justify-content-center">
+              <ul className="pagination pagination-sm pagination-primary-soft mb-0">
+                <li
+                  className={`page-item ${
+                    pagination.currentPage === 1 ? "disabled" : ""
+                  }`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  >
+                    Prev
+                  </button>
+                </li>
+                {[...Array(pagination.totalPages)].map((_, i) => (
+                  <li
+                    key={i}
+                    className={`page-item ${
+                      pagination.currentPage === i + 1 ? "active" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link"
+                      onClick={() => handlePageChange(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
+                <li
+                  className={`page-item ${
+                    pagination.currentPage === pagination.totalPages
+                      ? "disabled"
+                      : ""
+                  }`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
       </CardFooter>
+      <ToastContainer />
     </Card>
   );
 };
+
 export default UserReviews;

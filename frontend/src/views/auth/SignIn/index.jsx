@@ -6,13 +6,15 @@ import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import signInImg from "@/assets/images/element/signin.svg";
 import logoIcon from "@/assets/images/logo-icon.svg";
+import logo from "../../../assets/images/logo.png";
+
 import { developedByLink, currentYear } from "@/states";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { useAuthContext } from "../../../states/useAuthContext";
 import axios from "axios";
 import { signInWithGoogle } from "@/firebase";
-import { BACKEND_URL } from "../../../config/api";
+import { API_BASE_URL } from "../../../config/env";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const SignIn = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/auth/signin`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +54,15 @@ const SignIn = () => {
           showConfirmButton: false,
         });
 
-        navigate("/agent/dashboard");
+        if (result?.user?.role === "customer") {
+          navigate("/");
+        } else if (result?.user?.role === "admin") {
+          navigate("/agent/dashboard");
+        } else {
+          navigate("/auth/sign-in");
+        }
+
+        // navigate("/agent/dashboard");
       } else {
         Swal.fire({
           icon: "error",
@@ -78,26 +88,26 @@ const SignIn = () => {
       const idToken = await signInWithGoogle();
 
       const res = await axios.post(
-        `${BACKEND_URL}/api/v1/auth/google-login`,
+        `${API_BASE_URL}/api/v1/auth/google-login`,
         { idToken },
         { withCredentials: true }
       );
 
-      if (res.status === 200) {
-        saveSession({
-          ...res.data.user,
-          token: res.data.token,
-        });
+      // if (res.status === 200) {
+      //   saveSession({
+      //     ...res.data.user,
+      //     token: res.data.token,
+      //   });
 
-        Swal.fire({
-          icon: "success",
-          title: "Login Successful",
-          timer: 1500,
-          showConfirmButton: false,
-        });
+      //   Swal.fire({
+      //     icon: "success",
+      //     title: "Login Successful",
+      //     timer: 1500,
+      //     showConfirmButton: false,
+      //   });
 
-        navigate("/agent/dashboard");
-      }
+      //   navigate("/agent/dashboard");
+      // }
     } catch (error) {
       console.error("Google login failed:", error);
 
@@ -123,7 +133,7 @@ const SignIn = () => {
       <Col lg={6} className="order-1">
         <div className="p-4 p-sm-7">
           <Link to="/">
-            <img className="h-50px mb-4" src={logoIcon} alt="logo" />
+            <img className="h-50px mb-4" src={logo} alt="logo" />
           </Link>
 
           <h1 className="mb-2 h3">Welcome back</h1>
@@ -187,13 +197,13 @@ const SignIn = () => {
                 <FcGoogle size={16} className="fab fa-fw me-2" />
                 Continue with Google
               </button>
-              <button type="button" className="btn btn-light mb-0">
+              {/* <button type="button" className="btn btn-light mb-0">
                 <FaFacebookF
                   size={16}
                   className="fab fa-fw text-facebook me-2"
                 />
                 Continue with Facebook
-              </button>
+              </button> */}
             </div>
 
             <div className="text-primary-hover text-body mt-3 text-center">

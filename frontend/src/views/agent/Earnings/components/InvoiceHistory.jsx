@@ -15,13 +15,14 @@ import {
   OverlayTrigger,
   Row,
   Tooltip,
+  Button,
 } from "react-bootstrap";
 import { BsCloudDownload, BsInfoCircleFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { currency } from "@/states";
 import clsx from "clsx";
-import { BACKEND_URL } from "../../../../config/api";
+import { API_BASE_URL } from "../../../../config/env";
 
 const InvoiceHistory = () => {
   const [history, setHistory] = useState([]);
@@ -43,15 +44,18 @@ const InvoiceHistory = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BACKEND_URL}/api/v1/shops/invoices`, {
-        params: {
-          page: pagination.currentPage,
-          sort: sort,
-          search: search,
-          limit: 10,
-        },
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/api/v1/shops/invoices`,
+        {
+          params: {
+            page: pagination.currentPage,
+            sort: sort,
+            search: search,
+            limit: 10,
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setHistory(response.data.data);
       setPagination((prev) => ({
         ...prev,
@@ -94,6 +98,34 @@ const InvoiceHistory = () => {
     doc.save(`Invoice_${invoice.paymentId?.slice(-6)}.pdf`);
   };
 
+  const downloadAllPDF = () => {
+    if (history.length === 0) return;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("INVOICE HISTORY REPORT", 14, 20);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+    doc.text(`Total Records: ${history.length}`, 14, 34);
+
+    const tableRows = history.map((invoice) => [
+      `#${invoice.paymentId?.slice(-6) || "N/A"}`,
+      invoice.date,
+      `${currency}${invoice.amount}`,
+      (invoice.status || "").toUpperCase(),
+    ]);
+
+    autoTable(doc, {
+      startY: 40,
+      head: [["Invoice ID", "Date", "Amount", "Status"]],
+      body: tableRows,
+      theme: "grid",
+      headStyles: { fillColor: [51, 122, 183] },
+      styles: { fontSize: 9 },
+    });
+
+    doc.save(`Invoice_History_Full_${new Date().getTime()}.pdf`);
+  };
+
   const getStatusClass = (status) => {
     switch (status?.toLowerCase()) {
       case "cancelled":
@@ -107,8 +139,17 @@ const InvoiceHistory = () => {
 
   return (
     <Card className="border rounded-3">
-      <CardHeader className="border-bottom">
-        <h5 className="card-header-title">Invoice history</h5>
+      <CardHeader className="border-bottom d-flex justify-content-between align-items-center">
+        <h5 className="card-header-title mb-0">Invoice history</h5>
+        <Button
+          variant="primary"
+          size="sm"
+          className="d-flex align-items-center gap-2"
+          onClick={downloadAllPDF}
+          disabled={loading || history.length === 0}
+        >
+          <BsCloudDownload /> Download All
+        </Button>
       </CardHeader>
       <CardBody>
         <Row className="g-3 align-items-center justify-content-between mb-3">

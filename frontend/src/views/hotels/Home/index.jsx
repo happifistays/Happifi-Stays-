@@ -25,7 +25,7 @@ const HotelHome = () => {
 
         <FeaturedHotels />
 
-        <Clients />
+        {/* <Clients /> */}
 
         <TestimonialsSlider />
 
@@ -36,7 +36,7 @@ const HotelHome = () => {
 
       <FooterWithLinks />
 
-      <Footer />
+      {/* <Footer /> */}
     </>;
 };
 export default HotelHome;

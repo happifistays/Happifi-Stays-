@@ -21,7 +21,8 @@ import {
   BsSearch,
 } from "react-icons/bs";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BACKEND_URL } from "../../../../config/api";
+import { availableLocations } from "../../../../constants/datas";
+import { API_BASE_URL } from "../../../../config/env";
 const AvailabilityFilter = () => {
   const { isOpen, toggle } = useToggle();
   const initialValue = {
@@ -87,19 +88,16 @@ const AvailabilityFilter = () => {
         alert("Please select a location");
         return;
       }
-      console.log("Selected location:", formValue.location);
 
       try {
         const response = await axios.get(
-          `${BACKEND_URL}/api/v1/customer/search-location`,
+          `${API_BASE_URL}/api/v1/customer/search-location`,
           {
             params: {
               location: formValue.location,
             },
           }
         );
-
-        console.log("Search Result:", response.data);
 
         navigate(`/hotels/grid?location=${formValue.location}`, {
           state: { hotels: response.data.data },
@@ -125,14 +123,12 @@ const AvailabilityFilter = () => {
                 }
               >
                 <option value="">Select location</option>
-                <option value="San Jacinto, USA">San Jacinto, USA</option>
-                <option value="North Dakota, Canada">
-                  North Dakota, Canada
-                </option>
-                <option value="West Virginia, Paris">
-                  West Virginia, Paris
-                </option>
-                <option value="United States">United States</option>
+
+                {availableLocations.map((item) => (
+                  <option key={item.district} value={item.district}>
+                    {item.district}
+                  </option>
+                ))}
               </SelectFormInput>
             </div>
           </Col>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { Card, CardBody, CardHeader } from "react-bootstrap";
 import axios from "axios";
-import { BACKEND_URL } from "../../../../config/api";
+import { API_BASE_URL } from "../../../../config/env";
 
 const BookingChart = () => {
   const [chartData, setChartData] = useState([
@@ -15,7 +15,7 @@ const BookingChart = () => {
     const fetchStats = async () => {
       try {
         const { data } = await axios.get(
-          `${BACKEND_URL}/api/v1/shops/stats/graph`,
+          `${API_BASE_URL}/api/v1/shops/stats/graph`,
           {
             method: "GET",
             headers: {

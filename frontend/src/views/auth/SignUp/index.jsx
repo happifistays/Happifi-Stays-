@@ -9,7 +9,7 @@ import axios from "axios";
 import signInImg from "@/assets/images/element/signin.svg";
 import logoIcon from "@/assets/images/logo-icon.svg";
 import { developedByLink, currentYear } from "@/states";
-import { BACKEND_URL } from "../../../config/api";
+import { API_BASE_URL } from "../../../config/env";
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
@@ -25,13 +25,12 @@ const SignUp = () => {
       confirmPassword: "",
       otp: "",
     },
-    mode: "onChange", // Helps with real-time validation
+    mode: "onChange",
   });
 
   const emailValue = watch("email");
 
   const onSendOTP = async (data) => {
-    // Validate first step fields before proceeding
     const isStep1Valid = await trigger([
       "name",
       "email",
@@ -43,7 +42,7 @@ const SignUp = () => {
     setLoading(true);
     setError("");
     try {
-      await axios.post(`${BACKEND_URL}/api/v1/auth/send-otp`, {
+      await axios.post(`${API_BASE_URL}/api/v1/auth/send-otp`, {
         email: data.email,
       });
       setStep(2);
@@ -59,7 +58,7 @@ const SignUp = () => {
     setError("");
     try {
       const response = await axios.post(
-        `${BACKEND_URL}/api/v1/auth/verify-otp`,
+        `${API_BASE_URL}/api/v1/auth/verify-otp`,
         {
           name: data.name,
           email: data.email,
@@ -86,13 +85,10 @@ const SignUp = () => {
         <div className="vr opacity-1 d-none d-lg-block" />
       </Col>
 
-      <Col lg={6} className="order-1">
-        <div className="p-4 p-sm-6">
-          <Link to="/">
-            <img className="h-50px mb-4" src={logoIcon} alt="logo" />
-          </Link>
-
-          <h1 className="mb-2 h3">Create new account</h1>
+      <div className="col-lg-6 order-1">
+        <div className="p-3 p-lg-5">
+          <img src={logoIcon} className="h-40px mb-4" alt="logo" />
+          <h1 className="fs-2">Create New Account</h1>
           <p className="mb-0">
             Already a member?<Link to="/auth/sign-in"> Log in</Link>
           </p>
@@ -154,7 +150,6 @@ const SignUp = () => {
                   Enter the 6-digit code sent to <strong>{emailValue}</strong>
                 </p>
 
-                {/* Replaced TextFormInput with direct Controller for OTP to fix typing issue */}
                 <Form.Group className="mb-3">
                   <Form.Label>Enter OTP</Form.Label>
                   <Controller
@@ -165,7 +160,7 @@ const SignUp = () => {
                         {...field}
                         type="text"
                         placeholder="000000"
-                        autoFocus // Automatically focus when step 2 opens
+                        autoFocus
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     )}
@@ -203,13 +198,13 @@ const SignUp = () => {
                     <FcGoogle size={16} className="fab fa-fw me-2" />
                     Continue with Google
                   </button>
-                  <button type="button" className="btn btn-light mb-0">
+                  {/* <button type="button" className="btn btn-light mb-0">
                     <FaFacebookF
                       size={16}
                       className="fab fa-fw text-facebook me-2"
                     />
                     Continue with Facebook
-                  </button>
+                  </button> */}
                 </div>
               </>
             )}
@@ -228,7 +223,7 @@ const SignUp = () => {
             </div>
           </form>
         </div>
-      </Col>
+      </div>
     </>
   );
 };

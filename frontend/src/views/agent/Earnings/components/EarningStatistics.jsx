@@ -23,9 +23,9 @@ import { currency } from "@/states";
 import visa from "@/assets/images/element/visa.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BACKEND_URL } from "../../../../config/api";
+import { API_BASE_URL } from "../../../../config/env";
 
-const EarningStatistics = () => {
+const EarningStatistics = ({ selectedDate }) => {
   const [loading, setLoading] = useState(false);
   const [earningStatus, setEarningStatus] = useState({
     salesThisMonth: 0,
@@ -35,32 +35,23 @@ const EarningStatistics = () => {
 
   useEffect(() => {
     const fetchEarningStatus = async () => {
-      setLoading(true);
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BACKEND_URL}/api/v1/shops/earning-statuses`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          `${API_BASE_URL}/api/v1/shops/earning-statuses?date=${selectedDate}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-
-        // FIXED: Access response.data directly because backend returns the object directly
-        if (response.data) {
-          setEarningStatus(response.data);
-        }
+        if (response.data) setEarningStatus(response.data);
       } catch (error) {
         console.error("Error fetching earning stats", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchEarningStatus();
-  }, []);
+  }, [selectedDate]);
 
   return (
     <Row className="g-4">
-      <Col md={6} lg={3}>
+      <Col md={6} lg={6}>
         <Card className="card-body border p-4 h-100">
           <h6 className="mb-0">Sales this month</h6>
           <h3 className="mb-2 mt-2">{earningStatus.salesThisMonth}</h3>
@@ -70,7 +61,7 @@ const EarningStatistics = () => {
         </Card>
       </Col>
 
-      <Col md={6} lg={3}>
+      <Col md={6} lg={6}>
         <Card className="card-body border p-4 h-100">
           <h6 className="mb-0">Earnings this month</h6>
           <h3 className="mb-2 mt-2">
@@ -108,7 +99,7 @@ const EarningStatistics = () => {
       </Col> 
       */}
 
-      <Col lg={6}>
+      {/* <Col lg={6}>
         <Card className="bg-primary p-4">
           <div className="d-flex justify-content-between align-items-start text-white">
             <Image className="w-40px" src={visa} />
@@ -176,7 +167,7 @@ const EarningStatistics = () => {
             <span>CVV: ***</span>
           </div>
         </Card>
-      </Col>
+      </Col> */}
     </Row>
   );
 };

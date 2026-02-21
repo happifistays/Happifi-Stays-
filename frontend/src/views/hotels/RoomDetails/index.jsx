@@ -7,7 +7,9 @@ import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HotelMediaGallery from "../HotelDetails/components/HotelMediaGallery";
 import axios from "axios";
-import { BACKEND_URL } from "../../../config/api";
+import TopNavBar from "../Home/components/TopNavBar";
+import Footer from "../Home/components/Footer";
+import { API_BASE_URL } from "../../../config/env";
 
 const RoomDetails = () => {
   const location = useLocation();
@@ -20,12 +22,12 @@ const RoomDetails = () => {
   const roomId = location.pathname.split("/").pop();
   const [room, setRoom] = useState([]);
   const passignData = [roomsDetail[0]?.room.roomThumbnail || ""];
-  console.log("1111111111");
+
   useEffect(() => {
     const getRoomDetails = async () => {
       try {
         const response = await axios.get(
-          `${BACKEND_URL}/api/v1/customer/rooms/${roomId}`
+          `${API_BASE_URL}/api/v1/customer/rooms/${roomId}`
         );
 
         // If API returns single room → wrap in array
@@ -41,13 +43,24 @@ const RoomDetails = () => {
     }
   }, [roomId]);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (propertyId) {
       const fetchHotelRooms = async () => {
         try {
           setLoading(true);
           const response = await fetch(
-            `${BACKEND_URL}/api/v1/customer/rooms/property/${propertyId}`
+            `${API_BASE_URL}/api/v1/customer/rooms/property/${propertyId}`
           );
           const result = await response.json();
 
@@ -79,14 +92,16 @@ const RoomDetails = () => {
   return (
     <>
       <PageMetaData title="Hotel - Room Details" />
-      <TopNavBar4 />
+      <TopNavBar />
       <main>
         {/* <RoomGallery images={images ?? []} /> */}
-        <HotelMediaGallery gallery={passignData} />
-        {console.log("rooms--------", rooms)}
+
+        {!isMobile && <HotelMediaGallery gallery={passignData} />}
+
         <RoomSelection rooms={roomDetails ?? []} />
       </main>
       <FooterWithLinks />
+      <Footer />
     </>
   );
 };

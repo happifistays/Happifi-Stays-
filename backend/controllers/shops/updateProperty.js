@@ -6,22 +6,22 @@ export const updateProperty = async (req, res) => {
     const { propertyId } = req.params;
     const { rooms, ...updateData } = req.body;
 
-    const property = await Property.findOne({
-      _id: propertyId,
-      owner: req.userId,
-    });
+    const property = await Property.findById(propertyId);
 
     if (!property) {
       return res.status(404).json({
         success: false,
-        message: "Property not found or unauthorized",
+        message: "Property not found",
       });
     }
 
     const updatedProperty = await Property.findByIdAndUpdate(
       propertyId,
       { ...updateData },
-      { new: true, runValidators: true }
+      {
+        returnDocument: "after",
+        runValidators: true,
+      }
     );
 
     if (rooms && Array.isArray(rooms)) {
@@ -31,6 +31,7 @@ export const updateProperty = async (req, res) => {
         const roomDataWithPropertyId = rooms.map((room) => ({
           ...room,
           property: propertyId,
+          shop: req.userId,
         }));
         await Room.insertMany(roomDataWithPropertyId);
       }

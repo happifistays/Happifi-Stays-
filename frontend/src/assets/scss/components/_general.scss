@@ -252,3 +252,42 @@ body.dashboard main{
 .tns-item.tns-slide-active img {
     width: 100% !important;
 }
+
+.new-added-section-padding{
+  margin-bottom: 40px !important;
+}
+
+
+@media (max-width: 1199.98px) {
+    .navbar-expand-xl .navbar-brand {
+        padding: 10px 0 ;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .navbar-expand-xl .navbar-brand .navbar-brand-item {
+        height: 50px;
+    }
+}
+
+@media (min-width: 1199.98px) {
+   .new-added-section-padding {
+    margin-bottom: 40px !important;
+    min-height: 70vh !important;
+}
+}
+
+.new-image-style-round {
+      height: 150px;
+    width: 150px;
+    object-fit: cover;
+}
+
+
+a.nav-notification.btn.btn-light.p-0.mb-0.flex-centered.arrow-none.dropdown-toggle, span.notif-badge.animation-blink {
+    display: none;
+}
+
+.card.card-img-scale img {
+      height: 300px;
+}

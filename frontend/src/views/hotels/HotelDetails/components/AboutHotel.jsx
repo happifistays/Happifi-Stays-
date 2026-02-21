@@ -1,5 +1,5 @@
 import { useToggle } from "@/hooks";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -23,9 +23,35 @@ import CustomerReview from "./CustomerReview";
 import HotelPolicies from "./HotelPolicies";
 import PriceOverView from "./PriceOverView";
 import RoomOptions from "./RoomOptions";
-import { amenities } from "../data";
-const AboutHotel = ({ hotelDetails, shoRoomOptions = true }) => {
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { API_BASE_URL } from "../../../../config/env";
+
+const AboutHotel = ({ hotelDetails, shoRoomOptions = true, propertyId }) => {
   const { isOpen, toggle } = useToggle();
+  const { id } = useParams();
+
+  const [reviewsData, setReviewsData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const fetchReviews = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `${API_BASE_URL}/api/v1/customer/reviews-by-property-id/${id}`
+      );
+      setReviewsData(res.data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchReviews();
+    }
+  }, [id]);
 
   return (
     <section className="pt-0">
@@ -95,7 +121,11 @@ const AboutHotel = ({ hotelDetails, shoRoomOptions = true }) => {
                 />
               )}
 
-              <CustomerReview hotelDetails={hotelDetails} />
+              <CustomerReview
+                hotelDetails={hotelDetails}
+                propertyId={propertyId}
+                reviewsData={reviewsData}
+              />
 
               <HotelPolicies />
             </div>
@@ -105,6 +135,7 @@ const AboutHotel = ({ hotelDetails, shoRoomOptions = true }) => {
               rate={hotelDetails?.rate ?? 0}
               rating={hotelDetails?.rating ?? 0}
               rooms={hotelDetails?.rooms}
+              amenities={hotelDetails?.amenities ?? []}
             />
           </Col>
         </Row>

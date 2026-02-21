@@ -44,7 +44,7 @@ const bookingsSchema = new mongoose.Schema(
 
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "failed", "refunded"],
+      enum: ["pending", "paid", "failed", "refunded", "pay_at_hotel"],
       default: "pending",
     },
 
@@ -57,6 +57,28 @@ const bookingsSchema = new mongoose.Schema(
     paymentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Payment",
+      required: true,
+    },
+    paymentType: {
+      type: String,
+      enum: ["online", "pay_at_hotel"],
+      default: "online",
+    },
+    trafficSource: {
+      type: String,
+      enum: ["organic", "google", "social_media", "referral"],
+      default: "organic",
+    },
+
+    utm: {
+      source: String,
+      medium: String,
+      campaign: String,
+    },
+
+    bookedUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

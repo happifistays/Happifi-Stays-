@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Container } from "react-bootstrap";
+import { Container, Spinner } from "react-bootstrap";
 import { useForm, FormProvider } from "react-hook-form";
 import * as yup from "yup";
 import Step1 from "./Step1";
@@ -8,8 +10,7 @@ import Step3 from "./Step3";
 import { Wizard, useWizard } from "react-use-wizard";
 import { useAuthContext } from "../../../../states/useAuthContext";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { BACKEND_URL } from "../../../../config/api";
+import { API_BASE_URL } from "../../../../config/env";
 
 const Header = () => {
   const { goToStep, activeStep } = useWizard();
@@ -63,19 +64,29 @@ const Header = () => {
 const ListingForms = () => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
 
   const listingSchema = yup.object({
-    listingName: yup.string().required("Please enter your listing name"),
-    listingType: yup.string().required("Please select usage type"),
-    shortDescription: yup.string().required("Please enter a short description"),
-    thumbnail: yup.mixed().required("Thumbnail Image is required"),
+    listingName: yup.string().required("Listing name is required"),
+    listingType: yup.string().required("Listing type is required"),
+    listingUse: yup.string().required("Usage type is required"),
+    shortDescription: yup.string().required("Short description is required"),
     country: yup.string().required("Country is required"),
     state: yup.string().required("State is required"),
     city: yup.string().required("City is required"),
-    postalCode: yup.string().required("Postal Code is required"),
+    postalCode: yup.string().required("Postal code is required"),
     street: yup.string().required("Street is required"),
-    latitude: yup.string().required("Latitude is required"),
-    longitude: yup.string().required("Longitude is required"),
+    latitude: yup
+      .number()
+      .typeError("Must be a number")
+      .required("Latitude is required"),
+    longitude: yup
+      .number()
+      .typeError("Must be a number")
+      .required("Longitude is required"),
+    thumbnail: yup.mixed().required("Thumbnail is required"),
+    gallery: yup.array().min(1, "At least one gallery image is required"),
     amenities: yup.array().min(1, "Select at least one amenity"),
     description: yup.string().required("Description is required"),
     totalFloors: yup
@@ -87,23 +98,30 @@ const ListingForms = () => {
       .number()
       .typeError("Must be a number")
       .required("Required"),
-    basePrice: yup.number().typeError("Must be a number").required("Required"),
-    discount3: yup.number().typeError("Must be a number").required("Required"),
+    rooms: yup.array().of(
+      yup.object({
+        roomName: yup.string().required("Room name required"),
+        price: yup
+          .number()
+          .typeError("Must be a number")
+          .required("Price required"),
+        discount: yup.number().typeError("Must be a number").default(0),
+        roomThumbnail: yup.mixed().required("Room image required"),
+      })
+    ),
+    currency: yup.string().required("Currency is required"),
+    basePrice: yup
+      .number()
+      .typeError("Must be a number")
+      .required("Base price is required"),
+    discount3: yup.number().typeError("Must be a number").default(0),
     listingPolicyDescription: yup
       .string()
       .required("Policy description is required"),
-    charges: yup.number().typeError("Must be a number").required("Required"),
-    rooms: yup.array().of(
-      yup.object({
-        roomName: yup.string().required("Required"),
-        price: yup.number().typeError("Must be a number").required("Required"),
-        discount: yup
-          .number()
-          .typeError("Must be a number")
-          .required("Required"),
-        roomThumbnail: yup.mixed().required("Required"),
-      })
-    ),
+    charges: yup
+      .number()
+      .typeError("Must be a number")
+      .required("Charges are required"),
   });
 
   const methods = useForm({
@@ -136,87 +154,146 @@ const ListingForms = () => {
     },
   });
 
+  const { reset } = methods;
   const token = localStorage.getItem("token");
 
-  const onSubmit = async (formData) => {
-    if (user && user._id && formData) {
-      const transformedData = {
-        owner: user._id,
-        listingName: formData?.listingName ?? "",
-        listingType: formData?.listingType ?? "",
-        listingUse: formData?.listingUse ?? "",
-        shortDescription: formData?.shortDescription ?? "",
-        location: {
-          country: formData?.country ?? "",
-          state: formData?.state ?? "",
-          city: formData?.city ?? "",
-          street: formData?.street ?? "",
-          postalCode: formData?.postalCode ?? "",
-          coordinates: {
-            type: "Point",
-            coordinates: [
-              formData?.longitude ? parseFloat(formData.longitude) : 0,
-              formData?.latitude ? parseFloat(formData.latitude) : 0,
-            ],
-          },
-        },
-        amenities: formData?.amenities ?? [],
-        description: formData?.description ?? "",
-        thumbnail: formData?.thumbnail?.base64 ?? "",
-        gallery: Array.isArray(formData?.gallery)
-          ? formData.gallery.map((img) => img?.base64 ?? "")
-          : [],
-        policy: {
-          description: formData?.listingPolicyDescription ?? "",
-          cancellationOption: "Flexible",
-          extraCharges: formData?.charges ? parseFloat(formData.charges) : 0,
-        },
-        currency: formData?.currency ?? "INR",
-        basePrice: formData?.basePrice ? parseFloat(formData.basePrice) : 0,
-        discount: formData?.discount3 ? parseFloat(formData.discount3) : 0,
-        starRating: 5,
-        totalFloors: formData?.totalFloors ? parseInt(formData.totalFloors) : 0,
-        totalRooms: formData?.totalRooms ? parseInt(formData.totalRooms) : 0,
-        propertyArea: formData?.propertyArea
-          ? parseInt(formData.propertyArea)
-          : 0,
-        rooms: Array.isArray(formData?.rooms)
-          ? formData.rooms.map((room) => ({
-              roomName: room?.roomName ?? "",
-              roomThumbnail: room?.roomThumbnail?.base64 ?? "",
-              price: room?.price ? parseFloat(room.price) : 0,
-              discount: room?.discount ? parseFloat(room.discount) : 0,
-              additionalInfo: "",
-              roomArea: 0,
-            }))
-          : [],
-      };
-
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/v1/shops/property`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(transformedData),
-        });
-
-        const result = await response.json();
-
-        if (result && result.success) {
-          Swal.fire({
-            title: "Good job!",
-            text: "You property is added!",
-            icon: "success",
-          });
-          navigate("/agent/dashboard");
+  useEffect(() => {
+    if (id) {
+      const fetchProperty = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/v1/shops/property/${id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const result = await response.json();
+          if (result.success) {
+            const item = result.data;
+            reset({
+              listingName: item.listingName,
+              listingType: item.listingType,
+              listingUse: item.listingUse,
+              shortDescription: item.shortDescription,
+              country: item.location.country,
+              state: item.location.state,
+              city: item.location.city,
+              postalCode: item.location.postalCode,
+              street: item.location.street,
+              longitude: item.location.coordinates.coordinates[0],
+              latitude: item.location.coordinates.coordinates[1],
+              amenities: item.amenities,
+              description: item.description,
+              thumbnail: item.thumbnail,
+              gallery: item.gallery,
+              totalFloors: item.totalFloors,
+              totalRooms: item.totalRooms,
+              propertyArea: item.propertyArea,
+              currency: item.currency,
+              basePrice: item.basePrice,
+              discount3: item.discount,
+              listingPolicyDescription: item.policy.description,
+              charges: item.policy.extraCharges,
+              rooms: item.rooms.map((r) => ({
+                roomName: r.roomName,
+                price: r.price,
+                discount: r.discount,
+                roomThumbnail: r.roomThumbnail,
+              })),
+            });
+          }
+        } catch (error) {
+          console.error("Fetch Error:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Submission Error:", error);
+      };
+      fetchProperty();
+    }
+  }, [id, reset, token]);
+
+  const onSubmit = async (formData) => {
+    const transformedData = {
+      owner: user._id,
+      listingName: formData.listingName,
+      listingType: formData.listingType,
+      listingUse: formData.listingUse,
+      shortDescription: formData.shortDescription,
+      location: {
+        country: formData.country,
+        state: formData.state,
+        city: formData.city,
+        street: formData.street,
+        postalCode: formData.postalCode,
+        coordinates: {
+          type: "Point",
+          coordinates: [
+            parseFloat(formData.longitude),
+            parseFloat(formData.latitude),
+          ],
+        },
+      },
+      amenities: formData.amenities,
+      description: formData.description,
+      thumbnail: formData.thumbnail?.base64 || formData.thumbnail,
+      gallery: formData.gallery.map((img) => img?.base64 || img),
+      policy: {
+        description: formData.listingPolicyDescription,
+        cancellationOption: "Flexible",
+        extraCharges: parseFloat(formData.charges),
+      },
+      currency: formData.currency,
+      basePrice: parseFloat(formData.basePrice),
+      discount: parseFloat(formData.discount3),
+      starRating: 5,
+      totalFloors: parseInt(formData.totalFloors),
+      totalRooms: parseInt(formData.totalRooms),
+      propertyArea: parseInt(formData.propertyArea),
+      rooms: formData.rooms.map((room) => ({
+        roomName: room.roomName,
+        roomThumbnail: room.roomThumbnail?.base64 || room.roomThumbnail,
+        price: parseFloat(room.price),
+        discount: parseFloat(room.discount),
+        additionalInfo: "",
+        roomArea: 0,
+      })),
+    };
+
+    try {
+      const url = id
+        ? `${API_BASE_URL}/api/v1/shops/property/${id}`
+        : `${API_BASE_URL}/api/v1/shops/property`;
+      const method = id ? "PATCH" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(transformedData),
+      });
+      const result = await response.json();
+      if (result.success) {
+        Swal.fire({
+          title: "Success!",
+          text: id ? "Property updated!" : "Property added!",
+          icon: "success",
+        });
+        navigate("/agent/listings");
       }
+    } catch (error) {
+      console.error("Submission Error:", error);
     }
   };
+
+  if (loading)
+    return (
+      <div className="text-center p-5">
+        <Spinner animation="border" />
+      </div>
+    );
 
   return (
     <section>
@@ -225,9 +302,9 @@ const ListingForms = () => {
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
               <Wizard header={<Header />}>
-                <Step1 control={methods.control} />
-                <Step2 control={methods.control} />
-                <Step3 control={methods.control} />
+                <Step1 />
+                <Step2 />
+                <Step3 isEdit={!!id} />
               </Wizard>
             </form>
           </FormProvider>

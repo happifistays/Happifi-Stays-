@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
-import { BACKEND_URL } from "../../../../config/api";
+import Swal from "sweetalert2";
+import { API_BASE_URL } from "../../../../config/env";
 
 const AddReviewModal = ({ show, handleClose, propertyId, roomId, userId }) => {
   const [rating, setRating] = useState(5);
@@ -35,17 +36,29 @@ const AddReviewModal = ({ show, handleClose, propertyId, roomId, userId }) => {
         formData.append("reviewImages", img);
       });
 
-      await axios.post(`${BACKEND_URL}/api/v1/customer/add-review`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await axios.post(
+        `${API_BASE_URL}/api/v1/customer/add-review`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      Swal.fire({
+        title: "Good job!",
+        text: "You review is added",
+        icon: "success",
       });
-
       handleClose();
       setFeedback("");
       setImages([]);
       setRating(5);
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || "Something went wrong");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "You have already added review for this room",
+      });
     } finally {
       setLoading(false);
     }

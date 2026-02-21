@@ -13,16 +13,18 @@ import UpcomingBookings from "./components/UpcomingBookings";
 
 import { PageMetaData } from "@/components";
 import { useEffect, useState } from "react";
-import { BACKEND_URL } from "../../../config/api";
+import { API_BASE_URL } from "../../../config/env";
 const Dashboard = () => {
   const [statistics, setStatistics] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [shopID, setshopID] = useState(true);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/api/v1/shops/stats`, {
+        const response = await fetch(`${API_BASE_URL}/api/v1/shops/stats`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -30,6 +32,7 @@ const Dashboard = () => {
           },
         });
         const result = await response.json();
+        setshopID(result?.data?.shopId);
 
         if (result.success) {
           const { listings, earnings, visitors, reviews } = result.data;
@@ -109,7 +112,7 @@ const Dashboard = () => {
             </Col>
 
             <Col lg={5} xl={4}>
-              <BookingTrafficChart />
+              <BookingTrafficChart shopID={shopID} />
             </Col>
           </Row>
 

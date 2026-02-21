@@ -95,9 +95,25 @@ const RoomCard = ({
             <h5 className="card-title">
               <Link to="">{name}</Link>
             </h5>
-            <ul className="nav nav-divider mb-2">
+            <ul
+              className={`mb-2 ${
+                features.length <= 3
+                  ? "d-flex flex-column gap-2 list-unstyled"
+                  : "nav nav-divider"
+              }`}
+            >
               {features.map((feature, idx) => (
-                <li key={idx} className="nav-item">
+                <li
+                  key={idx}
+                  className={`${
+                    features.length <= 3
+                      ? "p-2 rounded bg-light border"
+                      : "nav-item"
+                  }`}
+                >
+                  {features.length <= 3 && (
+                    <span style={{ marginRight: "8px" }}>✓</span>
+                  )}
                   {feature}
                 </li>
               ))}
@@ -115,7 +131,7 @@ const RoomCard = ({
                 </h5>
                 <span className="mb-0 me-2">/day</span>
                 <span className="text-decoration-line-through mb-0">
-                  {currency}1000
+                  {currency} {price + 500}
                 </span>
               </div>
               <div className="mt-3 mt-sm-0">
@@ -124,7 +140,7 @@ const RoomCard = ({
                   size="sm"
                   className="mb-0"
                   onClick={() =>
-                    navigate(`/hotels/room-detail/${id}`, {
+                    navigate(`/hotels/room/${id}`, {
                       state: { rooms },
                     })
                   }

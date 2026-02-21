@@ -4,6 +4,9 @@ import {
   getReviewsByRoomAndPropertyService,
 } from "../../services/rating.service.js";
 import { addReviewService } from "../../services/rating.service.js";
+import Activity from "../../models/activitySchema.js";
+import Property from "../../models/propertySchema.js";
+import Stats from "../../models/statsSchema.js";
 
 export const addReview = async (req, res) => {
   try {
@@ -27,6 +30,36 @@ export const addReview = async (req, res) => {
       reviewImages,
     });
 
+    // Get property details to know owner
+    const property = await Property.findById(propertyId).select(
+      "owner listingName"
+    );
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    if (property?.owner) {
+      await Stats.findOneAndUpdate(
+        { shopId: property.owner },
+        { $inc: { reviews: 1 } },
+        { new: true, upsert: true }
+      );
+    }
+
+    // Create activity for property owner
+    await Activity.create({
+      userId: property.owner, // property owner receives notification
+      actorId: fromId, // reviewer
+      type: "REVIEW",
+      title: "New Review",
+      description: `Someone left a review on ${property.listingName}`,
+      relatedId: review._id,
+    });
+
     return res.status(201).json({
       success: true,
       message: "Review added successfully",
@@ -41,8 +74,6 @@ export const addReview = async (req, res) => {
 };
 
 export const getReviewsByRoomAndProperty = async (req, res) => {
-  const { propertyId, roomId } = req.params;
-
   try {
     const { propertyId, roomId } = req.params;
 
