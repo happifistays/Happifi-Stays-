@@ -1,53 +1,21 @@
 import { currency } from "@/states";
-import { useEffect } from "react";
-import { useState } from "react";
 import {
   Card,
   CardBody,
   CardFooter,
   CardHeader,
   CardTitle,
-  Spinner,
 } from "react-bootstrap";
-import { API_BASE_URL } from "../../../../config/env";
 
-const PriceSummary = ({ total, discount }) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const roomId = params.get("room_id");
-
-    if (roomId) {
-      const fetchHotelRooms = async () => {
-        try {
-          setLoading(true);
-          const response = await fetch(
-            `${API_BASE_URL}/api/v1/customer/rooms/${roomId}`
-          );
-          const result = await response.json();
-
-          if (result && result.data) {
-            setData(result.data);
-          }
-        } catch (error) {
-          console.error("Error fetching hotels:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchHotelRooms();
-    }
-  }, []);
-
-  console.log("data------------", data ? data : "no data");
-
-  const price = data?.room?.price || 0;
-  const discountPercent = data?.room?.discount || 0;
-
-  const discountAmount = (price * discountPercent) / 100;
-  const finalPrice = price - discountAmount;
+const PriceSummary = ({
+  nights,
+  roomCharges,
+  discount,
+  serviceFee,
+  totalAmount,
+  displayCurrency,
+}) => {
+  const symbol = currency || displayCurrency || "Rs";
 
   return (
     <Card className="shadow rounded-2">
@@ -57,52 +25,57 @@ const PriceSummary = ({ total, discount }) => {
         </CardTitle>
       </CardHeader>
       <CardBody>
-        {loading ? (
-          <div className="d-flex justify-content-center py-4">
-            <Spinner animation="border" variant="primary" />
-          </div>
-        ) : (
-          <ul className="list-group list-group-borderless">
-            <li className="list-group-item d-flex justify-content-between align-items-center">
-              <span className="h6 fw-light mb-0">Room Charges</span>
-              <span className="fs-5">
-                {currency} {total}
-              </span>
-            </li>
-            <li className="list-group-item d-flex justify-content-between align-items-center">
-              <span className="h6 fw-light mb-0">
-                Total Discount
-                <span className="badge text-bg-danger smaller mb-0 ms-2">
-                  {discount}% off
-                </span>
-              </span>
-              <span className="fs-5 text-success">
-                -{currency}
-                {discount}
-              </span>
-            </li>
-            <li className="list-group-item d-flex justify-content-between align-items-center">
-              <span className="h6 fw-light mb-0">Price after discount</span>
-              <span className="fs-5">
-                {currency}
-                {total - discount}
-              </span>
-            </li>
-          </ul>
-        )}
-      </CardBody>
-      {!loading && (
-        <CardFooter className="border-top">
-          <div className="d-flex justify-content-between align-items-center">
-            <span className="h5 mb-0">Payable Now</span>
-            <span className="h5 mb-0">
-              {currency}
-              {total - discount}
+        <ul className="list-group list-group-borderless">
+          <li className="list-group-item d-flex justify-content-between align-items-center">
+            <span className="h6 fw-light mb-0">
+              Room Charges ({nights} {nights > 1 ? "nights" : "night"})
             </span>
-          </div>
-        </CardFooter>
-      )}
+            <span className="fs-5">
+              {symbol} {roomCharges}
+            </span>
+          </li>
+
+          {/* {serviceFee > 0 && (
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+              <span className="h6 fw-light mb-0">Service Fee</span>
+              <span className="fs-5">
+                {symbol} {serviceFee}
+              </span>
+            </li>
+          )} */}
+
+          <li className="list-group-item d-flex justify-content-between align-items-center">
+            <span className="h6 fw-light mb-0">
+              Total Discount
+              <span className="badge text-bg-danger smaller mb-0 ms-2">
+                Saved {symbol} {discount}
+              </span>
+            </span>
+            <span className="fs-5 text-success">
+              -{symbol}
+              {discount}
+            </span>
+          </li>
+
+          <li className="list-group-item d-flex justify-content-between align-items-center">
+            <span className="h6 fw-light mb-0">Price after discount</span>
+            <span className="fs-5">
+              {symbol} {roomCharges - discount}
+            </span>
+          </li>
+        </ul>
+      </CardBody>
+      <CardFooter className="border-top">
+        <div className="d-flex justify-content-between align-items-center">
+          <span className="h5 mb-0">Payable Now</span>
+          <span className="h5 mb-0">
+            {symbol}
+            {roomCharges - discount}
+          </span>
+        </div>
+      </CardFooter>
     </Card>
   );
 };
+
 export default PriceSummary;
