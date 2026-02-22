@@ -153,7 +153,7 @@ const BookingDetails = () => {
             if (result.success) {
               // Swal.fire("Success", "Booking successful!", "success");
               // navigate("/booking-confirmed");
-              navigate("/booking-confirmed", {
+              navigate(`/booking-confirmed/:${roomId}`, {
                 state: { bookingData: result },
               });
             } else {
@@ -191,7 +191,7 @@ const BookingDetails = () => {
           // navigate("/");
           // navigate("/listings/booking-confirmed");
           // navigate("/booking-confirmed");
-          navigate("/booking-confirmed", {
+          navigate(`/booking-confirmed/${roomId}`, {
             state: { bookingData: result },
           });
         } else {
