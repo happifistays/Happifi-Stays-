@@ -19,6 +19,28 @@ const BookingDetails = () => {
 
   const bookingData = location.state || {};
   const token = localStorage.getItem("token");
+  console.log("state bookingData---------------", bookingData);
+
+  // --- START CALCULATIONS ---
+  const calculateNights = (start, end) => {
+    if (!start || !end) return 1;
+    const sDate = new Date(start);
+    const eDate = new Date(end);
+    const diffTime = Math.abs(eDate - sDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 1;
+  };
+
+  const nights =
+    bookingData.nights ||
+    calculateNights(bookingData.checkIn, bookingData.checkOut);
+  const roomPrice = bookingData.roomPrice || 0;
+  const serviceFee = bookingData.serviceFee || 0;
+  const discount = bookingData.discount || 0;
+
+  const roomCharges = roomPrice * nights;
+  const finalCalculatedTotal = roomCharges + serviceFee - discount;
+  // --- END CALCULATIONS ---
 
   const methods = useForm({
     defaultValues: {
@@ -41,7 +63,7 @@ const BookingDetails = () => {
       cardName: "visa",
       checkInDate: bookingData.checkIn || "2026-12-12",
       checkOutDate: bookingData.checkOut || "2026-12-14",
-      totalAmount: bookingData.total || 0,
+      totalAmount: finalCalculatedTotal, // Use the calculated total for consistency
       paymentStatus: "unpaid",
       status: "booked",
     },
@@ -220,7 +242,14 @@ const BookingDetails = () => {
 
                   {/* Price Summary for Mobile (Visible below xl breakpoint) */}
                   <div className="d-xl-none">
-                    <PriceSummary />
+                    <PriceSummary
+                      nights={nights}
+                      roomCharges={roomCharges}
+                      discount={discount}
+                      serviceFee={serviceFee}
+                      totalAmount={finalCalculatedTotal}
+                      displayCurrency={bookingData.currency}
+                    />
                   </div>
 
                   <div className="card shadow-sm p-4">
@@ -274,8 +303,12 @@ const BookingDetails = () => {
                   {/* Price Summary for Desktop (Hidden below xl breakpoint) */}
                   <Col md={6} xl={12} className="d-none d-xl-block">
                     <PriceSummary
-                      total={bookingData?.total}
-                      discount={bookingData?.discount}
+                      nights={nights}
+                      roomCharges={roomCharges}
+                      discount={discount}
+                      serviceFee={serviceFee}
+                      totalAmount={finalCalculatedTotal}
+                      displayCurrency={bookingData.currency}
                     />
                   </Col>
                   {/* <Col md={6} xl={12}>
