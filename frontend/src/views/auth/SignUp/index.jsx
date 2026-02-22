@@ -129,16 +129,8 @@ const SignUp = () => {
             </div>
 
             <div className="text-primary-hover text-body mt-3 text-center">
-              Copyrights ©{currentYear} Booking. Build by{" "}
-              <a
-                href={developedByLink}
-                target="_blank"
-                rel="noreferrer"
-                className="text-body"
-              >
-                StackBros
-              </a>
-              .
+              Copyrights ©{currentYear}  Happifi Stays{" "}
+              
             </div>
           </form>
         </div>
