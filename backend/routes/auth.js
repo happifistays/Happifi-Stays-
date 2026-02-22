@@ -15,11 +15,13 @@ import { userVerification } from "../middleware/AuthMiddleware.js";
 import { getProfile } from "../controllers/common/getProfile.js";
 import { updateEmail } from "../controllers/common/updateEmail.js";
 import { updatePassword } from "../controllers/common/updatePassword.js";
+import User from "../models/userSchema.js";
+import bcrypt from "bcryptjs";
 
 const authRouter = express.Router();
 
 authRouter.post("/signup", signUp);
-authRouter.post("/signin", sigIn); 
+authRouter.post("/signin", sigIn);
 authRouter.post("/google-login", googleLogin);
 authRouter.get("/me", getMe);
 authRouter.patch("/profile", userVerification, updateProfile);
@@ -32,6 +34,26 @@ authRouter.post("/send-email-otp", userVerification, sendEmailOTP);
 
 authRouter.patch("/update/email", userVerification, updateEmail);
 authRouter.patch("/update/password", userVerification, updatePassword);
+
+authRouter.post(
+  "/verify-current-password",
+  userVerification,
+  async (req, res) => {
+    try {
+      const { password } = req.body;
+      const user = await User.findById(req.userId);
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch)
+        return res
+          .status(400)
+          .json({ success: false, message: "Incorrect password" });
+      res.status(200).json({ success: true });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+);
 
 export default authRouter;
 
