@@ -4,71 +4,56 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { TextFormInput } from "@/components";
 import Swal from "sweetalert2";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useAuthContext } from "../../../../states/useAuthContext";
 import { API_BASE_URL } from "../../../../config/env";
 
 const UpdateEmail = () => {
   const { user, removeSession } = useAuthContext();
-  const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [resendTimer, setResendTimer] = useState(0);
-
-  useEffect(() => {
-    let interval;
-    if (resendTimer > 0) {
-      interval = setInterval(() => {
-        setResendTimer((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [resendTimer]);
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
 
   const emailSchema = yup.object({
-    email: yup.string().email("Invalid email").required("Email is required"),
-    otp: yup.string().when("otpSent", {
-      is: true,
-      then: (schema) =>
-        schema.required("OTP is required").length(6, "OTP must be 6 digits"),
-    }),
+    password: yup.string().required("Password is required to verify identity"),
+    email: isPasswordVerified
+      ? yup.string().email("Invalid email").required("New email is required")
+      : yup.string(),
   });
 
-  const { control, handleSubmit, watch, setValue } = useForm({
+  const { control, handleSubmit, watch, trigger } = useForm({
     resolver: yupResolver(emailSchema),
-    defaultValues: { email: "", otp: "" },
+    defaultValues: { email: "", password: "" },
   });
 
-  const newEmail = watch("email");
+  const passwordValue = watch("password");
   const token = localStorage.getItem("token");
 
-  const handleSendOtp = async (isResend = false) => {
-    if (!newEmail)
-      return Swal.fire("Error", "Please enter a new email", "error");
+  const handleVerifyPassword = async () => {
+    const isPasswordValid = await trigger("password");
+    if (!isPasswordValid) return;
 
     setLoading(true);
     try {
+      // Re-using signin logic concept to verify password
       const { data } = await axios.post(
-        `${API_BASE_URL}/api/v1/auth/send-email-otp`,
-        { newEmail },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `${API_BASE_URL}/api/v1/auth/verify-current-password`,
+        { password: passwordValue },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+
       if (data.success) {
-        setOtpSent(true);
-        setResendTimer(60);
+        setIsPasswordVerified(true);
         Swal.fire(
-          isResend ? "Resent!" : "Sent!",
-          "OTP has been sent to your new email.",
+          "Verified",
+          "Identity verified. You can now enter your new email.",
           "success"
         );
       }
     } catch (error) {
       Swal.fire(
         "Error",
-        error.response?.data?.message || "Failed to send OTP",
+        error.response?.data?.message || "Verification failed",
         "error"
       );
     } finally {
@@ -83,7 +68,7 @@ const UpdateEmail = () => {
         `${API_BASE_URL}/api/v1/auth/update/email`,
         {
           newEmail: data.email,
-          otp: data.otp,
+          password: data.password,
         },
         {
           headers: {
@@ -93,13 +78,13 @@ const UpdateEmail = () => {
         }
       );
       if (response.data.success) {
-        Swal.fire("Success", "Your email has been updated.", "success");
-        setOtpSent(false);
-        setResendTimer(0);
-        setValue("otp", "");
-        setValue("email", "");
+        await Swal.fire(
+          "Success",
+          "Email updated. Please log in again.",
+          "success"
+        );
+        removeSession();
       }
-      removeSession();
     } catch (error) {
       Swal.fire(
         "Error",
@@ -115,67 +100,47 @@ const UpdateEmail = () => {
     <Card className="border">
       <CardHeader className="border-bottom">
         <h5 className="card-header-title">Update email</h5>
-        {user && user?.email && (
+        {user?.email && (
           <p className="mb-0 small">
-            Your current email address is{" "}
-            <span className="text-primary">{user?.email}</span>
+            Current email: <span className="text-primary">{user.email}</span>
           </p>
         )}
       </CardHeader>
 
       <CardBody>
-        <form
-          onSubmit={
-            otpSent ? handleSubmit(onUpdateEmail) : (e) => e.preventDefault()
-          }
-        >
+        <form onSubmit={handleSubmit(onUpdateEmail)}>
           <TextFormInput
-            name="email"
-            label="Enter your new email id*"
-            placeholder="Enter your email id"
+            name="password"
+            type="password"
+            label="Enter your current password*"
+            placeholder="********"
             control={control}
-            disabled={otpSent}
+            disabled={isPasswordVerified || loading}
           />
 
-          {otpSent && (
+          {isPasswordVerified && (
             <div className="mt-3">
               <TextFormInput
-                name="otp"
-                label="Enter 6-Digit OTP*"
-                placeholder="000000"
+                name="email"
+                label="Enter your new email id*"
+                placeholder="newemail@example.com"
                 control={control}
               />
-              <div className="mt-2 text-start">
-                {resendTimer > 0 ? (
-                  <small className="text-muted">
-                    Resend OTP in{" "}
-                    <span className="fw-bold">{resendTimer}s</span>
-                  </small>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-link p-0 text-decoration-none small"
-                    onClick={() => handleSendOtp(true)}
-                    disabled={loading}
-                  >
-                    Resend OTP
-                  </button>
-                )}
-              </div>
             </div>
           )}
+
           <div className="text-end mt-3">
-            {!otpSent ? (
+            {!isPasswordVerified ? (
               <Button
                 variant="primary"
-                onClick={() => handleSendOtp(false)}
+                onClick={handleVerifyPassword}
                 disabled={loading}
               >
-                {loading ? <Spinner size="sm" /> : "Verify & Send OTP"}
+                {loading ? <Spinner size="sm" /> : "Verify Password"}
               </Button>
             ) : (
               <Button variant="success" type="submit" disabled={loading}>
-                {loading ? <Spinner size="sm" /> : "Confirm Update"}
+                {loading ? <Spinner size="sm" /> : "Update Email"}
               </Button>
             )}
           </div>
@@ -184,4 +149,5 @@ const UpdateEmail = () => {
     </Card>
   );
 };
+
 export default UpdateEmail;

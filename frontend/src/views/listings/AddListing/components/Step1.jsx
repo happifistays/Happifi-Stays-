@@ -28,6 +28,37 @@ const keralaDistricts = [
   "Wayanad",
 ];
 
+const indiaStates = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
+
 const Step1 = () => {
   const { control, trigger } = useFormContext();
   const { nextStep } = useWizard();
@@ -185,9 +216,9 @@ const Step1 = () => {
                       className="form-select js-choice"
                     >
                       <option value="">Select state</option>
-                      {keralaDistricts.map((district) => (
-                        <option key={district} value={district}>
-                          {district}
+                      {indiaStates.map((state) => (
+                        <option key={state} value={state}>
+                          {state}
                         </option>
                       ))}
                     </SelectFormInput>
