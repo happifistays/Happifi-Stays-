@@ -69,7 +69,8 @@ const FooterWithLinks = () => {
             <li className="list-inline-item me-2">
               {' '}
               <Link to="">
-                <Image src={paypal} className="h-30px me-1" />
+                <Image src="https://res.cloudinary.com/djnaor5ed/image/upload/v1771772612/245a69c1-c9b3-436b-a3b1-0af7bdef2ebf_db4rvn.jpg" className="h-30px me-1" />
+
               </Link>
             </li>
             <li className="list-inline-item me-2">
@@ -87,7 +88,7 @@ const FooterWithLinks = () => {
             {/* <li className="list-inline-item me-2">
               {' '}
               <Link to="">
-                <Image src={expresscard} className="h-30px me-1" />
+                 
               </Link>
             </li> */}
           </ul>

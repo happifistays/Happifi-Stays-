@@ -238,6 +238,11 @@ body.dashboard main{
 
 
 @media (min-width: 1400px) {
+
+footer.bg-dark.p-3 {
+    margin-top: 100px !important;
+}
+
     .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
         max-width: 1300px !important;
     }
@@ -337,6 +342,11 @@ height: 31px;
 
 
 @media (max-width: 900px) {
+.mbl-display-none{
+  display: none !important;
+
+}
+
 .added-spl-mbl-new-cls {
   display: block !important;
     margin: auto !important;

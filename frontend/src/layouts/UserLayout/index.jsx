@@ -43,8 +43,8 @@ const UserLayout = ({
                   </OffcanvasBody>
                 </Offcanvas>
               </Col>
-              <Col lg={8} xl={9}>
-                <div className="d-grid mb-0 d-lg-none w-100">
+              <Col lg={8} xl={9}> 
+                <div className="d-grid mb-0 d-lg-none w-100 mbl-display-none">
                   <Button variant="primary" className="mb-4 items-center justify-content-center gap-1" type="button" onClick={toggle}>
                     <FaSlidersH /> Menu
                   </Button>
