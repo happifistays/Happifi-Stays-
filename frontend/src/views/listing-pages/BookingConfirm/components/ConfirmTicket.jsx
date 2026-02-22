@@ -24,7 +24,106 @@ import { FaCopy, FaLinkedin } from "react-icons/fa6";
 import { FaFacebookSquare, FaTwitterSquare } from "react-icons/fa";
 import gallery4 from "@/assets/images/gallery/04.jpg";
 import { currency } from "@/states";
+import { format } from "date-fns";
+import { jsPDF } from "jspdf";
+
 const ConfirmTicket = ({ bookingData }) => {
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(0, 150, 255);
+    doc.text("Booking Confirmation", 105, 20, { align: "center" });
+
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Congratulations! Your Room has been booked", 105, 30, {
+      align: "center",
+    });
+
+    // Content
+    doc.setFontSize(12);
+    doc.setLineWidth(0.5);
+    doc.line(20, 40, 190, 40);
+
+    const leftCol = 20;
+    const rightCol = 110;
+    let yPos = 55;
+
+    // Booking Details
+    doc.setFont("helvetica", "bold");
+    doc.text("Booking ID:", leftCol, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${bookingData?.booking?._id || "N/A"}`, leftCol + 30, yPos);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Date:", rightCol, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      bookingData?.booking?.checkInDate
+        ? format(new Date(bookingData.booking.checkInDate), "dd MMM yyyy")
+        : "N/A",
+      rightCol + 35,
+      yPos
+    );
+
+    yPos += 15;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Booked by:", leftCol, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${bookingData?.bookedUser?.name || "N/A"}`, leftCol + 30, yPos);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Check-out:", rightCol, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      bookingData?.booking?.checkOutDate
+        ? format(new Date(bookingData.booking.checkOutDate), "dd MMM yyyy")
+        : "N/A",
+      rightCol + 35,
+      yPos
+    );
+
+    yPos += 15;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Payment:", leftCol, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      `${bookingData?.booking?.paymentType || "N/A"}`,
+      leftCol + 30,
+      yPos
+    );
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Guests:", rightCol, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${bookingData?.guests?.length || 0}`, rightCol + 35, yPos);
+
+    yPos += 20;
+    doc.setDrawColor(0, 150, 255);
+    doc.rect(15, yPos - 10, 180, 20);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(
+      `Total Price: ${currency}${bookingData?.booking?.totalAmount || 0}`,
+      105,
+      yPos + 3,
+      { align: "center" }
+    );
+
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("Thank you for choosing our service!", 105, 120, {
+      align: "center",
+    });
+
+    doc.save(`Booking_${bookingData?.booking?._id}.pdf`);
+  };
+
   return (
     <section className="pt-4">
       <Container>
@@ -34,7 +133,7 @@ const ConfirmTicket = ({ bookingData }) => {
               <Image src={gallery4} className="rounded-top" />
               <CardBody className="text-center p-4">
                 <h1 className="card-title fs-3">🎊 Congratulations! 🎊</h1>
-                <p className="lead mb-3">Your trip has been booked</p>
+                <p className="lead mb-3">Your Room has been booked</p>
                 <h5 className="text-primary mb-4">
                   Beautiful Bali with Malaysia
                 </h5>
@@ -69,10 +168,7 @@ const ConfirmTicket = ({ bookingData }) => {
                         </span>
                       </li>
                       <li className="list-group-item d-sm-flex justify-content-between align-items-center">
-                        <span className="mb-0 items-center">
-                          <BsCurrencyDollar className=" fa-fw me-2" />
-                          Total Price:
-                        </span>
+                        <span className="mb-0 items-center">Total Price:</span>
                         <span className="h6 fw-normal mb-0">
                           {currency}
                           {bookingData?.booking?.totalAmount}
@@ -88,7 +184,11 @@ const ConfirmTicket = ({ bookingData }) => {
                           Date:
                         </span>
                         <span className="h6 fw-normal mb-0">
-                          {bookingData?.booking?.checkInDate}
+                          {bookingData?.booking?.checkInDate &&
+                            format(
+                              new Date(bookingData.booking.checkInDate),
+                              "dd MMM yyyy"
+                            )}
                         </span>
                       </li>
                       <li className="list-group-item d-sm-flex justify-content-between align-items-center">
@@ -97,7 +197,11 @@ const ConfirmTicket = ({ bookingData }) => {
                           Tour Date:
                         </span>
                         <span className="h6 fw-normal mb-0">
-                          {bookingData?.booking?.checkOutDate}
+                          {bookingData?.booking?.checkOutDate &&
+                            format(
+                              new Date(bookingData.booking.checkOutDate),
+                              "dd MMM yyyy"
+                            )}
                         </span>
                       </li>
                       <li className="list-group-item d-sm-flex justify-content-between align-items-center">
@@ -105,14 +209,16 @@ const ConfirmTicket = ({ bookingData }) => {
                           <BsPeople className=" fa-fw me-2" />
                           Guests:
                         </span>
-                        <span className="h6 fw-normal mb-0">3</span>
+                        <span className="h6 fw-normal mb-0">
+                          {bookingData?.guests?.length || 0}
+                        </span>
                       </li>
                     </ul>
                   </Col>
                 </Row>
                 <div className="d-sm-flex justify-content-sm-end d-grid">
                   <Dropdown className="me-sm-2 mb-2 mb-sm-0">
-                    <DropdownToggle
+                    {/* <DropdownToggle
                       as="button"
                       type="button"
                       className="arrow-none btn btn-light mb-0 w-100 items-center"
@@ -120,7 +226,7 @@ const ConfirmTicket = ({ bookingData }) => {
                     >
                       <BsShare className=" me-2" />
                       Share
-                    </DropdownToggle>
+                    </DropdownToggle> */}
                     <DropdownMenu
                       align="end"
                       className="min-w-auto shadow rounded"
@@ -146,7 +252,10 @@ const ConfirmTicket = ({ bookingData }) => {
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
-                  <button className="btn btn-primary mb-0 items-center">
+                  <button
+                    onClick={downloadPDF}
+                    className="btn btn-primary mb-0 items-center"
+                  >
                     <BsFilePdf className=" me-2" />
                     Download PDF
                   </button>
