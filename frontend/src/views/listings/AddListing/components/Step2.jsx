@@ -4,6 +4,7 @@ import ReactQuill from "react-quill-new";
 import { Card, CardBody, CardHeader, Col, Row, Button } from "react-bootstrap";
 import { BsPlusCircle, BsTrash } from "react-icons/bs";
 import { useWizard } from "react-use-wizard";
+import { amenities } from "../../../../constants/datas";
 
 const Step2 = () => {
   const { control, trigger } = useFormContext();
@@ -43,9 +44,11 @@ const Step2 = () => {
                       className="form-select js-choice border-0 z-index-9 bg-transparent"
                       multiple
                     >
-                      <option value="Swimming pool">Swimming pool</option>
-                      <option value="Spa">Spa</option>
-                      <option value="Gym">Gym</option>
+                      {amenities.map((item) => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
                     </SelectFormInput>
                     {error && (
                       <div className="text-danger small mt-1">

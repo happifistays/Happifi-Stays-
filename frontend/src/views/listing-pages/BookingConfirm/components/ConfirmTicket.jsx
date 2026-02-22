@@ -26,8 +26,38 @@ import gallery4 from "@/assets/images/gallery/04.jpg";
 import { currency } from "@/states";
 import { format } from "date-fns";
 import { jsPDF } from "jspdf";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../../../config/env";
 
 const ConfirmTicket = ({ bookingData }) => {
+  const { id } = useParams();
+  const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      const fetchRoomDetails = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/v1/customer/rooms/${id}/all`
+          );
+          setLoading(false);
+          const result = await response.json();
+          if (result && result.data) {
+            setRoom(result.data);
+          }
+        } catch (error) {
+          setLoading(false);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchRoomDetails();
+    }
+  }, [id]);
+  console.log("room------------", room);
   const downloadPDF = () => {
     const doc = new jsPDF();
 
@@ -130,13 +160,11 @@ const ConfirmTicket = ({ bookingData }) => {
         <Row>
           <Col md={10} xl={8} className="mx-auto">
             <Card className="shadow">
-              <Image src={gallery4} className="rounded-top" />
+              <Image src={room?.roomThumbnail} className="rounded-top" />
               <CardBody className="text-center p-4">
                 <h1 className="card-title fs-3">🎊 Congratulations! 🎊</h1>
                 <p className="lead mb-3">Your Room has been booked</p>
-                <h5 className="text-primary mb-4">
-                  Beautiful Bali with Malaysia
-                </h5>
+                <h5 className="text-primary mb-4">{room?.roomName}</h5>
                 <Row className="justify-content-between text-start mb-4">
                   <Col lg={5}>
                     <ul className="list-group list-group-borderless">
