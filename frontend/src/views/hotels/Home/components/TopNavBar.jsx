@@ -144,7 +144,7 @@ const handleThemeToggle = () => {
             {!user && (
   <button style={{border:"none", margin:"0px"}}
     onClick={handleThemeToggle}
-    className="btn btn-sm btn-outline-primary ms-3 d-flex align-items-center gap-2"
+    className="btn btn-sm btn-outline-primary ms-3 d-flex align-items-center gap-2 added-spl-mbl-new-cls"
   >
     {theme === "light" ? <BsMoonStars size={18} /> : <BsSun size={18} />}
     {theme === "light" ? "Dark Mode" : "Light Mode"}

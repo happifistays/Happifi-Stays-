@@ -337,6 +337,12 @@ height: 31px;
 
 
 @media (max-width: 900px) {
+.added-spl-mbl-new-cls {
+  display: block !important;
+    margin: auto !important;
+    margin-bottom: 20px !important;
+}
+
 .spl-class-for-mbl-section {
   display: flex;
   flex-direction: column;
