@@ -37,7 +37,7 @@ const HotelGridCard = ({ feature, id, images, name, price, rating, sale }) => {
   };
   console.log("discountPercentage------------", discountPercentage);
   return (
-    <Card className="shadow p-2 pb-0 h-100">
+    <Card className="shadow p-2 pb-0 h-100 new">
       {discountPercentage > 0 && (
         <div className="position-absolute top-0 start-0 z-index-1 m-4">
           <div className="badge bg-danger text-white">
