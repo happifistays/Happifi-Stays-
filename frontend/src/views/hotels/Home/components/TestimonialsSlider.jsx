@@ -19,7 +19,7 @@ const TestimonialsSlider = () => {
     edgePadding: 2
   };
   return <section className="pb-0 py-md-5" id="hotels-home-testimonial">
-    <Container>
+    <Container className='review-resize-mbl'>
       <Row>
         <Col lg={11} className="mx-auto">
           <div className="tiny-slider arrow-round arrow-border arrow-hover">

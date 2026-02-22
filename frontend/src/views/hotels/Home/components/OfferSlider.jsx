@@ -58,7 +58,7 @@ const OfferSlider = () => {
                   <Col sm={6}>
                     <CardBody className="px-3">
                       <h6 className="card-title">
-                        <Link to="/offer-detail" className="stretched-link">
+                        <Link to="" className="stretched-link">
                           Daily 50 Lucky Winners get a Free Stay
                         </Link>
                       </h6>
@@ -78,7 +78,7 @@ const OfferSlider = () => {
                   <Col sm={6}>
                     <CardBody className="px-3">
                       <CardTitle>
-                        <Link to="/offer-detail" className="stretched-link">
+                        <Link to="" className="stretched-link">
                           Up to 60% OFF
                         </Link>
                       </CardTitle>
@@ -98,7 +98,7 @@ const OfferSlider = () => {
                   <Col sm={6}>
                     <div className="card-body px-3">
                       <h6 className="card-title">
-                        <Link to="/offer-detail" className="stretched-link">
+                        <Link to="" className="stretched-link">
                           Book &amp; Enjoy
                         </Link>
                       </h6>
@@ -118,7 +118,7 @@ const OfferSlider = () => {
                   <Col sm={6}>
                     <div className="card-body px-3">
                       <h6 className="card-title">
-                        <Link to="/offer-detail" className="stretched-link">
+                        <Link to="" className="stretched-link">
                           Hot Summer Nights
                         </Link>
                       </h6>

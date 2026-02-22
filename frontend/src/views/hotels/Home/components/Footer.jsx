@@ -9,6 +9,10 @@ import { Link } from "react-router-dom";
 import { RiHotelLine } from "react-icons/ri";
 import { RxCalendar } from "react-icons/rx";
 const Footer = () => {
+
+const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+
   return (
     <div className="navbar navbar-mobile">
       <ul className="navbar-nav">
@@ -27,7 +31,7 @@ const Footer = () => {
         </NavItem>
 
         <NavItem>
-          <NavLink as={Link} to="/user/bookings">
+          <NavLink as={Link} to={token ? (role === "admin" ?   "/agent/bookings" : "/user/bookings") : "/auth/sign-in"}>
             <BsBriefcase className=" fa-fw" />
             <span className="mb-0 nav-text">Bookings</span>
           </NavLink>
