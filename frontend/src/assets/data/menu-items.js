@@ -23,6 +23,7 @@ import { FaHome } from "react-icons/fa";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FaHandsHelping } from "react-icons/fa";
 import { LuMessageCircleQuestion } from "react-icons/lu";
+import { FaPhone } from "react-icons/fa6";
 
 export const bookingHomeMenuItems = [
   {
@@ -43,17 +44,23 @@ export const bookingHomeMenuItems = [
     url: "/help/center",
     icon: FaHandsHelping,
   },
-  {
-    key: "FAQ",
-    label: "FAQs",
-    url: "/faqs",
-    icon: LuMessageCircleQuestion,
-  },
+  // {
+  //   key: "FAQ",
+  //   label: "FAQs",
+  //   url: "/faqs",
+  //   icon: LuMessageCircleQuestion,
+  // },
   {
     key: "Blog-home",
     label: "Blogs",
     url: "/blogs/blog",
     icon: IoNewspaper,
+  },
+  {
+    key: "Contact",
+    label: "Contact Us",
+    url: "/pages/contact",
+    icon: FaPhone,
   },
 
   {

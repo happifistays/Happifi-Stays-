@@ -291,3 +291,57 @@ a.nav-notification.btn.btn-light.p-0.mb-0.flex-centered.arrow-none.dropdown-togg
 .card.card-img-scale img {
       height: 300px;
 }
+
+
+
+@media (min-width: 1300px) {
+
+  .vstack.gap-4.container{
+    min-height: 300px;
+    position: relative;
+  }
+
+}
+@media (min-width: 1200px) {
+    .navbar-expand-xl .navbar-brand .navbar-brand-item {
+        height: 60px;
+        display: block;
+        width: auto;
+    }
+}
+
+
+@media (max-width: 550px) {
+span.position-absolute.top-50.start-50.translate-middle.z-index-n1.d-none.d-md-block.mt-4 {
+  display: block !important;
+
+}
+
+span.position-absolute.top-50.start-50.translate-middle.z-index-n1.d-none.d-md-block.mt-4  svg {
+width: 200.5px;
+height: 31px;
+}
+
+}
+
+
+
+
+ .description-content-added,
+ .description-content-added p,
+ .description-content-added span,
+ .description-content-added strong {
+ background-color: transparent !important;
+  color: inherit !important;
+}
+
+
+@media (max-width: 900px) {
+.spl-class-for-mbl-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+}

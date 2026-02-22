@@ -93,21 +93,24 @@ const SignIn = () => {
         { withCredentials: true }
       );
 
-      // if (res.status === 200) {
-      //   saveSession({
-      //     ...res.data.user,
-      //     token: res.data.token,
-      //   });
+      console.log("res.data.token===================", res.data.token);
 
-      //   Swal.fire({
-      //     icon: "success",
-      //     title: "Login Successful",
-      //     timer: 1500,
-      //     showConfirmButton: false,
-      //   });
+      if (res.data.success) {
+        console.log("111111111111111111");
+        saveSession({
+          ...res.data.user,
+          token: res.data.token,
+        });
 
-      //   navigate("/agent/dashboard");
-      // }
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        navigate("/");
+      }
     } catch (error) {
       console.error("Google login failed:", error);
 
@@ -133,7 +136,9 @@ const SignIn = () => {
       <Col lg={6} className="order-1">
         <div className="p-4 p-sm-7">
           <Link to="/">
-            <img className="h-50px mb-4" src={logo} alt="logo" />
+            <img className="h-50px mb-4" src={logo} alt="logo" style={{
+    filter: "drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white)"
+  }}/>
           </Link>
 
           <h1 className="mb-2 h3">Welcome back</h1>
