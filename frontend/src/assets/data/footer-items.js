@@ -66,12 +66,12 @@ const footerLinks = [
   {
   title: "Locations",
   items: [
-    { name: "Kochi" },
-    { name: "Thiruvananthapuram" },
-    { name: "Kozhikode" },
-    { name: "Alappuzha" },
-    { name: "Palakkad" },
-    { name: "Malappuram" },
+    { name: "Kochi", link: "/hotels/grid" },
+    { name: "Thiruvananthapuram", link: "/hotels/grid" },
+    { name: "Kozhikode", link: "/hotels/grid" },
+    { name: "Alappuzha", link: "/hotels/grid" },
+    { name: "Palakkad", link: "/hotels/grid" },
+    { name: "Malappuram", link: "/hotels/grid" },
   ],
 },
   {
