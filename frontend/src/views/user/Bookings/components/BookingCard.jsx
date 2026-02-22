@@ -82,7 +82,7 @@ const BookingCard = ({ booking, showActions = false, onSuccess }) => {
               {booking?.propertyId?.listingName ?? ""}
             </h6>
             <ul className="nav nav-divider small">
-              <li className="nav-item">Booking ID: {booking?._id ?? ""}</li>
+              {/* <li className="nav-item">Booking ID: {booking?._id ?? ""}</li> */}
               <li className="nav-item">{booking?.paymentStatus}</li>
             </ul>
           </div>
@@ -110,6 +110,15 @@ const BookingCard = ({ booking, showActions = false, onSuccess }) => {
 
       <CardBody>
         <Row className="g-3">
+
+
+<Col sm={6} md={4}>
+            <span>Booking ID:</span>
+            <h6 className="mb-0">
+               {booking?._id ?? ""}
+            </h6>
+          </Col>
+
           <Col sm={6} md={4}>
             <span>Check in Date</span>
             <h6 className="mb-0">
