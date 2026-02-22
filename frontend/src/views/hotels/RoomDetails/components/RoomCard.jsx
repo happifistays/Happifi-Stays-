@@ -4,7 +4,7 @@ import { Button, Card, CardBody, Col, Image, Row } from "react-bootstrap";
 import { BsArrowRight } from "react-icons/bs";
 import { FaBed, FaSquare, FaTableCellsLarge } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-const RoomCard = ({ images, name, price, sqfeet, rooms, id }) => {
+const RoomCard = ({ images, name, price, sqfeet, rooms, id, isAvailable }) => {
   const navigate = useNavigate();
 
   return (
@@ -50,6 +50,14 @@ const RoomCard = ({ images, name, price, sqfeet, rooms, id }) => {
                 King Bed
               </li>
             </ul>
+
+            <div style={{ marginTop: "10px" }}>
+              {isAvailable ? (
+                <p style={{ color: "green" }}>Available</p>
+              ) : (
+                <p style={{ color: "red" }}>Booked</p>
+              )}
+            </div>
             <div className="d-flex justify-content-between align-items-center mt-2 mt-md-auto">
               <div className="d-flex text-success">
                 <h6 className="h5 mb-0 text-success">
@@ -58,19 +66,22 @@ const RoomCard = ({ images, name, price, sqfeet, rooms, id }) => {
                 </h6>
                 <span className="fw-light">/per night</span>
               </div>
-              <Button
-                size="sm"
-                variant="dark"
-                href=""
-                className="mb-0"
-                onClick={() =>
-                  navigate(`/hotels/room/${id}`, {
-                    state: { rooms },
-                  })
-                }
-              >
-                Select room
-              </Button>
+
+              {isAvailable && (
+                <Button
+                  size="sm"
+                  variant="dark"
+                  href=""
+                  className="mb-0"
+                  onClick={() =>
+                    navigate(`/hotels/room/${id}`, {
+                      state: { rooms },
+                    })
+                  }
+                >
+                  Select room
+                </Button>
+              )}
             </div>
           </CardBody>
         </Col>

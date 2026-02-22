@@ -36,13 +36,13 @@ const EditProfile = () => {
       .string()
       .email("Please enter a valid email")
       .required("Please enter your email"),
-    mobileNo: yup
-      .string()
-      .required("Please enter your mobile number")
-      .matches(/^[0-9]+$/, "Mobile number must contain only digits")
-      .min(10, "Mobile number must be at least 10 digits")
-      .max(12, "Invalid mobile number"),
-    location: yup.string().required("Please enter your location"),
+    // mobileNo: yup
+    //   .string()
+    //   .required("Please enter your mobile number")
+    //   .matches(/^[0-9]+$/, "Mobile number must contain only digits")
+    //   .min(10, "Mobile number must be at least 10 digits")
+    //   .max(12, "Invalid mobile number"),
+    // location: yup.string().required("Please enter your location"),
     avatar: yup.mixed().nullable(),
   });
 

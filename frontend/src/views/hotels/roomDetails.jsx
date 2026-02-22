@@ -230,10 +230,20 @@ const RoomExtraDetails = () => {
             </span>
           </li>
         </ul>
+        <div style={{ marginTop: "10px" }}>
+          {!room?.isAvailable && <p style={{ color: "red" }}>Unavailable</p>}
+        </div>
         <div className="d-grid gap-2">
-          <Button variant="dark" className="mb-0" onClick={handleBookNow}>
-            Continue To Book
-          </Button>
+          {room?.isAvailable && (
+            <Button
+              variant="dark"
+              className="mb-0"
+              onClick={handleBookNow}
+              disabled={!room?.isAvailable}
+            >
+              Continue To Book
+            </Button>
+          )}
         </div>
       </CardBody>
     </Card>

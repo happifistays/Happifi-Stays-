@@ -51,6 +51,7 @@ const RoomSelection = ({ rooms }) => {
                         sqfeet={room.roomArea ?? 0}
                         id={room._id}
                         rooms={rooms}
+                        isAvailable={room.isAvailable}
                       />
                     );
                   })}

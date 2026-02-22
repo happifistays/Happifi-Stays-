@@ -39,6 +39,7 @@ const RoomCard = ({
   sale,
   schemes,
   rooms,
+  isAvailable,
 }) => {
   const navigate = useNavigate();
 
@@ -122,7 +123,13 @@ const RoomCard = ({
             {/* {schemes ? schemes.map((scheme, idx) => <p key={idx} className="text-success mb-0">
                   {scheme}
                 </p>) : <p className="text-danger mb-3">Non Refundable</p>} */}
-
+            <div style={{ marginTop: "10px" }}>
+              {isAvailable ? (
+                <p style={{ color: "green" }}>Available</p>
+              ) : (
+                <p style={{ color: "red" }}>Booked</p>
+              )}
+            </div>
             <div className="d-sm-flex justify-content-sm-between align-items-center mt-auto">
               <div className="d-flex align-items-center">
                 <h5 className="fw-bold mb-0 me-1">
@@ -134,19 +141,22 @@ const RoomCard = ({
                   {currency} {price + 500}
                 </span>
               </div>
+
               <div className="mt-3 mt-sm-0">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className="mb-0"
-                  onClick={() =>
-                    navigate(`/hotels/room/${id}`, {
-                      state: { rooms },
-                    })
-                  }
-                >
-                  Select Room
-                </Button>
+                {isAvailable && (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="mb-0"
+                    onClick={() =>
+                      navigate(`/hotels/room/${id}`, {
+                        state: { rooms },
+                      })
+                    }
+                  >
+                    Select Room
+                  </Button>
+                )}
               </div>
             </div>
           </div>
