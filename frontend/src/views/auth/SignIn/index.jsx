@@ -54,6 +54,10 @@ const SignIn = () => {
           showConfirmButton: false,
         });
 
+if (result?.user?.role) {
+  localStorage.setItem("role", result.user.role);
+}
+
         if (result?.user?.role === "customer") {
           navigate("/");
         } else if (result?.user?.role === "admin") {
@@ -93,7 +97,7 @@ const SignIn = () => {
         { withCredentials: true }
       );
 
-      console.log("res.data.token===================", res.data.token);
+      console.log("res.data.token===================", res.data);
 
       if (res.data.success) {
         console.log("111111111111111111");
@@ -212,16 +216,9 @@ const SignIn = () => {
             </div>
 
             <div className="text-primary-hover text-body mt-3 text-center">
-              Copyrights ©{currentYear} Booking. Build by{" "}
-              <a
-                href={developedByLink}
-                target="_blank"
-                rel="noreferrer"
-                className="text-body"
-              >
-                StackBros
-              </a>
-              .
+              Copyrights ©{currentYear}  Happifi Stays{" "}
+              
+              
             </div>
           </form>
         </div>

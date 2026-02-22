@@ -163,7 +163,29 @@ const ImageModal = ({ show, handleClose, images, activeIndex }) => {
 
   return (
     <Modal show={show} onHide={handleClose} size="xl" centered>
-      <Modal.Body className="p-0 ">
+      <Modal.Body className="p-0  position-relative">
+
+        {/* Close Button */}
+        <button
+          onClick={handleClose}
+          style={{
+            position: "absolute",
+            top: "15px",
+            right: "20px",
+            zIndex: 10,
+            background: "rgba(0,0,0,0.6)",
+            border: "none",
+            color: "#fff",
+            fontSize: "28px",
+            width: "45px",
+            height: "45px",
+            borderRadius: "50%",
+            cursor: "pointer",
+          }}
+        >
+          ×
+        </button>
+
         <Carousel
           activeIndex={index}
           onSelect={handleSelect}
@@ -183,8 +205,7 @@ const ImageModal = ({ show, handleClose, images, activeIndex }) => {
                   style={{
                     maxHeight: "100%",
                     maxWidth: "100%",
-                    objectFit: "contain",
-                    height:"100%", width:"100%"
+                    objectFit: "contain", height: "100%", width: "100%"
                   }}
                 />
               </div>
