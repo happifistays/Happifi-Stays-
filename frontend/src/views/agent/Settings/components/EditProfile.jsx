@@ -124,15 +124,16 @@ const EditProfile = () => {
 
       // Construct plain JSON object
       const payload = {
-        name: data.name, 
+        name: data.name,
         contactNumber: data.mobileNo,
         location: data.location,
         birthday: birthday.toISOString(),
       };
 
       // If a new avatar is selected, convert to base64 string
-      if (avatarFile && avatarFile[0]) {
-        payload.avatar = await toBase64(avatarFile[0]);
+      console.log("avatarFile---------", avatarFile.base64);
+      if (avatarFile && avatarFile.base64) {
+        payload.avatar = avatarFile.base64;
       }
       setSubmitting(true);
       const response = await fetch(url, {
@@ -151,6 +152,7 @@ const EditProfile = () => {
           text: "You profile updated!",
           icon: "success",
         });
+        window.location.reload();
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to update profile");
