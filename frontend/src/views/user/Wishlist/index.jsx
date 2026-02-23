@@ -1,21 +1,20 @@
-import { PageMetaData, SelectFormInput } from '@/components';
-import { Button, Card, CardBody, CardHeader, Col } from 'react-bootstrap';
-import { FaTrash } from 'react-icons/fa';
-import WishCard from './components/WishCard';
-import { useEffect, useState, useMemo } from 'react';
-import axios from 'axios';
+import { PageMetaData, SelectFormInput } from "@/components";
+import { Button, Card, CardBody, CardHeader, Col } from "react-bootstrap";
+import { FaTrash } from "react-icons/fa";
+import WishCard from "./components/WishCard";
+import { useEffect, useState, useMemo } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "../../../config/env";
 
 const Wishlist = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortOption, setSortOption] = useState("recent");
 
-  
-
-const handleRemoveAll = () => {
-  localStorage.removeItem("fav");
-  setProperties([]);
-};
+  const handleRemoveAll = () => {
+    localStorage.removeItem("fav");
+    setProperties([]);
+  };
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -30,7 +29,7 @@ const handleRemoveAll = () => {
         }
 
         const res = await axios.post(
-          "http://localhost:5000/api/v1/customer/favorites",
+          `${API_BASE_URL}/api/v1/customer/favorites`,
           { ids: favIds }
         );
 
@@ -45,8 +44,6 @@ const handleRemoveAll = () => {
     fetchFavorites();
   }, []);
 
-
-  
   const sortedProperties = useMemo(() => {
     let sorted = [...properties];
 
@@ -85,7 +82,7 @@ const handleRemoveAll = () => {
               <SelectFormInput
                 className="form-select form-select-sm border-0"
                 value={sortOption}
-               onChange={(value) => setSortOption(value)}
+                onChange={(value) => setSortOption(value)}
               >
                 <option value="recent">Recently Added</option>
                 <option value="priceLow">Price: Low to High</option>
@@ -94,34 +91,37 @@ const handleRemoveAll = () => {
               </SelectFormInput>
             </Col>
 
-            <Button variant="danger-soft" className="mb-0 items-center" onClick={handleRemoveAll}>
+            <Button
+              variant="danger-soft"
+              className="mb-0 items-center"
+              onClick={handleRemoveAll}
+            >
               <FaTrash className="me-2" />
               Remove all
             </Button>
-          </form> 
+          </form>
 
           {sortedProperties.length === 0 && !loading ? (
-  <div className="text-center py-5">
-    <img
-      src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
-      alt="empty"
-      width="120"
-      className="mb-3 opacity-75"
-    />
-    <h5 className="fw-bold">Your wishlist is empty</h5>
-    <p className="text-muted mb-3">
-      Looks like you haven't added any properties yet.
-    </p>
-    <a href='/hotels/home'>
-    <Button variant="primary">
-      Explore Properties
-    </Button></a>
-  </div>
-) : (
-  sortedProperties.map((card, idx) => (
-    <WishCard key={idx} wishCard={card} />
-  ))      
-)}
+            <div className="text-center py-5">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+                alt="empty"
+                width="120"
+                className="mb-3 opacity-75"
+              />
+              <h5 className="fw-bold">Your wishlist is empty</h5>
+              <p className="text-muted mb-3">
+                Looks like you haven't added any properties yet.
+              </p>
+              <a href="/hotels/home">
+                <Button variant="primary">Explore Properties</Button>
+              </a>
+            </div>
+          ) : (
+            sortedProperties.map((card, idx) => (
+              <WishCard key={idx} wishCard={card} />
+            ))
+          )}
         </CardBody>
       </Card>
     </>
