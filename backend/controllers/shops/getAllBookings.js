@@ -47,8 +47,6 @@ export const getAllBookings = async (req, res) => {
       .skip((Number(page) - 1) * Number(limit))
       .lean();
 
-    console.log("bookings-----------", bookings);
-
     const data = bookings.map((booking) => ({
       _id: booking._id,
 

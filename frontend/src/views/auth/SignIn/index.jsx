@@ -54,9 +54,9 @@ const SignIn = () => {
           showConfirmButton: false,
         });
 
-if (result?.user?.role) {
-  localStorage.setItem("role", result.user.role);
-}
+        if (result?.user?.role) {
+          localStorage.setItem("role", result.user.role);
+        }
 
         if (result?.user?.role === "customer") {
           navigate("/");
@@ -97,10 +97,7 @@ if (result?.user?.role) {
         { withCredentials: true }
       );
 
-      console.log("res.data.token===================", res.data);
-
       if (res.data.success) {
-        console.log("111111111111111111");
         saveSession({
           ...res.data.user,
           token: res.data.token,
@@ -140,9 +137,15 @@ if (result?.user?.role) {
       <Col lg={6} className="order-1">
         <div className="p-4 p-sm-7">
           <Link to="/">
-            <img className="h-50px mb-4" src={logo} alt="logo" style={{
-    filter: "drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white)"
-  }}/>
+            <img
+              className="h-50px mb-4"
+              src={logo}
+              alt="logo"
+              style={{
+                filter:
+                  "drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white)",
+              }}
+            />
           </Link>
 
           <h1 className="mb-2 h3">Welcome back</h1>
@@ -216,9 +219,7 @@ if (result?.user?.role) {
             </div>
 
             <div className="text-primary-hover text-body mt-3 text-center">
-              Copyrights ©{currentYear}  Happifi Stays{" "}
-              
-              
+              Copyrights ©{currentYear} Happifi Stays{" "}
             </div>
           </form>
         </div>

@@ -19,7 +19,6 @@ const BookingDetails = () => {
 
   const bookingData = location.state || {};
   const token = localStorage.getItem("token");
-  console.log("state bookingData---------------", bookingData);
 
   // --- START CALCULATIONS ---
   const calculateNights = (start, end) => {
@@ -185,7 +184,7 @@ const BookingDetails = () => {
         );
 
         const result = await response.json();
-        console.log("RESULT------------", result);
+
         if (result.success) {
           // Swal.fire("Success", "Booking successful!", "success");
           // navigate("/");

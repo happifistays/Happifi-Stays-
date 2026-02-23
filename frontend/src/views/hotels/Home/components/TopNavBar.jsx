@@ -65,11 +65,9 @@ const TopNavBar = () => {
     window.innerWidth >= 1200
   );
 
-  console.log("-------------test", user);
-
   // Updated logic to ensure if avatar is an empty string, it falls back to default
   const profileIMage = user?.avatar ? user.avatar : DEFAULT_AVATAR_IMAGE;
-  console.log("profileIMage---------------", profileIMage);
+
   const { isOpen: categoryIsOpen, toggle: categoryToggle } = useToggle(false);
 
   const handleClick = () => {
@@ -84,13 +82,10 @@ const TopNavBar = () => {
     ? bookingHomeMenuItems.filter((item) => item.key !== "sign-in")
     : bookingHomeMenuItems;
 
-
-
-
-const handleThemeToggle = () => {
-  const newTheme = theme === "light" ? "dark" : "light";
-  updateTheme(newTheme);
-};
+  const handleThemeToggle = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    updateTheme(newTheme);
+  };
 
   return (
     <header
@@ -141,15 +136,20 @@ const handleThemeToggle = () => {
                   );
                 })}
               </ul>
-            {!user && (
-  <button style={{border:"none", margin:"0px"}}
-    onClick={handleThemeToggle}
-    className="btn btn-sm btn-outline-primary ms-3 d-flex align-items-center gap-2 added-spl-mbl-new-cls"
-  >
-    {theme === "light" ? <BsMoonStars size={18} /> : <BsSun size={18} />}
-    {theme === "light" ? "Dark Mode" : "Light Mode"}
-  </button>
-)}
+              {!user && (
+                <button
+                  style={{ border: "none", margin: "0px" }}
+                  onClick={handleThemeToggle}
+                  className="btn btn-sm btn-outline-primary ms-3 d-flex align-items-center gap-2 added-spl-mbl-new-cls"
+                >
+                  {theme === "light" ? (
+                    <BsMoonStars size={18} />
+                  ) : (
+                    <BsSun size={18} />
+                  )}
+                  {theme === "light" ? "Dark Mode" : "Light Mode"}
+                </button>
+              )}
             </div>
           </Collapse>
 
@@ -300,7 +300,6 @@ const handleThemeToggle = () => {
                           <BsHeart className=" me-2" />
                           My Wishlist
                         </DropdownItem>
-                        
                       </>
                     )}
 
@@ -329,7 +328,7 @@ const handleThemeToggle = () => {
                       <BsGear className=" me-2" />
                       Settings
                     </DropdownItem>
- 
+
                     <DropdownItem
                       className="bg-danger-soft-hover"
                       onClick={removeSession}
@@ -339,21 +338,32 @@ const handleThemeToggle = () => {
                     </DropdownItem>
 
                     <DropdownDivider />
-                    <div style={{display:"flex"}}>
-                    {(themeModes ?? []).map((mode, idx) => {
-                                const Icon = mode.icon;
-                                return <li className={clsx(themeModes.length - 1 !== idx && 'mb-1')} key={mode.theme + idx}>
-                                      <DropdownItem onClick={() => updateTheme(mode.theme)} type="button" className={clsx('d-flex align-items-center', {
-                                    active: theme === mode.theme
-                                  })}>
-                                        <Icon />
-                                        &nbsp;&nbsp;
-                                        {toSentenceCase(mode.theme)}
-                                      </DropdownItem>
-                                    </li>;
-                              })} </div>
+                    <div style={{ display: "flex" }}>
+                      {(themeModes ?? []).map((mode, idx) => {
+                        const Icon = mode.icon;
+                        return (
+                          <li
+                            className={clsx(
+                              themeModes.length - 1 !== idx && "mb-1"
+                            )}
+                            key={mode.theme + idx}
+                          >
+                            <DropdownItem
+                              onClick={() => updateTheme(mode.theme)}
+                              type="button"
+                              className={clsx("d-flex align-items-center", {
+                                active: theme === mode.theme,
+                              })}
+                            >
+                              <Icon />
+                              &nbsp;&nbsp;
+                              {toSentenceCase(mode.theme)}
+                            </DropdownItem>
+                          </li>
+                        );
+                      })}{" "}
+                    </div>
                   </DropdownMenu>
-                  
                 </Dropdown>
               </Nav>
             </>

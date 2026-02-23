@@ -47,7 +47,6 @@ export const sigIn = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.log("Errr-------------", error);
     return res.status(500).send({ message: "Internal server error" });
   }
 };

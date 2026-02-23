@@ -57,7 +57,7 @@ const ConfirmTicket = ({ bookingData }) => {
       fetchRoomDetails();
     }
   }, [id]);
-  console.log("room------------", room);
+
   const downloadPDF = () => {
     const doc = new jsPDF();
 

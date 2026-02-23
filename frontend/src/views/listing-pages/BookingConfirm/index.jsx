@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 const BookingConfirm = () => {
   const location = useLocation();
   const bookingData = location.state?.bookingData;
-  console.log("BOOKING DATA-------------", bookingData);
+
   return (
     <>
       <PageMetaData title="Booking Confirmed" />

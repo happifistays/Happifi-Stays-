@@ -249,8 +249,6 @@ const RoomExtraDetails = () => {
     </Card>
   );
 
-  console.log("room", room);
-
   return (
     <>
       <PageMetaData title="Hotel - Details" />

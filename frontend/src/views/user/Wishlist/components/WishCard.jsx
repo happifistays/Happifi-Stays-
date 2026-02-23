@@ -31,15 +31,11 @@ import { API_BASE_URL } from "../../../../config/env";
 const WishCard = ({ wishCard }) => {
   const { address, image, name, price, rating } = wishCard;
 
-  console.log("wishCard ???", wishCard);
-
   const [copied, setCopied] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  console.log("reviews", reviews);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -53,7 +49,6 @@ const WishCard = ({ wishCard }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(">>>>>>>>>>>>>>>>>>>");
 
         setReviews(response.data.data);
       } catch (err) {

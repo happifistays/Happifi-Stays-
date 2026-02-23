@@ -83,12 +83,7 @@ const PersonalInformation = () => {
       if (data.profileImage) {
         setProfileImagePath(data.profileImage);
       }
-    } catch (error) {
-      console.log(
-        "Profile fetch error:",
-        error.response?.data || error.message
-      );
-    }
+    } catch (error) {}
   };
 
   const onSubmit = async (data) => {

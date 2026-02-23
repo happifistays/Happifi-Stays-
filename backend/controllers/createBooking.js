@@ -11,7 +11,6 @@ import crypto from "crypto";
 
 export const createBooking = async (req, res) => {
   try {
-    console.log("11111111111111111");
     const {
       currency,
       checkInDate,
@@ -142,13 +141,6 @@ export const createBooking = async (req, res) => {
     await Room.updateOne({ _id: roomId }, { $set: { isAvailable: false } });
 
     const bookedUserDetails = await User.findById(userId).select("-password");
-    console.log("test============", {
-      success: true,
-      message: "Booking createddsdsds",
-      booking: createdBooking,
-      bookedUser: bookedUserDetails,
-      guests: guestDetails,
-    });
 
     res.status(200).send({
       success: true,

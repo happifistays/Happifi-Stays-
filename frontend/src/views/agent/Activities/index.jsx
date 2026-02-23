@@ -78,7 +78,6 @@ const Activities = () => {
 
       setActivities((prev) => prev.filter((item) => item._id !== deleteId));
     } catch (err) {
-      console.log(err);
     } finally {
       setShowDeleteModal(false);
       setDeleteId(null);

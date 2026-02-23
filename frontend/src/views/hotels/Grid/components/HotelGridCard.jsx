@@ -35,7 +35,7 @@ const HotelGridCard = ({ feature, id, images, name, price, rating, sale }) => {
     autoplayDirection: dir === "ltr" ? "forward" : "backward",
     nav: false,
   };
-  console.log("discountPercentage------------", discountPercentage);
+
   return (
     <Card className="shadow p-2 pb-0 h-100 new">
       {discountPercentage > 0 && (

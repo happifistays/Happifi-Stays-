@@ -97,12 +97,7 @@ const CustomerInformation = () => {
         setProfileImagePath(data.avatar);
         setPreview(data.avatar);
       }
-    } catch (error) {
-      console.log(
-        "Profile fetch error:",
-        error.response?.data || error.message
-      );
-    }
+    } catch (error) {}
   };
 
   // Helper to convert file to base64 for JSON transmission

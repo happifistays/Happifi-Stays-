@@ -335,7 +335,7 @@ const UpcomingBookings = () => {
                   {selectedBooking.paymentStatus.toUpperCase()}
                 </span>
               </div>
-              {console.log("selectedBooking-------------", selectedBooking)}
+
               <div className="card border-0 shadow-sm mb-3">
                 <div className="card-body">
                   <h6 className="fw-bold mb-3">Customer Details</h6>

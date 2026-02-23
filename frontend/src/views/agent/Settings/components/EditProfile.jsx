@@ -131,7 +131,7 @@ const EditProfile = () => {
       };
 
       // If a new avatar is selected, convert to base64 string
-      console.log("avatarFile---------", avatarFile.base64);
+
       if (avatarFile && avatarFile.base64) {
         payload.avatar = avatarFile.base64;
       }
