@@ -3,25 +3,26 @@ import FooterWithLinks from "./components/FooterWithLinks";
 import Hero from "./components/Hero";
 import HotelGridLayout from "./components/HotelGridLayout";
 import HotelListFilter from "./components/HotelListFilter";
-import TopNavBar4 from "./components/TopNavBar4";
 import TopNavBar from "../Home/components/TopNavBar";
-import Footer from "../Home/components/Footer";
+import { useState } from "react";
+
 const HotelsGrid = () => {
+  const [filters, setFilters] = useState({});
+
+  const handleApplyFilters = (newFilters) => {
+    setFilters(newFilters);
+  };
+
   return (
     <>
       <PageMetaData title="Hotel - Grid" />
-
       <TopNavBar />
       <main>
         <Hero />
-
-        <HotelListFilter /> 
-
-        <HotelGridLayout />
+        <HotelListFilter onApplyFilters={handleApplyFilters} />
+        <HotelGridLayout filters={filters} />
       </main>
-
       <FooterWithLinks />
-      {/* <Footer /> */}
     </>
   );
 };

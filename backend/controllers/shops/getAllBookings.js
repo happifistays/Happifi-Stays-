@@ -23,10 +23,7 @@ export const getAllBookings = async (req, res) => {
     const total = await Bookings.countDocuments(query);
 
     const bookings = await Bookings.find(query)
-      .populate({
-        path: "roomId",
-        select: "roomName additionalInfo",
-      })
+
       .populate({
         path: "propertyId",
         select: "propertyName address",

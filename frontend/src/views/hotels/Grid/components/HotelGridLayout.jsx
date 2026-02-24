@@ -1,25 +1,29 @@
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 import HotelGridCard from "./HotelGridCard";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../../../../config/env";
 
-const HotelGridLayout = () => {
+const HotelGridLayout = ({ filters }) => {
   const [hotelsData, setHotelsData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const searchLocation = searchParams.get("location");
 
   const fetchHotels = async () => {
     try {
       setLoading(true);
       let url = `${API_BASE_URL}/api/v1/customer/properties`;
-      let params = { page, limit: 6 };
+      let params = {
+        page,
+        limit: 6,
+        ...filters,
+      };
 
       if (searchLocation) {
         url = `${API_BASE_URL}/api/v1/customer/search-location`;
@@ -27,19 +31,22 @@ const HotelGridLayout = () => {
       }
 
       const response = await axios.get(url, { params });
-
       setHotelsData(response.data.data);
       setTotalPages(response.data.totalPages || 1);
     } catch (error) {
-      console.error("Error fetching hotels:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    setPage(1);
+  }, [filters, searchLocation]);
+
+  useEffect(() => {
     fetchHotels();
-  }, [page, searchLocation]);
+  }, [page, searchLocation, filters]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -65,7 +72,7 @@ const HotelGridLayout = () => {
                   price={hotel.basePrice}
                   feature={hotel.amenities}
                   images={hotel.gallery}
-                  rating={hotel.averageRating}
+                  rating={hotel.starRating}
                   sale={hotel.discount}
                   showChip={true}
                   offerText={hotel?.availableOffers[0]?.title ?? ""}
@@ -78,12 +85,11 @@ const HotelGridLayout = () => {
             </Col>
           )}
         </Row>
-
         {totalPages > 1 && (
           <Row>
             <Col xs={12}>
               <nav className="mt-4 d-flex justify-content-center">
-                <ul className="pagination pagination-primary-soft d-inline-block d-md-flex rounded mb-0">
+                <ul className="pagination pagination-primary-soft d-md-flex rounded mb-0">
                   <li
                     className={`page-item mb-0 ${page === 1 ? "disabled" : ""}`}
                   >
@@ -94,7 +100,6 @@ const HotelGridLayout = () => {
                       <FaAngleLeft />
                     </button>
                   </li>
-
                   {[...Array(totalPages)].map((_, index) => (
                     <li
                       key={index}
@@ -110,7 +115,6 @@ const HotelGridLayout = () => {
                       </button>
                     </li>
                   ))}
-
                   <li
                     className={`page-item mb-0 ${
                       page === totalPages ? "disabled" : ""

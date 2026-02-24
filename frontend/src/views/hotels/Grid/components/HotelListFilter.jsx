@@ -16,82 +16,77 @@ import {
 import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
 import { useForm } from "react-hook-form";
-import { BsGridFill, BsListUl, BsSliders, BsStarFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { BsStarFill, BsSliders } from "react-icons/bs";
 import * as yup from "yup";
-const amenities = [
+
+const amenitiesList = [
+  "Free WiFi",
   "Air Conditioning",
-  "Room Services",
   "Dining",
-  "Caretaker",
-  "Free Internet",
-  "Business Service",
-  "Bonfire",
-  "Mask",
-  "Spa",
   "Swimming pool",
+  "Spa",
   "Fitness Centre",
-  "Bar",
 ];
-const HotelListFilter = () => {
+
+const HotelListFilter = ({ onApplyFilters }) => {
   const { isOpen, toggle } = useToggle();
-  const [priceRange, setPriceRange] = useState(["700", "1500"]);
+  const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [selectedStar, setSelectedStar] = useState(null);
+
   const filterSchema = yup.object({
-    hotelName: yup.string().required("Please enter hotel name"),
+    hotelName: yup.string(),
   });
-  const { control, handleSubmit } = useForm({
+
+  const { control, handleSubmit, reset } = useForm({
     resolver: yupResolver(filterSchema),
   });
+
+  const handleAmenityChange = (amenity) => {
+    if (selectedAmenities.includes(amenity)) {
+      setSelectedAmenities(selectedAmenities.filter((a) => a !== amenity));
+    } else {
+      setSelectedAmenities([...selectedAmenities, amenity]);
+    }
+  };
+
+  const onSubmit = (data) => {
+    const filterData = {
+      name: data.hotelName,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+      amenities: selectedAmenities.join(","),
+      starRating: selectedStar,
+    };
+    onApplyFilters(filterData);
+  };
+
+  const handleClear = () => {
+    reset({ hotelName: "" });
+    setPriceRange([0, 5000]);
+    setSelectedAmenities([]);
+    setSelectedStar(null);
+    onApplyFilters({});
+  };
+
   return (
     <section className="pt-0 pb-4">
       <Container className="position-relative">
         <Row>
           <Col xs={12}>
             <div className="d-flex justify-content-between">
-              <input
-                type="checkbox"
-                className="btn-check"
-                id="btn-check-soft"
-              />
               <label
                 onClick={toggle}
-                className="btn btn-primary-soft btn-primary-check mb-0 items-center"
-                htmlFor="btn-check-soft"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapseFilter"
-                aria-controls="collapseFilter"
+                className="btn btn-primary-soft mb-0 items-center"
               >
-                <BsSliders className=" fa-fe me-2" />
-                Show Filters
+                <BsSliders className="me-2" /> Show Filters
               </label>
-              <ul style={{display:"none"}}
-                className="nav nav-pills nav-pills-dark"
-                id="tour-pills-tab"
-                role="tablist"
-              >
-                <li className="nav-item">
-                  <Link
-                    className="nav-link rounded-start rounded-0 mb-0"
-                    to="/hotels/list"
-                  >
-                    <BsListUl size={16} className=" fa-fw" />
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link
-                    className="nav-link rounded-end rounded-0 mb-0 active"
-                    to="/hotels/grid"
-                  >
-                    <BsGridFill size={16} className=" fa-fw" />
-                  </Link>
-                </li>
-              </ul>
             </div>
           </Col>
         </Row>
         <Collapse in={isOpen}>
           <Card as={CardBody} className="bg-light p-4 mt-4 z-index-9">
-            <form onSubmit={handleSubmit(() => {})} className="row g-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="row g-4">
               <Col md={6} lg={4}>
                 <TextFormInput
                   name="hotelName"
@@ -103,172 +98,77 @@ const HotelListFilter = () => {
               </Col>
               <Col md={6} lg={4}>
                 <div className="form-control-borderless">
-                  <label className="form-label">Price Range</label>
-                  <div className="position-relative">
-                    <div className="noui-wrapper">
-                      <div className="d-flex justify-content-between">
-                        <input
-                          type="text"
-                          className="text-body input-with-range-min"
-                          value={priceRange[0].split(".")[0]}
-                          readOnly
-                        />
-                        <input
-                          type="text"
-                          className="text-body input-with-range-max"
-                          value={priceRange[1].split(".")[0]}
-                          readOnly
-                        />
-                      </div>
-                      <Nouislider
-                        start={priceRange}
-                        range={{
-                          min: 500,
-                          max: 2000,
-                        }}
-                        step={1}
-                        onChange={setPriceRange}
-                        className="noui-slider-range mt-2"
-                        connect
-                      />
+                  <label className="form-label">Price Range ($)</label>
+                  <div className="noui-wrapper">
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>${priceRange[0]}</span>
+                      <span>${priceRange[1]}</span>
                     </div>
+                    <Nouislider
+                      start={priceRange}
+                      range={{ min: 0, max: 5000 }}
+                      step={10}
+                      onChange={(val) => setPriceRange(val.map(Number))}
+                      connect
+                    />
                   </div>
                 </div>
               </Col>
               <Col md={6} lg={4}>
-                <div className="form-size-lg form-control-borderless">
-                  <label className="form-label">Popular Filters</label>
-                  <SelectFormInput className="form-select js-choice border-0">
-                    <option value={-1}>Select Option</option>
-                    <option>Recently search</option>
-                    <option>Most popular</option>
-                    <option>Top rated</option>
-                  </SelectFormInput>
-                </div>
-              </Col>
-              <Col md={6} lg={4}>
-                <div className="form-control-borderless">
-                  <label className="form-label">Customer Rating</label>
-                  <ul className="list-inline mb-0 g-3">
-                    <li className="list-inline-item">
-                      <input
-                        type="checkbox"
-                        className="btn-check"
-                        id="btn-check-1"
-                      />
-                      <label
-                        className="btn btn-white btn-primary-soft-check"
-                        htmlFor="btn-check-1"
-                      >
-                        3+
-                      </label>
-                    </li>
-                    <li className="list-inline-item">
-                      <input
-                        type="checkbox"
-                        className="btn-check"
-                        id="btn-check-2"
-                      />
-                      <label
-                        className="btn btn-white btn-primary-soft-check"
-                        htmlFor="btn-check-2"
-                      >
-                        3.5+
-                      </label>
-                    </li>
-                    <li className="list-inline-item">
-                      <input
-                        type="checkbox"
-                        className="btn-check"
-                        id="btn-check-3"
-                      />
-                      <label
-                        className="btn btn-white btn-primary-soft-check"
-                        htmlFor="btn-check-3"
-                      >
-                        4+
-                      </label>
-                    </li>
-                    <li className="list-inline-item">
-                      <input
-                        type="checkbox"
-                        className="btn-check"
-                        id="btn-check-4"
-                      />
-                      <label
-                        className="btn btn-white btn-primary-soft-check"
-                        htmlFor="btn-check-4"
-                      >
-                        4.5+
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </Col>
-              <div className="col-md-6 col-lg-4">
                 <div className="form-control-borderless">
                   <label className="form-label">Star Rating</label>
                   <ul className="list-inline mb-0 g-3">
-                    {Array.from(new Array(5)).map((_val, idx) => (
-                      <li className="list-inline-item" key={idx}>
+                    {[1, 2, 3, 4, 5].map((val) => (
+                      <li className="list-inline-item" key={val}>
                         <input
-                          type="checkbox"
+                          type="radio"
                           className="btn-check"
-                          id={`btn-check2-${idx}`}
+                          name="starRating"
+                          id={`star-${val}`}
+                          onChange={() => setSelectedStar(val)}
+                          checked={selectedStar === val}
                         />
                         <label
                           className="btn btn-white btn-primary-soft-check items-center"
-                          htmlFor={`btn-check2-${idx}`}
+                          htmlFor={`star-${val}`}
                         >
-                          {idx + 1}
-                          <BsStarFill />
+                          {val} <BsStarFill className="ms-1" />
                         </label>
                       </li>
                     ))}
                   </ul>
-                </div>
-              </div>
-              <Col md={6} lg={4}>
-                <div className="form-size-lg form-control-borderless">
-                  <label className="form-label">Hotel Type</label>
-                  <SelectFormInput className="form-select js-choice border-0">
-                    <option value={-1}>Select Option</option>
-                    <option>Free Cancellation Available</option>
-                    <option>Pay At Hotel Available</option>
-                    <option>Free Breakfast Included</option>
-                  </SelectFormInput>
                 </div>
               </Col>
               <Col xs={12}>
                 <div className="form-control-borderless">
                   <label className="form-label">Amenities</label>
                   <Row className="g-3">
-                    {amenities.map((item, idx) => {
-                      return (
-                        <Col key={idx} sm={6} md={4} lg={3} xl={2}>
-                          <FormCheck>
-                            <FormCheckInput
-                              type="checkbox"
-                              id={`flexCheckDefault-amenities${idx}`}
-                            />
-                            <FormCheckLabel
-                              className="h6 fw-light mb-0"
-                              htmlFor={`flexCheckDefault-amenities${idx}`}
-                            >
-                              {item}
-                            </FormCheckLabel>
-                          </FormCheck>
-                        </Col>
-                      );
-                    })}
+                    {amenitiesList.map((item, idx) => (
+                      <Col key={idx} sm={6} md={4} lg={3}>
+                        <FormCheck>
+                          <FormCheckInput
+                            type="checkbox"
+                            id={`amenity-${idx}`}
+                            checked={selectedAmenities.includes(item)}
+                            onChange={() => handleAmenityChange(item)}
+                          />
+                          <FormCheckLabel
+                            className="h6 fw-light mb-0"
+                            htmlFor={`amenity-${idx}`}
+                          >
+                            {item}
+                          </FormCheckLabel>
+                        </FormCheck>
+                      </Col>
+                    ))}
                   </Row>
                 </div>
               </Col>
-              <div className="text-end align-items-center">
-                <Button variant="link" className="p-0 mb-0 me-1">
+              <div className="text-end">
+                <Button variant="link" onClick={handleClear}>
                   Clear all
                 </Button>
-                <Button type="submit" variant="dark" className="mb-0 ms-3">
+                <Button type="submit" variant="dark">
                   Apply filter
                 </Button>
               </div>
