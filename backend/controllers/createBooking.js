@@ -20,16 +20,32 @@ export const createBooking = async (req, res) => {
       razorpay_signature,
       paymentMethod,
       guests,
+      totalAmount,
     } = req.body;
 
-    const { propertyId, roomId } = req.params;
+    const { propertyId } = req.params;
     const userId = req.userId;
 
     if (!userId) {
-      return res.status(404).send({ message: "User not loggedin" });
+      return res.status(401).send({ message: "User not logged in" });
     }
 
-    // Verify Payment Signature if it's an online payment
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+
+    const overlappingBooking = await Bookings.findOne({
+      propertyId,
+      status: { $ne: "cancelled" },
+      checkInDate: { $lt: checkOut },
+      checkOutDate: { $gt: checkIn },
+    });
+
+    if (overlappingBooking) {
+      return res.status(400).send({
+        success: false,
+        message: "Property already booked for these dates",
+      });
+    }
 
     if (paymentMethod === "online") {
       const body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -39,120 +55,64 @@ export const createBooking = async (req, res) => {
         .digest("hex");
 
       if (expectedSignature !== razorpay_signature) {
-        return res.status(400).send({ message: "Invalid payment signature" });
+        return res.status(400).send({ message: "Invalid signature" });
       }
     }
 
-    const shopOwner = await Property.findOne({ _id: propertyId }).select({
-      owner: 1,
-    });
-
-    if (!shopOwner) {
-      return res.status(404).send({ message: "Shop not found" });
-    }
-    const shopId = shopOwner.owner;
-
-    const room = await Room.findOne({ _id: roomId, isAvailable: true });
-    if (!room) {
-      return res.status(404).send({ message: "Room not found" });
-    }
-
-    const checkIn = new Date(checkInDate);
-    const checkOut = new Date(checkOutDate);
-    const diffInMs = checkOut - checkIn;
-    const nights = diffInMs / (1000 * 60 * 60 * 24);
-    const earnings = nights * room.price;
+    const property = await Property.findById(propertyId);
+    if (!property)
+      return res.status(404).send({ message: "Property not found" });
 
     const paymentData = {
       razorpay_payment_id: razorpay_payment_id || "offline",
       razorpay_order_id: razorpay_order_id || "offline",
-      amount: earnings,
+      amount: totalAmount,
       method: paymentMethod,
     };
-
     const paymentDetails = await Payment.create(paymentData);
 
     const bookingData = {
-      shopId: shopOwner.owner,
+      shopId: property.owner,
       propertyId,
-      roomId,
-      checkInDate: req.body.checkInDate,
-      checkOutDate: req.body.checkOutDate,
-      totalAmount: req.body.totalAmount,
+      checkInDate: checkIn,
+      checkOutDate: checkOut,
+      totalAmount,
       paymentStatus: paymentMethod === "online" ? "paid" : "pay_at_hotel",
       status: "booked",
       paymentId: paymentDetails._id,
-      trafficSource: req.body.trafficSource || "organic",
-      utm: {
-        source: req.body.utm_source,
-        medium: req.body.utm_medium,
-        campaign: req.body.utm_campaign,
-      },
       bookedUserId: userId,
     };
 
     const createdBooking = await Bookings.create(bookingData);
 
-    // Create activity for property owner
-    // await Activity.create({
-    //   userId: propertyId, // property owner receives notification
-    //   actorId: req.userId ?? null, // user who booked
-    //   type: "BOOKING",
-    //   title: "New Booking",
-    //   description: `${req.user?.name || "Guest"} booked your room at ${
-    //     room?.roomName ?? "UNavailable"
-    //   }`,
-    //   relatedId: createdBooking._id,
-    // });
+    await Stats.findOneAndUpdate(
+      { shopId: property.owner },
+      { $inc: { earnings: totalAmount, visitors: 1 } },
+      { upsert: true }
+    );
 
-    const stats = await Stats.findOne({ shopId: shopId });
-    if (stats) {
-      await Stats.updateOne({ shopId }, { $inc: { earnings, visitors: 1 } });
-    } else {
-      await Stats.create({
-        shopId,
-        listings: 1,
-        earnings,
-        visitors: 1,
-        reviews: 0,
-      });
-    }
-
-    const guestDetails = [];
     if (guests?.length > 0) {
       for (const guest of guests) {
-        const guestUserData = {
+        await Guests.create({
           propertyId,
-          roomId,
           title: guest.title,
           firstName: guest.firstName,
           lastName: guest.lastName,
           email: req.body.email,
           phone: req.body.phone,
-          specialRequests: req.body.specialRequests,
-          selectedPaymentTypeId: req.body.selectedPaymentTypeId,
           bookingId: createdBooking._id,
-        };
-        const savedGuest = await Guests.create(guestUserData);
-        guestDetails.push(savedGuest);
+        });
       }
     }
-
-    await Room.updateOne({ _id: roomId }, { $set: { isAvailable: false } });
 
     const bookedUserDetails = await User.findById(userId).select("-password");
 
     res.status(200).send({
       success: true,
-      message: "Booking createddsdsds",
       booking: createdBooking,
       bookedUser: bookedUserDetails,
-      guests: guestDetails,
     });
   } catch (error) {
-    return res.status(500).send({
-      success: false,
-      message: error.message || "Internal server error",
-    });
+    return res.status(500).send({ success: false, message: error.message });
   }
 };

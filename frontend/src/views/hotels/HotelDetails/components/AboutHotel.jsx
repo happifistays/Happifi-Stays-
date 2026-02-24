@@ -27,7 +27,17 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../../../../config/env";
 
-const AboutHotel = ({ hotelDetails, shoRoomOptions = true, propertyId }) => {
+const AboutHotel = ({
+  hotelDetails,
+  shoRoomOptions = true,
+  propertyId,
+  checkIn,
+  checkOut,
+  setCheckIn,
+  setCheckOut,
+  handleBookNow,
+  isAvailable,
+}) => {
   const { isOpen, toggle } = useToggle();
   const { id } = useParams();
 
@@ -136,6 +146,12 @@ const AboutHotel = ({ hotelDetails, shoRoomOptions = true, propertyId }) => {
               rating={hotelDetails?.rating ?? 0}
               rooms={hotelDetails?.rooms}
               amenities={hotelDetails?.amenities ?? []}
+              checkIn={checkIn}
+              checkOut={checkOut}
+              setCheckIn={setCheckIn}
+              setCheckOut={setCheckOut}
+              handleBookNow={handleBookNow}
+              isAvailable={isAvailable}
             />
           </Col>
         </Row>

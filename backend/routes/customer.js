@@ -32,6 +32,8 @@ import { cancelBookingById } from "../controllers/cancelBookingById.js";
 import { getFavoriteProperties } from "../controllers/user/favController.js";
 import { getAllOffers } from "../controllers/getAllOffers.js";
 import { addContact } from "../controllers/addContact.js";
+import { checkPropertyAvailability } from "../controllers/checkPropertyAvailability.js";
+import { getBookingById } from "../controllers/getBookingById.js";
 
 const customerRouter = express.Router();
 customerRouter.get("/", (req, res) => {
@@ -42,15 +44,11 @@ customerRouter.get("/", (req, res) => {
 
 customerRouter.post("/signup", signUp);
 customerRouter.get("/property/:propertyId", getPropertyById);
-customerRouter.get("/properties", getProperties); 
+customerRouter.get("/properties", getProperties);
 customerRouter.get("/rooms/:roomId", getRoomById);
 customerRouter.get("/rooms/property/:propertyId", getRoomsByPropertyId);
 customerRouter.post("/create-order", createOrder);
-customerRouter.post(
-  "/booking/:propertyId/:roomId",
-  userVerification,
-  createBooking
-);
+customerRouter.post("/booking/:propertyId", userVerification, createBooking);
 customerRouter.get(
   "/property/:propertyId/review/:roomId",
   getReviewsByRoomAndProperty
@@ -93,5 +91,11 @@ customerRouter.patch(
 );
 
 customerRouter.get("/offers/all", getAllOffers);
+customerRouter.get(
+  "/check-property-availability/:propertyId",
+  checkPropertyAvailability
+);
+
+customerRouter.get("/booking/:id", getBookingById);
 
 export default customerRouter;

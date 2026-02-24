@@ -9,6 +9,7 @@ import OfferAndDiscounts from "./OfferAndDiscounts";
 import PaymentOptions from "./PaymentOptions";
 import PriceSummary from "./PriceSummary";
 import { API_BASE_URL } from "../../../../config/env";
+import { useState } from "react";
 
 const BookingDetails = () => {
   const location = useLocation();
@@ -16,6 +17,7 @@ const BookingDetails = () => {
   const searchParams = new URLSearchParams(location.search);
   const propertyId = searchParams.get("property_id");
   const roomId = searchParams.get("room_id");
+  const [submitting, setSubmitting] = useState(false);
 
   const bookingData = location.state || {};
   const token = localStorage.getItem("token");
@@ -34,7 +36,7 @@ const BookingDetails = () => {
     bookingData.nights ||
     calculateNights(bookingData.checkIn, bookingData.checkOut);
   const roomPrice = bookingData.roomPrice || 0;
-  const serviceFee = bookingData.serviceFee || 0;
+  const serviceFee = 0; // For now
   const discount = bookingData.discount || 0;
 
   const roomCharges = roomPrice * nights;
@@ -113,7 +115,7 @@ const BookingDetails = () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              amount: data.totalAmount,
+              amount: finalCalculatedTotal,
               currency: "INR",
             }),
           }
@@ -141,6 +143,7 @@ const BookingDetails = () => {
                 },
                 body: JSON.stringify({
                   ...data,
+                  totalAmount: finalCalculatedTotal,
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_signature: response.razorpay_signature,
@@ -150,11 +153,7 @@ const BookingDetails = () => {
 
             const result = await verifyRes.json();
             if (result.success) {
-              // Swal.fire("Success", "Booking successful!", "success");
-              // navigate("/booking-confirmed");
-              navigate(`/booking-confirmed/:${roomId}`, {
-                state: { bookingData: result },
-              });
+              navigate(`/booking-confirmed/${result?.booking?._id}`);
             } else {
               alert(result.message || "Payment verification failed");
             }
@@ -171,28 +170,27 @@ const BookingDetails = () => {
         paymentObject.open();
       } else {
         // Handle offline payment
+        setSubmitting(true);
         const response = await fetch(
-          `${API_BASE_URL}/api/v1/customer/booking/${propertyId}/${roomId}`,
+          `${API_BASE_URL}/api/v1/customer/booking/${propertyId}`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+              ...data,
+              totalAmount: finalCalculatedTotal,
+            }),
           }
         );
 
         const result = await response.json();
+        setSubmitting(false);
 
         if (result.success) {
-          // Swal.fire("Success", "Booking successful!", "success");
-          // navigate("/");
-          // navigate("/listings/booking-confirmed");
-          // navigate("/booking-confirmed");
-          navigate(`/booking-confirmed/${roomId}`, {
-            state: { bookingData: result },
-          });
+          navigate(`/booking-confirmed/${result?.booking?._id}`);
         } else {
           Swal.fire({
             icon: "error",
@@ -290,8 +288,13 @@ const BookingDetails = () => {
                         size="lg"
                         type="button"
                         onClick={handlePayAtHotelClick}
+                        disabled={submitting}
                       >
-                        Confirm Booking (Pay at Hotel)
+                        {submitting ? (
+                          <> Confirm Booking (Pay at Hotel)</>
+                        ) : (
+                          <>Please wait....</>
+                        )}
                       </Button>
                     </div>
                   )}

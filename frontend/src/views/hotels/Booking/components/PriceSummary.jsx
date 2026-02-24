@@ -60,7 +60,7 @@ const PriceSummary = ({
           <li className="list-group-item d-flex justify-content-between align-items-center">
             <span className="h6 fw-light mb-0">Price after discount</span>
             <span className="fs-5">
-              {symbol} {roomCharges - discount}
+              {symbol} {totalAmount}
             </span>
           </li>
         </ul>
@@ -70,7 +70,7 @@ const PriceSummary = ({
           <span className="h5 mb-0">Payable Now</span>
           <span className="h5 mb-0">
             {symbol}
-            {roomCharges - discount}
+            {totalAmount}
           </span>
         </div>
       </CardFooter>
