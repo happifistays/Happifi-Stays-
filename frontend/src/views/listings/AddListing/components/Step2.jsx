@@ -18,7 +18,7 @@ const Step2 = () => {
       "totalFloors",
       "totalRooms",
       "propertyArea",
-      "rooms",
+      // "rooms",
     ]);
     if (isValid) nextStep();
   };
@@ -112,7 +112,7 @@ const Step2 = () => {
         </CardBody>
       </Card>
 
-      {fields.map((item, index) => (
+      {/* {fields.map((item, index) => (
         <Card className="shadow" key={item.id}>
           <CardHeader className="border-bottom d-flex justify-content-between align-items-center">
             <h5 className="mb-0">Room Option {index + 1}</h5>
@@ -156,7 +156,7 @@ const Step2 = () => {
             </Row>
           </CardBody>
         </Card>
-      ))}
+      ))} */}
 
       <div className="text-center">
         <Button

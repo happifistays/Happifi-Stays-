@@ -55,9 +55,9 @@ const EarningStatistics = ({ selectedDate }) => {
         <Card className="card-body border p-4 h-100">
           <h6 className="mb-0">Sales this month</h6>
           <h3 className="mb-2 mt-2">{earningStatus.salesThisMonth}</h3>
-          <Link to="" className="mt-auto">
+          {/* <Link to="" className="mt-auto">
             View transaction
-          </Link>
+          </Link> */}
         </Card>
       </Col>
 

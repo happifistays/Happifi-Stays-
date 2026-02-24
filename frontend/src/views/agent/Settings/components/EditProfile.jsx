@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -16,7 +16,8 @@ import { TextFormInput, FileFormInput } from "@/components";
 import { Link } from "react-router-dom";
 import UpdateEmail from "./UpdateEmail";
 import UpdatePassword from "./UpdatePassword";
-import Flatpicker from "@/components/Flatpicker";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useAuthContext } from "../../../../states/useAuthContext";
 import { toast } from "react-hot-toast";
 import { DEFAULT_AVATAR_IMAGE } from "../../../../constants/images";
@@ -26,7 +27,6 @@ import { API_BASE_URL } from "../../../../config/env";
 const EditProfile = () => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(true);
-  const [birthday, setBirthday] = useState(new Date());
   const [preview, setPreview] = useState(DEFAULT_AVATAR_IMAGE);
   const [submitting, setSubmitting] = useState(false);
 
@@ -36,13 +36,9 @@ const EditProfile = () => {
       .string()
       .email("Please enter a valid email")
       .required("Please enter your email"),
-    // mobileNo: yup
-    //   .string()
-    //   .required("Please enter your mobile number")
-    //   .matches(/^[0-9]+$/, "Mobile number must contain only digits")
-    //   .min(10, "Mobile number must be at least 10 digits")
-    //   .max(12, "Invalid mobile number"),
-    // location: yup.string().required("Please enter your location"),
+    mobileNo: yup.string().nullable(),
+    location: yup.string().nullable(),
+    birthday: yup.mixed().nullable(),
     avatar: yup.mixed().nullable(),
   });
 
@@ -59,6 +55,7 @@ const EditProfile = () => {
       email: "",
       mobileNo: "",
       location: "",
+      birthday: null,
       avatar: null,
     },
   });
@@ -93,9 +90,9 @@ const EditProfile = () => {
             email: data.email || "",
             mobileNo: data.contactNumber || "",
             location: data.location || "",
+            birthday: data.birthday ? new Date(data.birthday) : null,
             avatar: null,
           });
-          if (data.birthday) setBirthday(new Date(data.birthday));
           setPreview(data.avatar || DEFAULT_AVATAR_IMAGE);
         }
       } catch (error) {
@@ -108,7 +105,6 @@ const EditProfile = () => {
     fetchProfileData();
   }, [reset]);
 
-  // Helper to convert file to base64 for JSON transmission
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -122,19 +118,28 @@ const EditProfile = () => {
     try {
       const url = `${API_BASE_URL}/api/v1/shops/profile`;
 
-      // Construct plain JSON object
+      // Formatting date to YYYY-MM-DD to ensure payload is correct
+      let formattedDate = null;
+      if (data.birthday) {
+        const dateObj = new Date(data.birthday);
+        formattedDate = dateObj.toISOString().split("T")[0];
+      }
+
       const payload = {
         name: data.name,
         contactNumber: data.mobileNo,
         location: data.location,
-        birthday: birthday.toISOString(),
+        birthday: formattedDate,
       };
 
-      // If a new avatar is selected, convert to base64 string
+      console.log("payload-----------", payload);
+      console.log("avatarFile------------", avatarFile);
 
       if (avatarFile && avatarFile.base64) {
-        payload.avatar = avatarFile.base64;
+        const base64Avatar = avatarFile.base64;
+        payload.avatar = base64Avatar;
       }
+
       setSubmitting(true);
       const response = await fetch(url, {
         method: "PATCH",
@@ -236,15 +241,21 @@ const EditProfile = () => {
                 containerClass="mb-3"
                 control={control}
               />
-              <div>
-                <label className="form-label">Birthday</label>
-                <Flatpicker
-                  placeholder="Enter your birth-date"
-                  onChange={(date) => setBirthday(date[0])}
-                  options={{
-                    dateFormat: "d M Y",
-                    defaultDate: birthday,
-                  }}
+              <div className="mb-3">
+                <label className="form-label d-block">Birthday</label>
+                <Controller
+                  name="birthday"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      selected={field.value}
+                      onChange={(date) => field.onChange(date)}
+                      placeholderText="Select your birthday"
+                      className="form-control"
+                      dateFormat="yyyy-MM-dd"
+                      wrapperClassName="w-100"
+                    />
+                  )}
                 />
               </div>
               <div className="d-flex justify-content-end mt-4">

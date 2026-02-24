@@ -54,6 +54,13 @@ const PropertySchema = new mongoose.Schema(
       enum: ["active", "draft", "hidden"],
       default: "active",
     },
+    availableOffers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Offers",
+      },
+    ],
+    isDisabled: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

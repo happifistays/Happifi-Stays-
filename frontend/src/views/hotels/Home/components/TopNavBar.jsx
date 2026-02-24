@@ -40,6 +40,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { notificationData } from "../data";
 import { DEFAULT_AVATAR_IMAGE } from "../../../../constants/images";
+import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../../../config/env";
 
 const themeModes = [
   {
@@ -64,10 +66,11 @@ const TopNavBar = () => {
   const { isOpen: menuIsOpen, toggle: menuToggle } = useToggle(
     window.innerWidth >= 1200
   );
+  const [loading, setLoading] = useState(false);
 
   // Updated logic to ensure if avatar is an empty string, it falls back to default
   const profileIMage = user?.avatar ? user.avatar : DEFAULT_AVATAR_IMAGE;
-
+  console.log("user-----------", user);
   const { isOpen: categoryIsOpen, toggle: categoryToggle } = useToggle(false);
 
   const handleClick = () => {
@@ -86,6 +89,30 @@ const TopNavBar = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     updateTheme(newTheme);
   };
+
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+
+        if (data) {
+          setProfile(data);
+        }
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   return (
     <header
@@ -235,7 +262,7 @@ const TopNavBar = () => {
                   >
                     <img
                       className="avatar-img rounded-2"
-                      src={profileIMage}
+                      src={profile?.avatar ?? DEFAULT_AVATAR_IMAGE}
                       alt="avatar"
                       referrerPolicy="no-referrer"
                       onError={(e) => {
@@ -256,7 +283,7 @@ const TopNavBar = () => {
                         <div className="avatar me-3">
                           <img
                             className="avatar-img rounded-circle shadow"
-                            src={profileIMage}
+                            src={profile?.avatar ?? DEFAULT_AVATAR_IMAGE}
                             alt="avatar"
                             referrerPolicy="no-referrer"
                             onError={(e) => {
@@ -316,18 +343,20 @@ const TopNavBar = () => {
                       </DropdownItem>
                     )}
 
-                    <DropdownItem
-                      onClick={() =>
-                        user
-                          ? user?.role == "customer"
-                            ? navigate("/user/settings")
-                            : navigate("/agent/settings")
-                          : navigate("/auth/sign-in")
-                      }
-                    >
-                      <BsGear className=" me-2" />
-                      Settings
-                    </DropdownItem>
+                    {user?.role == "admin" && (
+                      <DropdownItem
+                        onClick={() =>
+                          user
+                            ? user?.role == "customer"
+                              ? navigate("/user/settings")
+                              : navigate("/agent/settings")
+                            : navigate("/auth/sign-in")
+                        }
+                      >
+                        <BsGear className=" me-2" />
+                        Settings
+                      </DropdownItem>
+                    )}
 
                     <DropdownItem
                       className="bg-danger-soft-hover"

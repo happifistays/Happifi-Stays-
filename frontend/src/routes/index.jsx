@@ -4,6 +4,9 @@ import RoomExtraDetails from "../views/hotels/roomDetails";
 import HotelRoomDetails from "../views/hotels/HotelRoomDetails";
 import CustomerProfile from "../views/user/Profile/customerProfile";
 import Users from "../views/agent/Bookings/Users";
+import AgentOffers from "../views/agent/offers";
+import AddOffer from "../views/agent/offers/addOffer";
+import AgentContacts from "../views/agent/contacts";
 const HotelsHome = lazy(() => import("@/views/hotels/Home"));
 const HotelsChain = lazy(() => import("@/views/hotels/Chain"));
 const HotelsResort = lazy(() => import("@/views/hotels/Resort"));
@@ -244,6 +247,16 @@ const listingRoutes = [
     name: "listings.edit",
     element: <HotelRoomDetails />,
   },
+  {
+    path: "/offer/add",
+    name: "listings.add-offer",
+    element: <AddOffer />,
+  },
+  {
+    path: "/offer/edit/:id",
+    name: "listings.edit-offer",
+    element: <AddOffer />,
+  },
 ];
 const heroRoutes = [
   {
@@ -294,6 +307,11 @@ const aboutUsRoutes = [
     path: "/pages/our-team",
     name: "our-team",
     element: <OurTeamPage />,
+  },
+  {
+    path: "/property/list",
+    name: "list-property",
+    element: <Contact showHero={false} />,
   },
 ];
 const contactUsRoutes = [
@@ -452,6 +470,17 @@ export const agentRoutes = [
     path: "/agent/room-detail/:id",
     name: "agent.settings",
     element: <RoomExtraDetails />,
+  },
+
+  {
+    path: "/agent/offers",
+    name: "agent.offers",
+    element: <AgentOffers />,
+  },
+  {
+    path: "/agent/contacts",
+    name: "agent.offers",
+    element: <AgentContacts />,
   },
 ];
 export const adminRoutes = [

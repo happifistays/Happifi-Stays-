@@ -6,6 +6,7 @@ import {
   BsJournals,
   BsStar,
 } from "react-icons/bs";
+import { Link } from "react-router-dom";
 import BookingChart from "./components/BookingChart";
 import BookingTrafficChart from "./components/BookingTrafficChart";
 import StatisticsCard from "./components/StatisticsCard";
@@ -14,6 +15,7 @@ import UpcomingBookings from "./components/UpcomingBookings";
 import { PageMetaData } from "@/components";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../../config/env";
+
 const Dashboard = () => {
   const [statistics, setStatistics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,7 @@ const Dashboard = () => {
         setshopID(result?.data?.shopId);
 
         if (result.success) {
-          const { listings, earnings, visitors, reviews } = result.data;
+          const { listings, earnings, visitors, reviews, leads } = result.data;
 
           const formattedStats = [
             {
@@ -67,6 +69,13 @@ const Dashboard = () => {
                   : reviews.toString(),
               icon: BsStar,
               variant: "bg-primary",
+            },
+            {
+              title: "Leads",
+              state: `${leads.toLocaleString()}`,
+              icon: BsGraphUpArrow,
+              variant: "bg-info",
+              path: "/agent/contacts",
             },
           ];
 
@@ -101,8 +110,13 @@ const Dashboard = () => {
           <Row className="g-4">
             {statistics.map((statistic, idx) => (
               <Col key={idx} sm={6} xl={3}>
-                {" "}
-                <StatisticsCard statistic={statistic} />{" "}
+                {statistic.path ? (
+                  <Link to={statistic.path} className="text-decoration-none">
+                    <StatisticsCard statistic={statistic} />
+                  </Link>
+                ) : (
+                  <StatisticsCard statistic={statistic} />
+                )}
               </Col>
             ))}
           </Row>

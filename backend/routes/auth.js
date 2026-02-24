@@ -17,6 +17,8 @@ import { updateEmail } from "../controllers/common/updateEmail.js";
 import { updatePassword } from "../controllers/common/updatePassword.js";
 import User from "../models/userSchema.js";
 import bcrypt from "bcryptjs";
+import { addContact } from "../controllers/addContact.js";
+import { getContacts } from "../controllers/shops/getContacts.js";
 
 const authRouter = express.Router();
 
@@ -54,6 +56,9 @@ authRouter.post(
     }
   }
 );
+
+authRouter.post("/send-message", addContact);
+authRouter.get("/contacts", getContacts);
 
 export default authRouter;
 

@@ -4,8 +4,10 @@ import ProfileProgress from "./components/ProfileProgress";
 import UpdateEmail from "./components/UpdateEmail";
 import UpdatePassword from "./components/UpdatePassword";
 import CustomerInformation from "./components/customerInformation";
+import { useAuthContext } from "../../../states/useAuthContext";
 
 const CustomerProfile = () => {
+  const { user } = useAuthContext();
   return (
     <>
       <PageMetaData title="User Profile" />
@@ -15,9 +17,8 @@ const CustomerProfile = () => {
 
         <CustomerInformation />
 
-        <UpdateEmail />
-
-        <UpdatePassword />
+        {/* <UpdateEmail /> */}
+        {user?.provider !== "google" && <UpdatePassword />}
       </div>
     </>
   );

@@ -9,11 +9,15 @@ import signInImg from "@/assets/images/element/signin.svg";
 import logoIcon from "../../../assets/images/logo.png";
 import { developedByLink, currentYear } from "@/states";
 import { API_BASE_URL } from "../../../config/env";
+import { signInWithGoogle } from "@/firebase";
+import Swal from "sweetalert2";
+import { useAuthContext } from "../../../states/useAuthContext";
 
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { saveSession } = useAuthContext();
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -40,8 +44,13 @@ const SignUp = () => {
         password: data.password,
       });
 
-      if (response.status === 200) {
-        navigate("/auth/sign-in");
+      if (response.status === 201) {
+        console.log("response------------", response?.data);
+        saveSession({
+          ...response.data.user,
+          token: response.data.token,
+        });
+        navigate("/");
       }
     } catch (err) {
       setError(
@@ -52,11 +61,51 @@ const SignUp = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+
+      const idToken = await signInWithGoogle();
+
+      const res = await axios.post(
+        `${API_BASE_URL}/api/v1/auth/google-login`,
+        { idToken },
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        saveSession({
+          ...res.data.user,
+          token: res.data.token,
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Google login failed:", error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Google Login Failed",
+        text: error.response?.data?.message || "Something went wrong",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Col lg={6} className="d-md-flex align-items-center order-2 order-lg-1">
         <div className="p-3 p-lg-5">
-          <img src={signInImg} alt="signin"  />
+          <img src={signInImg} alt="signin" />
         </div>
         <div className="vr opacity-1 d-none d-lg-block" />
       </Col>
@@ -64,9 +113,16 @@ const SignUp = () => {
       <div className="col-lg-6 order-1">
         <div className="p-3 p-lg-5">
           <a href="/hotels/home">
-          <img src={logoIcon} className="h-40px mb-4" alt="logo"  style={{
-    filter: "drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white)"
-  }} /></a>
+            <img
+              src={logoIcon}
+              className="h-40px mb-4"
+              alt="logo"
+              style={{
+                filter:
+                  "drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white)",
+              }}
+            />
+          </a>
           <h1 className="fs-2">Create New Account</h1>
           <p className="mb-0">
             Already a member?<Link to="/auth/sign-in"> Log in</Link>
@@ -122,15 +178,18 @@ const SignUp = () => {
             </div>
 
             <div className="vstack gap-3">
-              <button type="button" className="btn btn-light mb-0">
+              <button
+                type="button"
+                className="btn btn-light mb-0"
+                onClick={handleGoogleLogin}
+              >
                 <FcGoogle size={16} className="fab fa-fw me-2" />
                 Continue with Google
               </button>
             </div>
 
             <div className="text-primary-hover text-body mt-3 text-center">
-              Copyrights ©{currentYear}  Happifi Stays{" "}
-              
+              Copyrights ©{currentYear} Happifi Stays{" "}
             </div>
           </form>
         </div>

@@ -4,8 +4,9 @@ import Room from "../../models/roomSchema.js";
 export const getProperties = async (req, res) => {
   try {
     const shopId = req.userId;
+    console.log("11111111111");
     const { page = 1, limit = 5, search = "", type = "" } = req.query;
-
+    console.log("QUERY----------", req.query);
     const query = { owner: shopId };
 
     if (search) {

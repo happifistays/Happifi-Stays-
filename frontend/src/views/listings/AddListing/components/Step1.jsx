@@ -137,6 +137,7 @@ const Step1 = () => {
                   containerClass="form-check radio-bg-light me-4"
                   id="entire-place"
                   value="Entire Place"
+                  defaultValue={'Entire Place'}
                 />
                 <CheckFormInput
                   name="listingUse"

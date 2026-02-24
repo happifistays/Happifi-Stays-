@@ -38,6 +38,13 @@ export const bookingHomeMenuItems = [
     url: "/pages/about",
     icon: IoPeopleSharp,
   },
+
+  {
+    key: "LisstProperty",
+    label: "List your Property",
+    url: "/property/list",
+    icon: IoPeopleSharp,
+  },
   {
     key: "Help",
     label: "Help",
@@ -240,13 +247,21 @@ export const AGENT_MENU_ITEMS = [
     parentKey: "acc-agent",
     icon: BsBookmarkHeart,
   },
-  // {
-  //   key: "acc-agent-room-details",
-  //   label: "Room",
-  //   url: "/agent/room-detail/:id",
-  //   parentKey: "acc-agent",
-  //   icon: BsGear,
-  // },
+
+  {
+    key: "acc-agent-offers",
+    label: "Offers",
+    url: "/agent/offers",
+    parentKey: "acc-agent",
+    icon: BsBookmarkHeart,
+  },
+  {
+    key: "acc-agent-contacts",
+    label: "Contacts",
+    url: "/agent/contacts",
+    parentKey: "acc-agent",
+    icon: BsBookmarkHeart,
+  },
 ];
 export const ADMIN_MENU_ITEMS = [
   {

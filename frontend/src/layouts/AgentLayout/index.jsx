@@ -7,7 +7,7 @@ const AgentLayout = ({ children }) => {
   return (
     <>
       <Suspense>
-        <TopNavBar/>
+        <TopNavBar />
       </Suspense>
 
       <main>

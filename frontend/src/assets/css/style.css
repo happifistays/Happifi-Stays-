@@ -16729,6 +16729,7 @@ textarea.form-control-lg {
 
 .border-dashed {
   border-style: dashed !important;
+  min-height: 60vh !important;
 }
 
 .lh-0 {

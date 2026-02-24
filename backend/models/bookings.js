@@ -14,11 +14,11 @@ const bookingsSchema = new mongoose.Schema(
       required: true,
     },
 
-    roomId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Room",
-      required: true,
-    },
+    // roomId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Room",
+    //   required: true,
+    // },
 
     checkInDate: {
       type: Date,
@@ -81,6 +81,7 @@ const bookingsSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    isDisabled: { type: Boolean, default: false },
   },
   {
     timestamps: true,

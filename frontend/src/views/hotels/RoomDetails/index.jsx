@@ -98,7 +98,7 @@ const RoomDetails = () => {
 
         {!isMobile && <HotelMediaGallery gallery={passignData} />}
 
-        <RoomSelection rooms={roomDetails ?? []} />
+        {/* <RoomSelection rooms={roomDetails ?? []} /> */}
       </main>
       <FooterWithLinks />
       <Footer />

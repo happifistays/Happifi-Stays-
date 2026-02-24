@@ -1,3 +1,4 @@
+import Contacts from "../../models/contactSchema.js";
 import Stats from "../../models/statsSchema.js";
 
 export const getStats = async (req, res) => {
@@ -5,6 +6,7 @@ export const getStats = async (req, res) => {
     const shopId = req.userId;
 
     let stats = await Stats.findOne({ shopId });
+    const contactCount = await Contacts.countDocuments();
 
     if (!stats) {
       stats = await Stats.create({
@@ -18,7 +20,10 @@ export const getStats = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: stats,
+      data: {
+        ...stats.toObject(),
+        leads: contactCount,
+      },
     });
   } catch (error) {
     return res.status(500).json({

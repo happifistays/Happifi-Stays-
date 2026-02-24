@@ -20,7 +20,7 @@ const LeftPanel = () => {
   const { removeSession } = useAuthContext();
   const menuItems = getUserMenuItems();
   const [preview, setPreview] = useState(DEFAULT_AVATAR_IMAGE);
-
+ 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
 

@@ -98,17 +98,6 @@ const ListingForms = () => {
       .number()
       .typeError("Must be a number")
       .required("Required"),
-    rooms: yup.array().of(
-      yup.object({
-        roomName: yup.string().required("Room name required"),
-        price: yup
-          .number()
-          .typeError("Must be a number")
-          .required("Price required"),
-        discount: yup.number().typeError("Must be a number").default(0),
-        roomThumbnail: yup.mixed().required("Room image required"),
-      })
-    ),
     currency: yup.string().required("Currency is required"),
     basePrice: yup
       .number()
@@ -122,6 +111,12 @@ const ListingForms = () => {
       .number()
       .typeError("Must be a number")
       .required("Charges are required"),
+    isOfferApplied: yup.boolean().default(false),
+    selectedOffer: yup.string().when("isOfferApplied", {
+      is: true,
+      then: (schema) => schema.required("Please select an offer"),
+      otherwise: (schema) => schema.nullable(),
+    }),
   });
 
   const methods = useForm({
@@ -151,6 +146,8 @@ const ListingForms = () => {
       discount3: "",
       listingPolicyDescription: "",
       charges: "",
+      isOfferApplied: false,
+      selectedOffer: "",
     },
   });
 
@@ -195,6 +192,9 @@ const ListingForms = () => {
               discount3: item.discount,
               listingPolicyDescription: item.policy.description,
               charges: item.policy.extraCharges,
+              isOfferApplied:
+                item.availableOffers && item.availableOffers.length > 0,
+              selectedOffer: item.availableOffers?.[0] || "",
               rooms: item.rooms.map((r) => ({
                 roomName: r.roomName,
                 price: r.price,
@@ -250,14 +250,7 @@ const ListingForms = () => {
       totalFloors: parseInt(formData.totalFloors),
       totalRooms: parseInt(formData.totalRooms),
       propertyArea: parseInt(formData.propertyArea),
-      rooms: formData.rooms.map((room) => ({
-        roomName: room.roomName,
-        roomThumbnail: room.roomThumbnail?.base64 || room.roomThumbnail,
-        price: parseFloat(room.price),
-        discount: parseFloat(room.discount),
-        additionalInfo: "",
-        roomArea: 0,
-      })),
+      availableOffers: formData.isOfferApplied ? [formData.selectedOffer] : [],
     };
 
     try {

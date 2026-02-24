@@ -1,13 +1,62 @@
-import { Button, Card, CardBody, CardHeader, Col, Container, Image, Row } from 'react-bootstrap';
-import contactImg from '@/assets/images/element/contact.svg';
-import { CheckFormInput, TextAreaFormInput, TextFormInput } from '@/components';
-import { useForm } from 'react-hook-form';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Container,
+  Image,
+  Row,
+} from "react-bootstrap";
+import contactImg from "@/assets/images/element/contact.svg";
+import { CheckFormInput, TextAreaFormInput, TextFormInput } from "@/components";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { API_BASE_URL } from "../../../../config/env";
+
 const ContactForm = () => {
   const {
     control,
-    handleSubmit
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
   } = useForm();
-  return <section className="pt-0 pt-lg-5">
+
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        name: data.name,
+        email: data.email,
+        phone: data.mobileNo,
+        message: data.message,
+      };
+
+      const response = await axios.post(
+        `${API_BASE_URL}/api/v1/auth/send-message`,
+        payload
+      );
+
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Your message has been sent successfully.",
+          confirmButtonColor: "#000",
+        });
+        reset();
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.response?.data?.message || "Something went wrong!",
+      });
+    }
+  };
+
+  return (
+    <section className="pt-0 pt-lg-5">
       <Container>
         <Row className="g-4 g-lg-5 align-items-center">
           <Col lg={6} className="text-center">
@@ -65,15 +114,64 @@ const ContactForm = () => {
                 <h3 className="mb-0">Send us message</h3>
               </CardHeader>
               <CardBody className="p-0">
-                <form onSubmit={handleSubmit(() => {})} className="row g-4">
-                  <TextFormInput name="name" label="Your name *" containerClass="col-md-6" control={control} />
-                  <TextFormInput name="email" label="Email address *" containerClass="col-md-6" control={control} />
-                  <TextFormInput name="mobileNo" label="Mobile number *" containerClass="col-12" control={control} />
-                  <TextAreaFormInput name="message" label="Message *" containerClass="col-12" rows={3} control={control} />
-                  <CheckFormInput id="contact-us-checkbox" name="checkbox" type="checkbox" label="By submitting this form you agree to our terms and conditions." containerClass="col-12 form-check ms-2" control={control} />
+                <form onSubmit={handleSubmit(onSubmit)} className="row g-4">
+                  <TextFormInput
+                    name="name"
+                    label="Your name *"
+                    containerClass="col-md-6"
+                    control={control}
+                    rules={{ required: "Name is required" }}
+                    required
+                  />
+                  <TextFormInput
+                    name="email"
+                    label="Email address *"
+                    containerClass="col-md-6"
+                    control={control}
+                    rules={{
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email address",
+                      },
+                    }}
+                    required
+                  />
+                  <TextFormInput
+                    name="mobileNo"
+                    label="Mobile number *"
+                    containerClass="col-12"
+                    control={control}
+                    rules={{ required: "Mobile number is required" }}
+                    required
+                  />
+                  <TextAreaFormInput
+                    name="message"
+                    label="Message *"
+                    containerClass="col-12"
+                    rows={3}
+                    control={control}
+                    rules={{ required: "Message is required" }}
+                    required
+                  />
+                  <CheckFormInput
+                    id="contact-us-checkbox"
+                    name="checkbox"
+                    type="checkbox"
+                    label="By submitting this form you agree to our terms and conditions."
+                    containerClass="col-12 form-check ms-2"
+                    control={control}
+                    rules={{ required: "You must agree to the terms" }}
+                    required
+                  />
                   <Col xs={12}>
-                    <Button variant="dark" className="mb-0" type="submit">
-                      Send Message
+                    <Button
+                      variant="dark"
+                      className="mb-0"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Sending..." : "Send Message"}
                     </Button>
                   </Col>
                 </form>
@@ -82,6 +180,8 @@ const ContactForm = () => {
           </Col>
         </Row>
       </Container>
-    </section>;
+    </section>
+  );
 };
+
 export default ContactForm;

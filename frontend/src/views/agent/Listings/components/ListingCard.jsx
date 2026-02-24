@@ -29,9 +29,8 @@ import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import { API_BASE_URL } from "../../../../config/env";
 
-const ListingCard = ({ roomListCard, setRooms }) => {
-  const { location, roomThumbnail, listingName, price, isDisabled } =
-    roomListCard;
+const ListingCard = ({ property, setProperties }) => {
+  const { location, thumbnail, listingName, basePrice, isDisabled } = property;
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -52,7 +51,7 @@ const ListingCard = ({ roomListCard, setRooms }) => {
         if (result.isConfirmed) {
           setLoading(true);
           await axios.delete(
-            `${API_BASE_URL}/api/v1/shops/rooms/${roomListCard?._id}`,
+            `${API_BASE_URL}/api/v1/shops/property/${property?._id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -60,14 +59,19 @@ const ListingCard = ({ roomListCard, setRooms }) => {
             }
           );
 
-          setRooms((prevRooms) =>
-            prevRooms.filter((room) => room._id !== roomListCard._id)
+          // setRooms((prevRooms) =>
+          //   prevRooms.filter((room) => room._id !== property._id)
+          // );
+
+          setProperties((prevProperties) =>
+            prevProperties.filter((prop) => prop._id !== property._id)
           );
+
           // toast.success("Room deleted successfully");
           setLoading(false);
           Swal.fire({
             title: "Deleted!",
-            text: "Your file has been deleted.",
+            text: "Your property has been deleted.",
             icon: "success",
           });
         }
@@ -89,7 +93,7 @@ const ListingCard = ({ roomListCard, setRooms }) => {
       const newStatus = !isDisabled;
 
       await axios.patch(
-        `${API_BASE_URL}/api/v1/shops/room/${roomListCard._id}`,
+        `${API_BASE_URL}/api/v1/shops/property/${property._id}`,
         {
           isDisabled: newStatus,
         },
@@ -102,9 +106,7 @@ const ListingCard = ({ roomListCard, setRooms }) => {
 
       setRooms((prevRooms) =>
         prevRooms.map((room) =>
-          room._id === roomListCard._id
-            ? { ...room, isDisabled: newStatus }
-            : room
+          room._id === property._id ? { ...room, isDisabled: newStatus } : room
         )
       );
 
@@ -129,13 +131,15 @@ const ListingCard = ({ roomListCard, setRooms }) => {
     }
   };
 
+  console.log("property--------------", property);
+
   return (
     <>
       <Card className="border p-2">
         <Row className="g-4">
           <Col md={3} lg={2} className="position-relative">
             <Image
-              src={roomThumbnail}
+              src={thumbnail}
               className="card-img rounded-2"
               alt="Card image"
             />
@@ -182,9 +186,7 @@ const ListingCard = ({ roomListCard, setRooms }) => {
                 </DropdownMenu>
               </Dropdown>
               <h5 className="card-title mb-0 me-5">
-                <Link to={`/hotel/room/${roomListCard?._id}`}>
-                  {listingName}
-                </Link>
+                <Link to={`/hotel/room/${property?._id}`}>{listingName}</Link>
                 {isDisabled && (
                   <Badge bg="secondary" className="ms-2 fs-6 fw-light">
                     Disabled
@@ -208,7 +210,7 @@ const ListingCard = ({ roomListCard, setRooms }) => {
                 <div className="d-flex align-items-center">
                   <h5 className="fw-bold mb-0 me-1">
                     {currency}
-                    {price}
+                    {basePrice}
                   </h5>
                   <span className="mb-0 me-2">/day</span>
                 </div>
@@ -218,7 +220,7 @@ const ListingCard = ({ roomListCard, setRooms }) => {
                     size="sm"
                     className="mb-0 items-center"
                     onClick={() => {
-                      navigate(`/listings/${roomListCard?.property}/edit`);
+                      navigate(`/listings/${property?.property}/edit`);
                     }}
                   >
                     <BsPencilSquare className=" fa-fw me-1" />

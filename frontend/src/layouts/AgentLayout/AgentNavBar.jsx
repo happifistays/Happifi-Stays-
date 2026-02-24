@@ -21,6 +21,8 @@ import { useToggle } from "@/hooks";
 import avatar1 from "@/assets/images/avatar/01.jpg";
 import { useAuthContext } from "../../states/useAuthContext";
 import { DEFAULT_AVATAR_IMAGE } from "../../constants/images";
+import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config/env";
 const AgentMenu = () => {
   const { pathname } = useLocation();
   const menuItems = getAgentMenuItems();
@@ -81,8 +83,36 @@ const AgentMenu = () => {
 };
 const AgentNavBar = () => {
   const { isOpen, toggle } = useToggle(false);
-
+  const [loading, setLoading] = useState(false);
   const { user } = useAuthContext();
+  const [profile, setProfile] = useState(null);
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+
+        if (data) {
+          setProfile(data);
+        }
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  if (loading) {
+    return <>Loading...</>;
+  }
 
   return (
     <section className="pt-4">
@@ -92,11 +122,12 @@ const AgentNavBar = () => {
             <div className="avatar avatar-xl mb-2 mb-sm-0">
               <Image
                 className="avatar-img rounded-circle"
-                src={user?.avatar ?? DEFAULT_AVATAR_IMAGE}
+                src={profile?.avatar ?? DEFAULT_AVATAR_IMAGE}
               />
             </div>
             <h4 className="mb-2 mb-sm-0 ms-sm-3">
-              <span className="fw-light">Hi</span> {user?.name ?? "Unavailable"}
+              <span className="fw-light">Hi</span>{" "}
+              {profile?.name ?? "Unavailable"}
             </h4>
             <Link
               to="/listings/add"

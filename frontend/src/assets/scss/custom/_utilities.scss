@@ -146,7 +146,13 @@ $utilities: map-merge(
         9: 0.9
       )
     ),
-
+  "min-h-60vh": (
+  property: min-height,
+  class: min-h,
+  values: (
+    60vh: 60vh
+  )
+),
 
   ),
   $utilities

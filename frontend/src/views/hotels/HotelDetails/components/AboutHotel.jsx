@@ -114,12 +114,12 @@ const AboutHotel = ({ hotelDetails, shoRoomOptions = true, propertyId }) => {
                 </CardBody>
               </Card>
 
-              {shoRoomOptions && (
+              {/* {shoRoomOptions && (
                 <RoomOptions
                   rooms={hotelDetails?.rooms}
                   features={hotelDetails?.amenities ?? []}
                 />
-              )}
+              )} */}
 
               <CustomerReview
                 hotelDetails={hotelDetails}

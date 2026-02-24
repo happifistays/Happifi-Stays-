@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import Property from "../../models/propertySchema.js";
 import Rating from "../../models/reviewsSchema.js";
 import Room from "../../models/roomSchema.js";
+import Offers from "../../models/offerSchema.js";
 
 export const getProperties = async (req, res) => {
   try {
@@ -14,12 +16,17 @@ export const getProperties = async (req, res) => {
       maxPrice,
       rating,
       amenities,
+      isDisabled,
     } = req.query;
 
     const query = {};
 
     if (search) {
       query.listingName = { $regex: search, $options: "i" };
+    }
+
+    if (isDisabled !== undefined) {
+      query.isDisabled = isDisabled === "true";
     }
 
     if (type) {
@@ -57,8 +64,9 @@ export const getProperties = async (req, res) => {
 
     const propertyIds = properties.map((p) => p._id);
     const ownerIds = properties.map((p) => p.owner);
+    const allOfferIds = properties.flatMap((p) => p.availableOffers || []);
 
-    const [rooms, ratingsData] = await Promise.all([
+    const [rooms, ratingsData, offers] = await Promise.all([
       Room.find({ property: { $in: propertyIds } }).lean(),
       Rating.aggregate([
         { $match: { toId: { $in: ownerIds } } },
@@ -70,6 +78,7 @@ export const getProperties = async (req, res) => {
           },
         },
       ]),
+      Offers.find({ _id: { $in: allOfferIds } }).lean(),
     ]);
 
     const ratingsMap = ratingsData.reduce((acc, curr) => {
@@ -80,16 +89,26 @@ export const getProperties = async (req, res) => {
       return acc;
     }, {});
 
+    const offersMap = offers.reduce((acc, curr) => {
+      acc[curr._id.toString()] = curr;
+      return acc;
+    }, {});
+
     const data = properties.map((property) => {
       const ownerRating = ratingsMap[property.owner.toString()] || {
         averageRating: 0,
         reviewCount: 0,
       };
 
+      const propertyOffers = (property.availableOffers || [])
+        .map((id) => offersMap[id.toString()])
+        .filter(Boolean);
+
       return {
         ...property,
         averageRating: ownerRating.averageRating,
         reviewCount: ownerRating.reviewCount,
+        availableOffers: propertyOffers,
         rooms: rooms.filter(
           (room) => room.property.toString() === property._id.toString()
         ),
@@ -116,7 +135,6 @@ export const getPropertyById = async (req, res) => {
   try {
     const { propertyId } = req.params;
 
-    // 1️⃣ Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(propertyId)) {
       return res.status(400).json({
         success: false,
@@ -124,10 +142,9 @@ export const getPropertyById = async (req, res) => {
       });
     }
 
-    const property = await Property.findById(propertyId).populate(
-      "owner",
-      "name email"
-    );
+    const property = await Property.findById(propertyId)
+      .populate("owner", "name email")
+      .populate("availableOffers");
 
     if (!property) {
       return res.status(404).json({

@@ -17,7 +17,7 @@ const HotelHome = () => {
       <TopNavBar />
 
       <main>
-        <Hero />
+        <Hero /> 
 
         <OfferSlider />
 

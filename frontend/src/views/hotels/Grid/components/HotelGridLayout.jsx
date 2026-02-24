@@ -1,4 +1,4 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
 import HotelGridCard from "./HotelGridCard";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { useSearchParams, useLocation } from "react-router-dom";
@@ -54,12 +54,12 @@ const HotelGridLayout = () => {
         <Row className="g-4">
           {loading ? (
             <Col className="text-center">
-              <h4>Loading...</h4>
+              <Spinner />
             </Col>
           ) : hotelsData.length > 0 ? (
             hotelsData.map((hotel, idx) => (
-              <Col key={idx} md={6} xl={4} className="grid-height-style"> 
-                <HotelGridCard 
+              <Col key={idx} md={6} xl={4} className="grid-height-style">
+                <HotelGridCard
                   id={hotel._id}
                   name={hotel.listingName}
                   price={hotel.basePrice}
@@ -67,6 +67,8 @@ const HotelGridLayout = () => {
                   images={hotel.gallery}
                   rating={hotel.averageRating}
                   sale={hotel.discount}
+                  showChip={true}
+                  offerText={hotel?.availableOffers[0]?.title ?? ""}
                 />
               </Col>
             ))

@@ -42,7 +42,14 @@ export const signUp = async (req, res) => {
 
     const data = { user };
 
-    return res.status(200).json(successResponse(data));
+    // return res.status(200).json(successResponse(data));
+    res.status(201).json({
+      status: 200,
+      message: "User logged in successfully",
+      success: true,
+      user,
+      token,
+    });
   } catch (error) {
     return res.status(500).send({ message: "Internal server error" });
   }

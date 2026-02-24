@@ -26,6 +26,7 @@ const Listings = () => {
   const [type, setType] = useState("");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, pages: 1 });
+  const [properties, setProperties] = useState([]);
 
   const token = localStorage.getItem("token");
 
@@ -37,7 +38,54 @@ const Listings = () => {
     return () => clearTimeout(handler);
   }, [search]);
 
-  const fetchRooms = useCallback(async () => {
+  // const fetchRooms = useCallback(async () => {
+  //   try {
+  //     setLoading(true);
+  //     const queryParams = new URLSearchParams({
+  //       page,
+  //       limit: 5,
+  //       search: debouncedSearch,
+  //       type,
+  //     }).toString();
+
+  //     const response = await fetch(
+  //       `${API_BASE_URL}/api/v1/shops/rooms?${queryParams}`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     const data = await response.json();
+  //     if (data.success) {
+  //       const flattenedRooms = data.data.flatMap((property) =>
+  //         property.rooms.map((room) => ({
+  //           ...room,
+  //           listingName: property.listingName,
+  //           listingType: property.listingType,
+  //           location: property.location,
+  //           amenities: property.amenities,
+  //           currency: property.currency,
+  //         }))
+  //       );
+  //       setRooms(flattenedRooms);
+  //       setPagination(data.pagination);
+  //     }
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setLoading(false);
+  //   }
+  // }, [page, type, debouncedSearch, token]);
+
+  // useEffect(() => {
+  //   fetchRooms();
+  // }, [fetchRooms]);
+
+  const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
       const queryParams = new URLSearchParams({
@@ -59,18 +107,8 @@ const Listings = () => {
       );
 
       const data = await response.json();
-      if (data.success) {
-        const flattenedRooms = data.data.flatMap((property) =>
-          property.rooms.map((room) => ({
-            ...room,
-            listingName: property.listingName,
-            listingType: property.listingType,
-            location: property.location,
-            amenities: property.amenities,
-            currency: property.currency,
-          }))
-        );
-        setRooms(flattenedRooms);
+      if (data.success && data.data.length) {
+        setProperties(data.data);
         setPagination(data.pagination);
       }
       setLoading(false);
@@ -81,8 +119,8 @@ const Listings = () => {
   }, [page, type, debouncedSearch, token]);
 
   useEffect(() => {
-    fetchRooms();
-  }, [fetchRooms]);
+    fetchProperties();
+  }, [fetchProperties]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -139,6 +177,7 @@ const Listings = () => {
     <>
       <PageMetaData title="Agent Listings" />
       <section className="pt-0">
+        {console.log("properties=---------------", properties)}
         <Container className="vstack gap-4">
           <Row>
             <Col xs={12}>
@@ -204,10 +243,7 @@ const Listings = () => {
               </Row>
             </CardHeader>
 
-            <CardBody
-              className="vstack gap-3"
-              
-            >
+            <CardBody className="vstack gap-3">
               {loading && (
                 <div
                   className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -220,23 +256,23 @@ const Listings = () => {
                 </div>
               )}
 
-              {!loading && rooms.length === 0 ? (
+              {!loading && properties.length === 0 ? (
                 <div className="text-center p-4">
                   <NotFound
-                    title={"No listings found!"}
+                    title={"No Properties found!"}
                     description={
-                      "No rooms available at the moment. Please add your room"
+                      "No Properties available at the moment. Please add your propery"
                     }
                   />
                 </div>
               ) : (
                 <div>
-                  {rooms.map((room, idx) => (
+                  {properties.map((property, idx) => (
                     <div className="mt-2">
                       <ListingCard
-                        key={room._id || idx}
-                        roomListCard={room}
-                        setRooms={setRooms}
+                        key={property._id || idx}
+                        property={property}
+                        setProperties={setProperties}
                       />
                     </div>
                   ))}

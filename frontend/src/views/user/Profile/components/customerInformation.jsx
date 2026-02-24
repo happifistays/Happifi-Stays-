@@ -4,7 +4,8 @@ import {
   TextFormInput,
 } from "@/components";
 import Swal from "sweetalert2";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Button,
   Card,
@@ -12,10 +13,11 @@ import {
   CardHeader,
   Col,
   Image,
+  Spinner,
 } from "react-bootstrap";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
 
 import axios from "axios";
@@ -112,7 +114,7 @@ const CustomerInformation = () => {
   const onSubmit = async (data) => {
     try {
       setSubmitting(true);
-
+      console.log("data------------", data);
       const payload = {
         name: data.name,
         contactNumber: data.contactNumber,
@@ -156,110 +158,134 @@ const CustomerInformation = () => {
   }
 
   return (
-    <Card className="border">
-      <CardHeader className="border-bottom">
-        <h4 className="card-header-title">Personal Information</h4>
-      </CardHeader>
+    <>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <Card className="border">
+            <CardHeader className="border-bottom">
+              <h4 className="card-header-title">Personal Information</h4>
+            </CardHeader>
 
-      <CardBody>
-        <form onSubmit={handleSubmit(onSubmit)} className="row g-3">
-          <Col xs={12}>
-            <label className="form-label">
-              Upload your profile photo<span className="text-danger">*</span>
-            </label>
-            <div className="d-flex align-items-center">
-              <label
-                className="position-relative me-4"
-                htmlFor="uploadfile-1"
-                title="Replace this pic"
-              >
-                <span className="avatar avatar-xl">
-                  <Image
-                    className="avatar-img rounded-circle border border-white border-3 shadow"
-                    src={preview}
-                    onError={(e) => {
-                      e.target.src = DEFAULT_AVATAR_IMAGE;
-                    }}
-                  />
-                </span>
-              </label>
+            <CardBody>
+              <form onSubmit={handleSubmit(onSubmit)} className="row g-3">
+                <Col xs={12}>
+                  <label className="form-label">
+                    Upload your profile photo
+                    <span className="text-danger">*</span>
+                  </label>
+                  <div className="d-flex align-items-center">
+                    <label
+                      className="position-relative me-4"
+                      htmlFor="uploadfile-1"
+                      title="Replace this pic"
+                    >
+                      <span className="avatar avatar-xl">
+                        <Image
+                          className="avatar-img rounded-circle border border-white border-3 shadow"
+                          src={preview}
+                          onError={(e) => {
+                            e.target.src = DEFAULT_AVATAR_IMAGE;
+                          }}
+                        />
+                      </span>
+                    </label>
 
-              <label
-                className="btn btn-sm btn-primary-soft mb-0"
-                htmlFor="uploadfile-1"
-              >
-                Change
-              </label>
-              <input
-                id="uploadfile-1"
-                className="form-control d-none"
-                type="file"
-                accept="image/*"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
-              />
-            </div>
-          </Col>
+                    <label
+                      className="btn btn-sm btn-primary-soft mb-0"
+                      htmlFor="uploadfile-1"
+                    >
+                      Change
+                    </label>
+                    <input
+                      id="uploadfile-1"
+                      className="form-control d-none"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                    />
+                  </div>
+                </Col>
 
-          <TextFormInput
-            name="name"
-            label="Full Name*"
-            placeholder="Enter your full name"
-            containerClass="col-md-6"
-            control={control}
-          />
-          <TextFormInput
-            name="email"
-            type="email"
-            label="Email address*"
-            placeholder="Enter your email id"
-            containerClass="col-md-6"
-            control={control}
-            readOnly
-          />
-          <TextFormInput
-            name="contactNumber"
-            label="Mobile number*"
-            placeholder="Enter your mobile number"
-            containerClass="col-md-6"
-            control={control}
-          />
+                <TextFormInput
+                  name="name"
+                  label="Full Name*"
+                  placeholder="Enter your full name"
+                  containerClass="col-md-6"
+                  control={control}
+                />
+                <TextFormInput
+                  name="email"
+                  type="email"
+                  label="Email address*"
+                  placeholder="Enter your email id"
+                  containerClass="col-md-6"
+                  control={control}
+                  readOnly
+                />
+                <TextFormInput
+                  name="contactNumber"
+                  label="Mobile number*"
+                  placeholder="Enter your mobile number"
+                  containerClass="col-md-6"
+                  control={control}
+                />
 
-          <Col md={6}>
-            <label className="form-label">
-              Date of Birth<span className="text-danger">*</span>
-            </label>
-            <Flatpicker
+                <Col md={6}>
+                  <label className="form-label">
+                    Date of Birth<span className="text-danger">*</span>
+                  </label>
+                  {/* <Flatpicker
               value={watch("birthday")}
               placeholder="Enter date of birth"
               options={{ dateFormat: "Y-m-d" }}
               onChange={(selectedDates, dateStr) => {
                 setValue("birthday", dateStr);
               }}
-            />
-          </Col>
+            /> */}
 
-          <TextAreaFormInput
-            name="location"
-            label="location"
-            spellCheck="false"
-            rows={3}
-            containerClass="col-12"
-            control={control}
-          />
+                  <Controller
+                    name="birthday"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        selected={field.value}
+                        onChange={(date) => field.onChange(date)}
+                        placeholderText="Select your birthday"
+                        className="form-control"
+                        dateFormat="yyyy-MM-dd"
+                        wrapperClassName="w-100"
+                      />
+                    )}
+                  />
+                </Col>
 
-          <Col xs={12} className="text-end">
-            <Button
-              variant="primary"
-              type="submit"
-              className="mb-0"
-              disabled={submitting}
-            >
-              {submitting ? "Saving..." : "Save Changes"}
-            </Button>
-          </Col>
-        </form>
-      </CardBody>
-    </Card>
+                <TextAreaFormInput
+                  name="location"
+                  label="location"
+                  spellCheck="false"
+                  rows={3}
+                  containerClass="col-12"
+                  control={control}
+                />
+
+                <Col xs={12} className="text-end">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="mb-0"
+                    disabled={submitting}
+                  >
+                    {submitting ? "Saving..." : "Save Changes"}
+                  </Button>
+                </Col>
+              </form>
+            </CardBody>
+          </Card>
+        </>
+      )}
+    </>
   );
 };
 

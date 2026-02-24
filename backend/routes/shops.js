@@ -25,6 +25,12 @@ import {
 } from "../controllers/shops/activityController.js";
 import { getTrafficStats } from "../controllers/trafficController.js";
 import { getAllUsers } from "../controllers/shops/getAllUsers.js";
+import { deletePropertyById } from "../controllers/shops/deletePropertyById.js";
+import { updatePropertyById } from "../controllers/shops/updatePropertyById.js";
+import { addOffer } from "../controllers/shops/addOffer.js";
+import { getOffers } from "../controllers/shops/getOffers.js";
+import { editOffer } from "../controllers/shops/editOffer.js";
+import { getOfferById } from "../controllers/shops/getOfferById.js";
 
 const shopsRouter = express.Router();
 
@@ -37,6 +43,11 @@ shopsRouter.get("/property/:propertyId", getPropertyById);
 shopsRouter.get("/rooms", userVerification, getProperties);
 shopsRouter.patch("/property/:propertyId", userVerification, updateProperty);
 shopsRouter.delete("/rooms/:roomId", userVerification, deleteRoomById);
+shopsRouter.delete(
+  "/property/:propertyId",
+  userVerification,
+  deletePropertyById
+);
 shopsRouter.get("/bookings", userVerification, getAllBookings);
 shopsRouter.get("/stats", userVerification, getStats);
 shopsRouter.post("/listing", userVerification);
@@ -54,5 +65,15 @@ shopsRouter.delete("/reviews/:id", userVerification, deleteReviewById);
 shopsRouter.patch("/reviews/:id/reply", userVerification, replyToReview);
 shopsRouter.get("/traffic/:shopId", getTrafficStats);
 shopsRouter.get("/users", userVerification, getAllUsers);
+
+shopsRouter.post("/offer", userVerification, addOffer);
+shopsRouter.get("/offers", userVerification, getOffers);
+shopsRouter.patch("/offer/:id", userVerification, editOffer);
+shopsRouter.get("/offer/:id", getOfferById);
+shopsRouter.patch(
+  "/property/:propertyId",
+  userVerification,
+  updatePropertyById
+);
 
 export default shopsRouter;

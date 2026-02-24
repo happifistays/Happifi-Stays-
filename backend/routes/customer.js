@@ -30,6 +30,8 @@ import { getNearbyProperties } from "../controllers/user/getNearbyPropertiesCont
 import { getBookingsByCategory } from "../controllers/getBookingsByCategory.js";
 import { cancelBookingById } from "../controllers/cancelBookingById.js";
 import { getFavoriteProperties } from "../controllers/user/favController.js";
+import { getAllOffers } from "../controllers/getAllOffers.js";
+import { addContact } from "../controllers/addContact.js";
 
 const customerRouter = express.Router();
 customerRouter.get("/", (req, res) => {
@@ -40,7 +42,7 @@ customerRouter.get("/", (req, res) => {
 
 customerRouter.post("/signup", signUp);
 customerRouter.get("/property/:propertyId", getPropertyById);
-customerRouter.get("/properties", getProperties);
+customerRouter.get("/properties", getProperties); 
 customerRouter.get("/rooms/:roomId", getRoomById);
 customerRouter.get("/rooms/property/:propertyId", getRoomsByPropertyId);
 customerRouter.post("/create-order", createOrder);
@@ -89,5 +91,7 @@ customerRouter.patch(
   userVerification,
   cancelBookingById
 );
+
+customerRouter.get("/offers/all", getAllOffers);
 
 export default customerRouter;
