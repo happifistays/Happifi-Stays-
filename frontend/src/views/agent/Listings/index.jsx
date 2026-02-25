@@ -177,7 +177,6 @@ const Listings = () => {
     <>
       <PageMetaData title="Agent Listings" />
       <section className="pt-0">
-        {console.log("properties=---------------", properties)}
         <Container className="vstack gap-4">
           <Row>
             <Col xs={12}>
@@ -244,7 +243,7 @@ const Listings = () => {
             </CardHeader>
 
             <CardBody className="vstack gap-3">
-              {loading && (
+              {loading ? (
                 <div
                   className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
                   style={{
@@ -254,9 +253,7 @@ const Listings = () => {
                 >
                   <Spinner animation="border" variant="primary" />
                 </div>
-              )}
-
-              {!loading && properties.length === 0 ? (
+              ) : !loading && properties.length === 0 ? (
                 <div className="text-center p-4">
                   <NotFound
                     title={"No Properties found!"}

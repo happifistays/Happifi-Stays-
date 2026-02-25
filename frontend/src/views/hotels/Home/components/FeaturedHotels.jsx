@@ -15,7 +15,7 @@ const FeaturedHotels = () => {
       try {
         // Change isDisabled to false to get active properties
         const response = await fetch(
-          `${API_BASE_URL}/api/v1/customer/properties?isDisabled=false`
+          `${API_BASE_URL}/api/v1/customer/properties`
         );
         const result = await response.json();
         if (result.success) {

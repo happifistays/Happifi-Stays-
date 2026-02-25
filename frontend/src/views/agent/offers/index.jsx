@@ -102,14 +102,14 @@ const AgentOffers = () => {
   const startEntry = offers.length > 0 ? (currentPage - 1) * 10 + 1 : 0;
   const endEntry = Math.min(currentPage * 10, totalOffer);
 
-  if (!loading && offers.length === 0) {
-    return (
-      <NotFound
-        title={"No Offers found!"}
-        description={"You dont have any offers yet!"}
-      />
-    );
-  }
+  // if (!loading && offers.length === 0) {
+  //   return (
+  //     <NotFound
+  //       title={"No Offers found!"}
+  //       description={"You dont have any offers yet!"}
+  //     />
+  //   );
+  // }
 
   return (
     <>

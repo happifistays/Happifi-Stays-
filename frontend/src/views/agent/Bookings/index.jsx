@@ -126,14 +126,14 @@ const Bookings = () => {
   const startEntry = bookings.length > 0 ? (currentPage - 1) * 10 + 1 : 0;
   const endEntry = Math.min(currentPage * 10, totalBooking);
 
-  if (!loading && bookings.length === 0) {
-    return (
-      <NotFound
-        title={"No Bookings found!"}
-        description={"You dont have any bookings yet!"}
-      />
-    );
-  }
+  // if (!loading && bookings.length === 0) {
+  //   return (
+  //     <NotFound
+  //       title={"No Bookings found!"}
+  //       description={"You dont have any bookings yet!"}
+  //     />
+  //   );
+  // }
 
   return (
     <>
@@ -231,6 +231,15 @@ const Bookings = () => {
                               Loading...
                             </td>
                           </tr>
+                        ) : bookings?.length == 0 ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            No bookings found
+                          </div>
                         ) : (
                           bookings.map((booking, idx) => (
                             <tr key={booking._id || idx}>

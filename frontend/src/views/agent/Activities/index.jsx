@@ -114,14 +114,14 @@ const Activities = () => {
     return `${relativeTime}, ${formattedDate}`;
   };
 
-  if (!loading && activities.length == 0) {
-    return (
-      <NotFound
-        title={"No Activities found!"}
-        description={"You dont have any activities yet."}
-      />
-    );
-  }
+  // if (!loading && activities.length == 0) {
+  //   return (
+  //     <NotFound
+  //       title={"No Activities found!"}
+  //       description={"You dont have any activities yet."}
+  //     />
+  //   );
+  // }
 
   return (
     <>
@@ -144,14 +144,19 @@ const Activities = () => {
                   <h5 className="card-header-title">Recent Activities</h5>
                 </CardHeader>
                 <CardBody>
-                  {activities.map((activity, idx) => {
-                    const Icon = activity.icon;
-                    return (
-                      <Fragment key={idx}>
-                        <div className="d-sm-flex justify-content-between align-items-center">
-                          <div className="d-flex align-items-sm-center me-4 ms-sm-0">
-                            <div className="avatar flex-shrink-0">
-                              {/* {Icon && <div className={clsx('avatar-img rounded-circle', activity.variant)}>
+                  {loading ? (
+                    <>Loading....</>
+                  ) : activities?.length == 0 ? (
+                    <>No activities found</>
+                  ) : (
+                    activities.map((activity, idx) => {
+                      const Icon = activity.icon;
+                      return (
+                        <Fragment key={idx}>
+                          <div className="d-sm-flex justify-content-between align-items-center">
+                            <div className="d-flex align-items-sm-center me-4 ms-sm-0">
+                              <div className="avatar flex-shrink-0">
+                                {/* {Icon && <div className={clsx('avatar-img rounded-circle', activity.variant)}>
                                   <span className="position-absolute top-50 start-50 translate-middle fw-bold flex-centered">
                                     <Icon className=" fs-5" />
                                   </span>
@@ -159,51 +164,52 @@ const Activities = () => {
 
                               {activity.image && <Image className="avatar-img rounded-circle" src={activity.image} />} */}
 
-                              <div
-                                className={clsx(
-                                  "avatar-img rounded-circle text-bg-info"
-                                )}
-                              >
-                                <span className="position-absolute top-50 start-50 translate-middle fw-bold flex-centered">
-                                  <BsCheckLg className=" fs-5" />
-                                </span>
+                                <div
+                                  className={clsx(
+                                    "avatar-img rounded-circle text-bg-info"
+                                  )}
+                                >
+                                  <span className="position-absolute top-50 start-50 translate-middle fw-bold flex-centered">
+                                    <BsCheckLg className=" fs-5" />
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="ms-3">
+                                <h6 className="fw-light m-0">
+                                  {activity.description}
+                                </h6>
+
+                                <small>
+                                  {formatActivityDate(activity.createdAt)}{" "}
+                                </small>
                               </div>
                             </div>
-                            <div className="ms-3">
-                              <h6 className="fw-light m-0">
-                                {activity.description}
-                              </h6>
+                            <div className="d-flex gap-2 mt-2 mt-sm-0">
+                              <Button
+                                variant="primary-soft"
+                                size="sm"
+                                onClick={() => handleView(activity)}
+                              >
+                                View
+                              </Button>
 
-                              <small>
-                                {formatActivityDate(activity.createdAt)}{" "}
-                              </small>
+                              <Button
+                                variant="danger-soft"
+                                size="sm"
+                                onClick={() => {
+                                  setDeleteId(activity._id);
+                                  setShowDeleteModal(true);
+                                }}
+                              >
+                                <BsTrash />
+                              </Button>
                             </div>
                           </div>
-                          <div className="d-flex gap-2 mt-2 mt-sm-0">
-                            <Button
-                              variant="primary-soft"
-                              size="sm"
-                              onClick={() => handleView(activity)}
-                            >
-                              View
-                            </Button>
-
-                            <Button
-                              variant="danger-soft"
-                              size="sm"
-                              onClick={() => {
-                                setDeleteId(activity._id);
-                                setShowDeleteModal(true);
-                              }}
-                            >
-                              <BsTrash />
-                            </Button>
-                          </div>
-                        </div>
-                        {recentActivities.length - 1 != idx && <hr />}
-                      </Fragment>
-                    );
-                  })}
+                          {recentActivities.length - 1 != idx && <hr />}
+                        </Fragment>
+                      );
+                    })
+                  )}
                 </CardBody>
               </Card>
             </Col>
