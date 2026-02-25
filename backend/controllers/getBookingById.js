@@ -16,7 +16,7 @@ export const getBookingById = async (req, res) => {
       });
     }
 
-    const guestCount = await Guests.countDocuments({
+    const guests = await Guests.find({
       bookingId: req.params.id,
     });
 
@@ -24,7 +24,8 @@ export const getBookingById = async (req, res) => {
       success: true,
       data: {
         ...booking.toObject(),
-        guestCount,
+        guests,
+        guestCount: guests.length,
       },
     });
   } catch (error) {

@@ -20,7 +20,7 @@ export const createBooking = async (req, res) => {
       razorpay_signature,
       paymentMethod,
       guests,
-      totalAmount,
+      totalAmount, 
     } = req.body;
 
     const { propertyId } = req.params;

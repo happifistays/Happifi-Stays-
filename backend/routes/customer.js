@@ -94,8 +94,8 @@ customerRouter.get("/offers/all", getAllOffers);
 customerRouter.get(
   "/check-property-availability/:propertyId",
   checkPropertyAvailability
-);
-
+); 
+ 
 customerRouter.get("/booking/:id", getBookingById);
 
 export default customerRouter;

@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import Property from "../../models/propertySchema.js";
 import Room from "../../models/roomSchema.js";
+import Offers from "../../models/offerSchema.js";
 
 export const getPropertyById = async (req, res) => {
   try {
     const { propertyId } = req.params;
 
-    // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(propertyId)) {
       return res.status(400).json({
         success: false,
@@ -14,7 +14,9 @@ export const getPropertyById = async (req, res) => {
       });
     }
 
-    const property = await Property.findById(propertyId).lean();
+    const property = await Property.findById(propertyId)
+      .populate("availableOffers")
+      .lean();
 
     if (!property) {
       return res.status(404).json({

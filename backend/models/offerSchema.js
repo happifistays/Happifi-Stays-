@@ -11,6 +11,9 @@ const offerSchema = new mongoose.Schema(
       required: true,
     },
     isDisabled: { type: Boolean, default: false },
+    appliedProperties: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Property" },
+    ],
   },
   {
     timestamps: true,
