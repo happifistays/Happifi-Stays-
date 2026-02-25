@@ -37,6 +37,9 @@ const AboutHotel = ({
   setCheckOut,
   handleBookNow,
   isAvailable,
+  availableOffers,
+  policy,
+  discount,
 }) => {
   const { isOpen, toggle } = useToggle();
   const { id } = useParams();
@@ -62,6 +65,8 @@ const AboutHotel = ({
       fetchReviews();
     }
   }, [id]);
+
+  console.log("22222222222", hotelDetails);
 
   return (
     <section className="pt-0">
@@ -137,7 +142,7 @@ const AboutHotel = ({
                 reviewsData={reviewsData}
               />
 
-              <HotelPolicies />
+              <HotelPolicies policy={policy} />
             </div>
           </Col>
           <Col as={"aside"} xl={5} className="order-xl-2">
@@ -152,6 +157,8 @@ const AboutHotel = ({
               setCheckOut={setCheckOut}
               handleBookNow={handleBookNow}
               isAvailable={isAvailable}
+              availableOffers={availableOffers}
+              discount={discount}
             />
           </Col>
         </Row>

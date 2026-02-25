@@ -67,56 +67,88 @@ const ListingForms = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
 
+  // const listingSchema = yup.object({
+  //   listingName: yup.string().required("Listing name is required"),
+  //   listingType: yup.string().required("Listing type is required"),
+  //   listingUse: yup.string().required("Usage type is required"),
+  //   shortDescription: yup.string().required("Short description is required"),
+  //   country: yup.string().required("Country is required"),
+  //   state: yup.string().required("State is required"),
+  //   city: yup.string().required("City is required"),
+  //   postalCode: yup.string().required("Postal code is required"),
+  //   street: yup.string().required("Street is required"),
+  //   latitude: yup
+  //     .number()
+  //     .typeError("Must be a number")
+  //     .required("Latitude is required"),
+  //   longitude: yup
+  //     .number()
+  //     .typeError("Must be a number")
+  //     .required("Longitude is required"),
+  //   thumbnail: yup.mixed().required("Thumbnail is required"),
+  //   gallery: yup.array().min(1, "At least one gallery image is required"),
+  //   amenities: yup.array().min(1, "Select at least one amenity"),
+  //   description: yup.string().required("Description is required"),
+  //   totalFloors: yup
+  //     .number()
+  //     .typeError("Must be a number")
+  //     .required("Required"),
+  //   totalRooms: yup.number().typeError("Must be a number").required("Required"),
+  //   propertyArea: yup
+  //     .number()
+  //     .typeError("Must be a number")
+  //     .required("Required"),
+  //   currency: yup.string().required("Currency is required"),
+  //   basePrice: yup
+  //     .number()
+  //     .typeError("Must be a number")
+  //     .required("Base price is required"),
+  //   discount3: yup.number().typeError("Must be a number").default(0),
+  //   listingPolicyDescription: yup
+  //     .string()
+  //     .required("Policy description is required"),
+  //   charges: yup
+  //     .number()
+  //     .typeError("Must be a number")
+  //     .required("Charges are required"),
+  //   isOfferApplied: yup.boolean().default(false),
+  //   selectedOffer: yup.string().when("isOfferApplied", {
+  //     is: true,
+  //     then: (schema) => schema.required("Please select an offer"),
+  //     otherwise: (schema) => schema.nullable(),
+  //   }),
+  // });
+
   const listingSchema = yup.object({
-    listingName: yup.string().required("Listing name is required"),
-    listingType: yup.string().required("Listing type is required"),
-    listingUse: yup.string().required("Usage type is required"),
-    shortDescription: yup.string().required("Short description is required"),
-    country: yup.string().required("Country is required"),
-    state: yup.string().required("State is required"),
-    city: yup.string().required("City is required"),
-    postalCode: yup.string().required("Postal code is required"),
-    street: yup.string().required("Street is required"),
-    latitude: yup
-      .number()
-      .typeError("Must be a number")
-      .required("Latitude is required"),
-    longitude: yup
-      .number()
-      .typeError("Must be a number")
-      .required("Longitude is required"),
-    thumbnail: yup.mixed().required("Thumbnail is required"),
-    gallery: yup.array().min(1, "At least one gallery image is required"),
-    amenities: yup.array().min(1, "Select at least one amenity"),
-    description: yup.string().required("Description is required"),
-    totalFloors: yup
-      .number()
-      .typeError("Must be a number")
-      .required("Required"),
-    totalRooms: yup.number().typeError("Must be a number").required("Required"),
-    propertyArea: yup
-      .number()
-      .typeError("Must be a number")
-      .required("Required"),
-    currency: yup.string().required("Currency is required"),
-    basePrice: yup
-      .number()
-      .typeError("Must be a number")
-      .required("Base price is required"),
-    discount3: yup.number().typeError("Must be a number").default(0),
-    listingPolicyDescription: yup
-      .string()
-      .required("Policy description is required"),
-    charges: yup
-      .number()
-      .typeError("Must be a number")
-      .required("Charges are required"),
-    isOfferApplied: yup.boolean().default(false),
-    selectedOffer: yup.string().when("isOfferApplied", {
-      is: true,
-      then: (schema) => schema.required("Please select an offer"),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    listingName: yup.string(),
+    listingType: yup.string(),
+    listingUse: yup.string(),
+    shortDescription: yup.string(),
+    country: yup.string(),
+    state: yup.string(),
+    city: yup.string(),
+    postalCode: yup.string(),
+    street: yup.string(),
+    // latitude: yup.number(),
+    // longitude: yup.number(),
+    thumbnail: yup.mixed(),
+    gallery: yup.array(),
+    amenities: yup.array(),
+    description: yup.string(),
+    // totalFloors: yup.number(),
+    // totalRooms: yup.number(),
+    // propertyArea: yup.number(),
+    currency: yup.string(),
+    // basePrice: yup.number(),
+    // discount3: yup.number(),
+    // listingPolicyDescription: yup.string(),
+    // charges: yup.number(),
+    // isOfferApplied: yup.boolean().default(false),
+    // selectedOffer: yup.string().when("isOfferApplied", {
+    //   is: true,
+    //   then: (schema) => schema.required("Please select an offer"),
+    //   otherwise: (schema) => schema.nullable(),
+    // }),
   });
 
   const methods = useForm({

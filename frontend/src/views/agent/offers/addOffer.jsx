@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -26,10 +27,12 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { API_BASE_URL } from "../../../config/env";
 import { useNavigate, useParams } from "react-router-dom";
+import clsx from "clsx";
 
 const AddOffer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [existingImage, setExistingImage] = useState(null);
+  const [properties, setProperties] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditMode = !!id;
@@ -40,6 +43,9 @@ const AddOffer = () => {
     title: yup.string().required("Please enter the offer title"),
     description: yup.string().required("Please enter a description"),
     isDisabled: yup.boolean(),
+    appliedProperties: yup
+      .array()
+      .min(1, "Please select at least one property"),
     offerImage: isEditMode
       ? yup.mixed().notRequired()
       : yup.mixed().required("Please upload an offer image"),
@@ -51,9 +57,31 @@ const AddOffer = () => {
       title: "",
       description: "",
       offerImage: null,
-      isDisabled: true, // Default to disabled as requested
+      isDisabled: false,
+      appliedProperties: [],
     },
   });
+
+  const propertyOptions = properties.map((prop) => ({
+    value: prop._id,
+    label: prop.listingName,
+  }));
+
+  useEffect(() => {
+    const fetchMyProperties = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/v1/shops/rooms`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data.success) {
+          setProperties(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching properties", error);
+      }
+    };
+    fetchMyProperties();
+  }, [token]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -61,20 +89,17 @@ const AddOffer = () => {
         try {
           const res = await axios.get(
             `${API_BASE_URL}/api/v1/shops/offer/${id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
           );
           if (res.data.success) {
             const offerData = res.data.data;
-            // Pre-fill the form
             reset({
               title: offerData.title,
               description: offerData.description,
               isDisabled: offerData.isDisabled,
+              appliedProperties: offerData.appliedProperties || [],
               offerImage: null,
             });
-            // Set existing image for preview
             setExistingImage(offerData.image);
           }
         } catch (error) {
@@ -99,6 +124,7 @@ const AddOffer = () => {
         title: data.title,
         description: data.description,
         isDisabled: data.isDisabled,
+        appliedProperties: data.appliedProperties,
       };
 
       if (data.offerImage && data.offerImage.base64) {
@@ -145,25 +171,10 @@ const AddOffer = () => {
           <Row className="justify-content-center">
             <Col lg={8}>
               <Card className="shadow">
-                <CardHeader className="border-bottom d-flex justify-content-between align-items-center">
+                <CardHeader className="border-bottom">
                   <h5 className="mb-0">
                     {isEditMode ? "Update Offer" : "Create New Offer"}
                   </h5>
-                  {/* Toggle Switch */}
-                  <Controller
-                    name="isDisabled"
-                    control={control}
-                    render={({ field }) => (
-                      <Form.Check
-                        type="switch"
-                        id="offer-status-switch"
-                        label={field.value ? "Disabled" : "Enabled"}
-                        checked={!field.value} // UI shows 'Enabled' when isDisabled is false
-                        onChange={(e) => field.onChange(!e.target.checked)}
-                        className="fw-bold text-primary"
-                      />
-                    )}
-                  />
                 </CardHeader>
                 <CardBody>
                   <form onSubmit={handleSubmit(onSubmit)}>
@@ -176,6 +187,39 @@ const AddOffer = () => {
                           control={control}
                         />
                       </Col>
+
+                      <Col xs={12}>
+                        <Form.Label>Apply to Properties *</Form.Label>
+                        <Controller
+                          name="appliedProperties"
+                          control={control}
+                          render={({ field, fieldState }) => (
+                            <>
+                              <Select
+                                isMulti
+                                options={propertyOptions}
+                                className={clsx("react-select-container", {
+                                  "is-invalid": !!fieldState.error,
+                                })}
+                                classNamePrefix="react-select"
+                                placeholder="Select properties..."
+                                value={propertyOptions.filter((opt) =>
+                                  field.value?.includes(opt.value)
+                                )}
+                                onChange={(val) =>
+                                  field.onChange(val.map((v) => v.value))
+                                }
+                              />
+                              {fieldState.error && (
+                                <div className="text-danger small mt-1">
+                                  {fieldState.error.message}
+                                </div>
+                              )}
+                            </>
+                          )}
+                        />
+                      </Col>
+
                       <Col xs={12}>
                         <TextAreaFormInput
                           name="description"

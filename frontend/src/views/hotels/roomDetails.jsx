@@ -124,6 +124,8 @@ const RoomExtraDetails = () => {
   const total = subtotal;
   const currency = "Rs";
 
+  console.log("ROOM---------", room);
+
   const handleBookNow = () => {
     if (!user) {
       Swal.fire({
@@ -172,6 +174,8 @@ const RoomExtraDetails = () => {
       { state: bookingData }
     );
   };
+
+  console.log("%%%%%%%%%%%%%%%");
 
   const PriceSummaryCard = ({ isSticky = false }) => (
     <Card

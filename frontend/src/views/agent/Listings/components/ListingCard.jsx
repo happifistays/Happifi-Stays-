@@ -220,7 +220,7 @@ const ListingCard = ({ property, setProperties }) => {
                     size="sm"
                     className="mb-0 items-center"
                     onClick={() => {
-                      navigate(`/listings/${property?.property}/edit`);
+                      navigate(`/listings/${property?._id}/edit`);
                     }}
                   >
                     <BsPencilSquare className=" fa-fw me-1" />

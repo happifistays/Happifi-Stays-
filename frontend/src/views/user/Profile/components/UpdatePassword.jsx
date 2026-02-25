@@ -16,8 +16,6 @@ const UpdatePassword = () => {
 
   const { removeSession } = useAuthContext();
 
-  console.log("user-----------", user);
-
   const passwordSchema = yup.object({
     currentPassword: yup.string().required("Current password is required"),
     newPassword: yup

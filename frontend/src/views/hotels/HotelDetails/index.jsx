@@ -104,6 +104,8 @@ const HotelDetails = () => {
       total,
       currency: hotel?.currency || "USD",
       hotelName: hotel?.listingName,
+      availableOffers: hotel?.availableOffers,
+      discount: hotel?.discount,
     };
 
     navigate(`/hotels/booking?property_id=${hotel?._id}`, {
@@ -129,7 +131,8 @@ const HotelDetails = () => {
                 address: hotel.location,
               }}
               gallery={hotel.gallery}
-            /> 
+            />
+            {console.log("hotel------------", hotel)}
             <AboutHotel
               hotelDetails={{
                 about: hotel.shortDescription,
@@ -144,6 +147,9 @@ const HotelDetails = () => {
               setCheckOut={setCheckOut}
               handleBookNow={handleBookNow}
               isAvailable={isAvailable}
+              availableOffers={hotel?.availableOffers ?? []}
+              policy={hotel?.policy?.description}
+              discount={hotel?.discount ?? 0}
             />
           </>
         )}

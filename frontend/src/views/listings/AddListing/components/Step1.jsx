@@ -1,7 +1,7 @@
 import {
   CheckFormInput,
   DropzoneFormInput,
-  FileFormInput,
+  FileFormInput, 
   SelectFormInput,
   TextAreaFormInput,
   TextFormInput,

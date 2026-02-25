@@ -50,8 +50,8 @@ const Step3 = ({ isEdit }) => {
                       {...field}
                       className="form-select js-choice border-0 z-index-9 bg-transparent"
                     >
-                      <option value="USD">USD</option>
                       <option value="INR">INR</option>
+                      <option value="USD">USD</option>
                       <option value="EURO">EURO</option>
                     </SelectFormInput>
                     {error && (
@@ -85,7 +85,7 @@ const Step3 = ({ isEdit }) => {
         </CardHeader>
         <CardBody>
           <Row className="g-4">
-            <Col xs={12}>
+            {/* <Col xs={12}>
               <label className="form-label">Apply Offer?</label>
               <div className="d-flex gap-3">
                 <CheckFormInput
@@ -107,7 +107,7 @@ const Step3 = ({ isEdit }) => {
                   containerClass="form-check"
                 />
               </div>
-            </Col>
+            </Col> */}
 
             {isOfferApplied && (
               <Col md={12}>

@@ -70,7 +70,7 @@ const TopNavBar = () => {
 
   // Updated logic to ensure if avatar is an empty string, it falls back to default
   const profileIMage = user?.avatar ? user.avatar : DEFAULT_AVATAR_IMAGE;
-  console.log("user-----------", user);
+
   const { isOpen: categoryIsOpen, toggle: categoryToggle } = useToggle(false);
 
   const handleClick = () => {

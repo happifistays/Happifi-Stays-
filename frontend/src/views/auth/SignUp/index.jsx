@@ -50,6 +50,13 @@ const SignUp = () => {
           ...response.data.user,
           token: response.data.token,
         });
+        Swal.fire({
+          icon: "success",
+          title: "Signup Successful",
+          text: "Successfully created account",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         navigate("/");
       }
     } catch (err) {

@@ -158,7 +158,7 @@ const Step2 = () => {
         </Card>
       ))} */}
 
-      <div className="text-center">
+      {/* <div className="text-center">
         <Button
           variant="link"
           className="p-0 text-primary"
@@ -168,7 +168,7 @@ const Step2 = () => {
         >
           <BsPlusCircle className="me-2" /> Add New Room
         </Button>
-      </div>
+      </div> */}
 
       <div className="hstack gap-2 flex-wrap justify-content-between">
         <button

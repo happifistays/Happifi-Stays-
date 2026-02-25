@@ -8,6 +8,7 @@ import { useViewPort } from "@/hooks";
 import offerImg4 from "@/assets/images/offer/04.jpg";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
+import RatingStars from "../../../../components/RatingStars/RatingStars";
 
 const PriceOverView = ({
   rate,
@@ -18,6 +19,8 @@ const PriceOverView = ({
   setCheckOut,
   handleBookNow,
   isAvailable,
+  availableOffers,
+  discount,
 }) => {
   const { width } = useViewPort();
 
@@ -126,23 +129,7 @@ const PriceOverView = ({
           </div>
         )}
 
-        <ul className="list-inline mb-2">
-          {Array.from({ length: fullStars }).map((_, i) => (
-            <li key={i} className="list-inline-item small">
-              <FaStar className="text-warning" />
-            </li>
-          ))}
-          {hasHalfStar && (
-            <li className="list-inline-item small">
-              <FaStarHalfAlt className="text-warning" />
-            </li>
-          )}
-          {Array.from({ length: emptyStars }).map((_, i) => (
-            <li key={i} className="list-inline-item small">
-              <FaRegStar className="text-warning" />
-            </li>
-          ))}
-        </ul>
+        <RatingStars rating={rating} />
 
         <div className="d-grid mt-3">
           <Button
@@ -157,25 +144,26 @@ const PriceOverView = ({
       </Card>
 
       <div className="mt-4 d-none d-xl-block">
-        <Card className="shadow rounded-3 overflow-hidden">
-          <Row className="g-0 align-items-center">
-            <Col lg={6}>
-              <Image src={offerImg4} className="card-img rounded-0" />
-            </Col>
-            <Col lg={6}>
-              <CardBody className="p-3">
-                <h6 className="card-title">
-                  <Link to="#" className="stretched-link">
-                    Best Deal
-                  </Link>
-                </h6>
-                <p className="mb-0 small">
-                  Get limited time offers for your stay.
-                </p>
-              </CardBody>
-            </Col>
-          </Row>
-        </Card>
+        {availableOffers?.length > 0 &&
+          availableOffers?.map((offer, idx) => (
+            <Card className="shadow rounded-3 overflow-hidden">
+              <Row className="g-0 align-items-center">
+                <Col lg={6}>
+                  <Image src={offer?.image} className="card-img rounded-0" />
+                </Col>
+                <Col lg={6}>
+                  <CardBody className="p-3">
+                    <h6 className="card-title">
+                      <Link to="#" className="stretched-link">
+                        {offer?.title ?? ""}
+                      </Link>
+                    </h6>
+                    <p className="mb-0 small">{offer?.description ?? ""}</p>
+                  </CardBody>
+                </Col>
+              </Row>
+            </Card>
+          ))}
       </div>
     </Sticky>
   );

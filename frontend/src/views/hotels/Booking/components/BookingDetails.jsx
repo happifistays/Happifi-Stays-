@@ -9,7 +9,8 @@ import OfferAndDiscounts from "./OfferAndDiscounts";
 import PaymentOptions from "./PaymentOptions";
 import PriceSummary from "./PriceSummary";
 import { API_BASE_URL } from "../../../../config/env";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import confetti from "canvas-confetti";
 
 const BookingDetails = () => {
   const location = useLocation();
@@ -18,8 +19,10 @@ const BookingDetails = () => {
   const propertyId = searchParams.get("property_id");
   const roomId = searchParams.get("room_id");
   const [submitting, setSubmitting] = useState(false);
+  const [appliedOffer, setAppliedOffer] = useState(null);
 
   const bookingData = location.state || {};
+  console.log("bookingData-----------", bookingData);
   const token = localStorage.getItem("token");
 
   // --- START CALCULATIONS ---
@@ -37,10 +40,20 @@ const BookingDetails = () => {
     calculateNights(bookingData.checkIn, bookingData.checkOut);
   const roomPrice = bookingData.roomPrice || 0;
   const serviceFee = 0; // For now
-  const discount = bookingData.discount || 0;
+  const initialDiscount = bookingData.discount || 0;
 
   const roomCharges = roomPrice * nights;
-  const finalCalculatedTotal = roomCharges + serviceFee - discount;
+  const priceAfterInitialDiscount = roomCharges + serviceFee - initialDiscount;
+
+  // Calculate offer discount if applied
+  let offerDiscountAmount = 0;
+  if (appliedOffer) {
+    const match = appliedOffer.title.match(/\d+/);
+    const percentage = match ? parseInt(match[0]) : 0;
+    offerDiscountAmount = (priceAfterInitialDiscount * percentage) / 100;
+  }
+
+  const finalCalculatedTotal = priceAfterInitialDiscount - offerDiscountAmount;
   // --- END CALCULATIONS ---
 
   const methods = useForm({
@@ -64,11 +77,41 @@ const BookingDetails = () => {
       cardName: "visa",
       checkInDate: bookingData.checkIn || "2026-12-12",
       checkOutDate: bookingData.checkOut || "2026-12-14",
-      totalAmount: finalCalculatedTotal, // Use the calculated total for consistency
+      totalAmount: finalCalculatedTotal,
       paymentStatus: "unpaid",
       status: "booked",
     },
   });
+
+  // Sync the form total whenever finalCalculatedTotal changes
+  useEffect(() => {
+    methods.setValue("totalAmount", finalCalculatedTotal);
+  }, [finalCalculatedTotal, methods]);
+
+  const handleApplyOffer = (offer) => {
+    setAppliedOffer(offer);
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: [
+        "#26ccff",
+        "#a25afd",
+        "#ff5e7e",
+        "#88ff5a",
+        "#fcff42",
+        "#ffa62d",
+        "#ff36ff",
+      ],
+    });
+    Swal.fire({
+      icon: "success",
+      title: "Offer Applied!",
+      text: `${offer.title} has been applied to your booking.`,
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  };
 
   const paymentMethod = useWatch({
     control: methods.control,
@@ -147,6 +190,7 @@ const BookingDetails = () => {
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_signature: response.razorpay_signature,
+                  appliedOfferId: appliedOffer?._id, // Send offer ID if needed
                 }),
               }
             );
@@ -182,6 +226,7 @@ const BookingDetails = () => {
             body: JSON.stringify({
               ...data,
               totalAmount: finalCalculatedTotal,
+              appliedOfferId: appliedOffer?._id,
             }),
           }
         );
@@ -195,7 +240,7 @@ const BookingDetails = () => {
           Swal.fire({
             icon: "error",
             title: "Booking failed",
-            text: "Room is already booked",
+            text: "Error while booking",
           });
         }
       }
@@ -242,10 +287,14 @@ const BookingDetails = () => {
                     <PriceSummary
                       nights={nights}
                       roomCharges={roomCharges}
-                      discount={discount}
+                      discount={initialDiscount}
                       serviceFee={serviceFee}
                       totalAmount={finalCalculatedTotal}
                       displayCurrency={bookingData.currency}
+                      availableOffers={bookingData?.availableOffers}
+                      appliedOffer={appliedOffer}
+                      onApplyOffer={handleApplyOffer}
+                      offerDiscountAmount={offerDiscountAmount}
                     />
                   </div>
 
@@ -271,10 +320,6 @@ const BookingDetails = () => {
 
                   {paymentMethod === "online" ? (
                     <div className="vstack gap-4">
-                      {/* <PaymentOptions
-                        control={methods.control}
-                        handleSubmit={methods.handleSubmit}
-                      /> */}
                       <div className="d-grid mt-4">
                         <Button variant="primary" size="lg" type="submit">
                           Proceed to Online Payment
@@ -290,11 +335,6 @@ const BookingDetails = () => {
                         onClick={handlePayAtHotelClick}
                         disabled={submitting}
                       >
-                        {/* {submitting ? (
-                          <> Confirm Booking (Pay at Hotel)</>
-                        ) : (
-                          <>Please wait....</>
-                        )} */}
                         Confirm Booking (Pay at Hotel)
                       </Button>
                     </div>
@@ -308,18 +348,16 @@ const BookingDetails = () => {
                     <PriceSummary
                       nights={nights}
                       roomCharges={roomCharges}
-                      discount={discount}
+                      discount={initialDiscount}
                       serviceFee={serviceFee}
                       totalAmount={finalCalculatedTotal}
                       displayCurrency={bookingData.currency}
+                      availableOffers={bookingData?.availableOffers}
+                      appliedOffer={appliedOffer}
+                      onApplyOffer={handleApplyOffer}
+                      offerDiscountAmount={offerDiscountAmount}
                     />
                   </Col>
-                  {/* <Col md={6} xl={12}>
-                    <OfferAndDiscounts />
-                  </Col>
-                  <Col md={6} xl={12}>
-                    <LoginAdvantages />
-                  </Col> */}
                 </Row>
               </Col>
             </Row>

@@ -32,6 +32,7 @@ import { API_BASE_URL } from "../../config/env";
 const HotelRoomDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  console.log("^^^^^^^^^^^^^");
 
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);

@@ -11,26 +11,44 @@ import {
   Modal,
   Button,
   Dropdown,
+  Badge,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { BsBookmarkHeart, BsThreeDotsVertical } from "react-icons/bs";
-import { FaSearch, FaEye, FaEdit } from "react-icons/fa";
+import { FaSearch, FaEye, FaEdit, FaPowerOff } from "react-icons/fa";
 import NotFound from "../../../components/NotFound/NotFound";
 import { API_BASE_URL } from "../../../config/env";
 import { DEFAULT_AVATAR_IMAGE } from "../../../constants/images";
+import axios from "axios";
+
+// Custom Toggle component to remove the default arrow
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+  <button
+    ref={ref}
+    className="btn btn-sm btn-light btn-round mb-0 border shadow-none"
+    onClick={(e) => {
+      e.preventDefault();
+      onClick(e);
+    }}
+  >
+    {children}
+  </button>
+));
 
 const AgentOffers = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [totalOffer, setTotalOffer] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const token = localStorage.getItem("token");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt:desc"); // Matches backend format
+  const [offers, setOffers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
 
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const [offers, setOffers] = useState([]);
 
   const handleView = (offer) => {
     setSelectedOffer(offer);
@@ -45,32 +63,54 @@ const AgentOffers = () => {
     async (page) => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `${API_BASE_URL}/api/v1/shops/offers?page=${page}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          }
+        const config = {
+          headers: { Authorization: `Bearer ${token}` },
+          params: {
+            page: page,
+            limit: 10,
+            sort: sortBy,
+            title: searchTerm, // Matches backend 'title' param
+          },
+        };
+
+        const response = await axios.get(
+          `${API_BASE_URL}/api/v1/shops/offers`,
+          config
         );
-        const data = await response.json();
-        if (data && data.success) {
-          setOffers(data.data);
-          setTotalOffer(data.total);
-          setTotalPages(data.totalPages);
-          setCurrentPage(data.currentPage);
+
+        if (response.data && response.data.success) {
+          setOffers(response.data.data);
+          setTotalOffer(response.data.total);
+          setTotalPages(response.data.totalPages);
+          setCurrentPage(response.data.currentPage);
         }
-        setLoading(false);
       } catch (error) {
-        console.error(error);
+        console.error("Fetch error:", error);
+      } finally {
         setLoading(false);
       }
     },
-    [token]
+    [token, searchTerm, sortBy]
   );
+
+  const handleToggleStatus = async (offer) => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const payload = { isDisabled: !offer.isDisabled };
+
+      const resp = await axios.patch(
+        `${API_BASE_URL}/api/v1/shops/offer/${offer._id}`,
+        payload,
+        config
+      );
+
+      if (resp.data.success) {
+        fetchOffers(currentPage);
+      }
+    } catch (error) {
+      console.error("Error updating offer status:", error);
+    }
+  };
 
   useEffect(() => {
     fetchOffers(currentPage);
@@ -101,15 +141,6 @@ const AgentOffers = () => {
 
   const startEntry = offers.length > 0 ? (currentPage - 1) * 10 + 1 : 0;
   const endEntry = Math.min(currentPage * 10, totalOffer);
-
-  // if (!loading && offers.length === 0) {
-  //   return (
-  //     <NotFound
-  //       title={"No Offers found!"}
-  //       description={"You dont have any offers yet!"}
-  //     />
-  //   );
-  // }
 
   return (
     <>
@@ -151,7 +182,12 @@ const AgentOffers = () => {
                         <input
                           className="form-control pe-5"
                           type="search"
-                          placeholder="Search offers..."
+                          placeholder="Search by title..."
+                          value={searchTerm}
+                          onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1);
+                          }}
                         />
                         <button
                           className="btn border-0 px-3 py-0 position-absolute top-50 end-0 translate-middle-y"
@@ -162,15 +198,21 @@ const AgentOffers = () => {
                       </div>
                     </div>
                     <Col md={3}>
-                      <SelectFormInput className="form-select">
-                        <option value={-1}>Sort by</option>
-                        <option>Newest</option>
-                        <option>Oldest</option>
-                      </SelectFormInput>
+                      <select
+                        className="form-select"
+                        value={sortBy}
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                      >
+                        <option value="createdAt:desc">Newest</option>
+                        <option value="createdAt:asc">Oldest</option>
+                        <option value="title:asc">Title (A-Z)</option>
+                      </select>
                     </Col>
                   </div>
 
-                  {/* Removed table-shrink and adjusted overflow */}
                   <div className="table-responsive-md border-0">
                     <table className="table align-middle p-4 mb-0 table-hover">
                       <thead className="table-light">
@@ -187,6 +229,9 @@ const AgentOffers = () => {
                           <th scope="col" className="border-0">
                             Description
                           </th>
+                          <th scope="col" className="border-0">
+                            Status
+                          </th>
                           <th
                             scope="col"
                             className="border-0 rounded-end text-end"
@@ -198,14 +243,14 @@ const AgentOffers = () => {
                       <tbody>
                         {loading ? (
                           <tr>
-                            <td colSpan="5" className="text-center py-5">
+                            <td colSpan="6" className="text-center py-5">
                               <div
                                 className="spinner-border text-primary"
                                 role="status"
                               ></div>
                             </td>
                           </tr>
-                        ) : (
+                        ) : offers.length > 0 ? (
                           offers.map((offer, idx) => (
                             <tr key={offer._id || idx}>
                               <td>{(currentPage - 1) * 10 + idx + 1}</td>
@@ -227,20 +272,30 @@ const AgentOffers = () => {
                               <td>
                                 <p
                                   className="mb-0 small text-truncate"
-                                  style={{ maxWidth: "300px" }}
+                                  style={{ maxWidth: "250px" }}
                                 >
                                   {offer?.description}
                                 </p>
+                              </td>
+                              <td>
+                                <Badge
+                                  bg={offer.isDisabled ? "danger" : "success"}
+                                  className={clsx(
+                                    "bg-opacity-10",
+                                    offer.isDisabled
+                                      ? "text-danger"
+                                      : "text-success"
+                                  )}
+                                >
+                                  {offer.isDisabled ? "Disabled" : "Active"}
+                                </Badge>
                               </td>
                               <td className="text-end">
                                 <Dropdown
                                   align="end"
                                   className="d-inline-block"
                                 >
-                                  <Dropdown.Toggle
-                                    as="button"
-                                    className="btn btn-sm btn-light btn-round mb-0 border shadow-none"
-                                  >
+                                  <Dropdown.Toggle as={CustomToggle}>
                                     <BsThreeDotsVertical />
                                   </Dropdown.Toggle>
                                   <Dropdown.Menu className="shadow border-0">
@@ -256,11 +311,35 @@ const AgentOffers = () => {
                                       <FaEdit className="me-2 text-warning" />{" "}
                                       Edit Offer
                                     </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() => handleToggleStatus(offer)}
+                                    >
+                                      <FaPowerOff
+                                        className={clsx(
+                                          "me-2",
+                                          offer.isDisabled
+                                            ? "text-success"
+                                            : "text-danger"
+                                        )}
+                                      />
+                                      {offer.isDisabled
+                                        ? "Reactivate"
+                                        : "Deactivate"}
+                                    </Dropdown.Item>
                                   </Dropdown.Menu>
                                 </Dropdown>
                               </td>
                             </tr>
                           ))
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan="6"
+                              className="text-center py-5 text-muted"
+                            >
+                              No offers found matching your criteria.
+                            </td>
+                          </tr>
                         )}
                       </tbody>
                     </table>
@@ -309,7 +388,6 @@ const AgentOffers = () => {
         </Container>
       </section>
 
-      {/* View Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Offer Details</Modal.Title>
@@ -325,6 +403,9 @@ const AgentOffers = () => {
               />
               <h5 className="fw-bold">{selectedOffer.title}</h5>
               <p className="text-muted">{selectedOffer.description}</p>
+              <Badge bg={selectedOffer.isDisabled ? "danger" : "success"}>
+                {selectedOffer.isDisabled ? "Disabled" : "Active"}
+              </Badge>
             </div>
           )}
         </Modal.Body>
