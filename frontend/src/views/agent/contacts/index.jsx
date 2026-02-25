@@ -109,8 +109,8 @@ const AgentContacts = () => {
   if (!loading && contacts.length === 0) {
     return (
       <NotFound
-        title={"No Contacts found!"}
-        description={"You dont have any contacts yet!"}
+        title={"No Leads found!"}
+        description={"You dont have any leads yet!"}
       />
     );
   }

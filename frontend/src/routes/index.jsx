@@ -478,8 +478,8 @@ export const agentRoutes = [
     element: <AgentOffers />,
   },
   {
-    path: "/agent/contacts",
-    name: "agent.offers",
+    path: "/agent/leads",
+    name: "agent.leads",
     element: <AgentContacts />,
   },
 ];

@@ -257,8 +257,8 @@ export const AGENT_MENU_ITEMS = [
   },
   {
     key: "acc-agent-contacts",
-    label: "Contacts",
-    url: "/agent/contacts",
+    label: "Leads",
+    url: "/agent/leads",
     parentKey: "acc-agent",
     icon: BsBookmarkHeart,
   },

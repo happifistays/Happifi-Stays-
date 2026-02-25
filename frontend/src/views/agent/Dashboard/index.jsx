@@ -75,7 +75,7 @@ const Dashboard = () => {
               state: `${leads.toLocaleString()}`,
               icon: BsGraphUpArrow,
               variant: "bg-info",
-              path: "/agent/contacts",
+              path: "/agent/leads",
             },
           ];
 

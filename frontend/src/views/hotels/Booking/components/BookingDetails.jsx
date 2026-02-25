@@ -170,7 +170,7 @@ const BookingDetails = () => {
         paymentObject.open();
       } else {
         // Handle offline payment
-        setSubmitting(true);
+        // setSubmitting(true);
         const response = await fetch(
           `${API_BASE_URL}/api/v1/customer/booking/${propertyId}`,
           {
@@ -290,11 +290,12 @@ const BookingDetails = () => {
                         onClick={handlePayAtHotelClick}
                         disabled={submitting}
                       >
-                        {submitting ? (
+                        {/* {submitting ? (
                           <> Confirm Booking (Pay at Hotel)</>
                         ) : (
                           <>Please wait....</>
-                        )}
+                        )} */}
+                        Confirm Booking (Pay at Hotel)
                       </Button>
                     </div>
                   )}
