@@ -45,12 +45,12 @@ export const bookingHomeMenuItems = [
     url: "/property/list",
     icon: IoPeopleSharp,
   },
-  {
-    key: "Help",
-    label: "Help",
-    url: "/help/center",
-    icon: FaHandsHelping,
-  },
+  // {
+  //   key: "Help",
+  //   label: "Help",
+  //   url: "/help/center",
+  //   icon: FaHandsHelping,
+  // },
   // {
   //   key: "FAQ",
   //   label: "FAQs",
@@ -387,12 +387,12 @@ export const HELP_MENU_ITEMS = [
     label: "Help Center",
     isTitle: true,
     children: [
-      {
-        key: "helps-center-page",
-        label: "Help Center",
-        url: "/help/center",
-        parentKey: "help-center",
-      },
+      // {
+      //   key: "helps-center-page",
+      //   label: "Help Center",
+      //   url: "/help/center",
+      //   parentKey: "help-center",
+      // },
       {
         key: "helps-detail-page",
         label: "Help Detail",
@@ -754,12 +754,12 @@ export const APP_MENU_ITEMS = [
         label: "Help",
         parentKey: "pages",
         children: [
-          {
-            key: "helps-center",
-            label: "Help Center",
-            url: "/help/center",
-            parentKey: "helps",
-          },
+          // {
+          //   key: "helps-center",
+          //   label: "Help Center",
+          //   url: "/help/center",
+          //   parentKey: "helps",
+          // },
           {
             key: "helps-detail",
             label: "Help Detail",

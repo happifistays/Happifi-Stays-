@@ -361,11 +361,11 @@ export const authRoutes = [
   },
 ];
 export const helpRoutes = [
-  {
-    path: "/help/center",
-    name: "pages.help.center",
-    element: <HelpCenter />,
-  },
+  // {
+  //   path: "/help/center",
+  //   name: "pages.help.center",
+  //   element: <HelpCenter />,
+  // },
   {
     path: "/help/detail",
     name: "pages.help.detail",
