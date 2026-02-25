@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
@@ -18,31 +18,47 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies([authSessionKey]);
 
-  const getSession = () => {
-    const fetchedCookie = cookies[authSessionKey];
-    if (!fetchedCookie) return undefined;
-    return typeof fetchedCookie === "string" ? fetchedCookie : fetchedCookie;
-  };
-
-  const [user, setUser] = useState(getSession());
+  // Use a function to initialize state so it only runs once on mount
+  const [user, setUser] = useState(() => {
+    const savedSession = cookies[authSessionKey];
+    if (savedSession) {
+      return typeof savedSession === "string"
+        ? JSON.parse(savedSession)
+        : savedSession;
+    }
+    return undefined;
+  });
 
   const saveSession = (userData) => {
-    setCookie(authSessionKey, JSON.stringify(userData), { path: "/" });
+    // 1. Set a Max-Age (e.g., 7 days) so the cookie persists after closing/refreshing browser
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 7);
+
+    setCookie(authSessionKey, JSON.stringify(userData), {
+      path: "/",
+      expires, // This is crucial
+      sameSite: "lax",
+    });
+
     setUser(userData);
     localStorage.setItem("token", userData.token);
   };
 
   const removeSession = () => {
     removeCookie(authSessionKey, { path: "/" });
+    localStorage.removeItem("token");
     setUser(undefined);
     navigate("/auth/sign-in");
   };
+
+  // Sync state if cookies change externally (optional but helpful)
+  const isAuthenticated = !!cookies[authSessionKey];
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!cookies[authSessionKey],
+        isAuthenticated,
         saveSession,
         removeSession,
       }}
