@@ -4,7 +4,7 @@ export const createOrder = async (req, res) => {
   try {
     const { amount, currency } = req.body;
     const options = {
-      amount: 100,
+      amount: req.body.amount,
       currency: currency || "INR",
     };
 

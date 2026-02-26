@@ -225,7 +225,9 @@ const ConfirmTicket = () => {
                           <BsVr className="me-2" />
                           Booking ID:
                         </span>
-                        <span className="h6 mb-0">{bookingDetails?._id}</span>
+                        <span className="h6 mb-0">
+                          {bookingDetails?.bookingId}
+                        </span>
                       </li>
                       <li className="list-group-item d-flex justify-content-between align-items-center">
                         <span>
