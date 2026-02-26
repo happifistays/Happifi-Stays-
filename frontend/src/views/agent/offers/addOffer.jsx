@@ -20,7 +20,7 @@ import {
   TextAreaFormInput,
   FileFormInput,
 } from "@/components";
-import TopNavBar4 from "../../tours/Grid/components/TopNavBar4";
+
 import Footer from "../../listings/Added/components/Footer";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
@@ -28,6 +28,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../../../config/env";
 import { useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
+import TopNavBar from "../../hotels/Home/components/TopNavBar";
 
 const AddOffer = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -62,10 +63,19 @@ const AddOffer = () => {
     },
   });
 
-  const propertyOptions = properties.map((prop) => ({
-    value: prop._id,
-    label: prop.listingName,
-  }));
+  console.log("Apply to Properties------------", properties);
+
+  // const propertyOptions = properties.map((prop) => ({
+  //   value: prop._id,
+  //   label: prop.listingName,
+  // }));
+
+  const propertyOptions = properties
+    .filter((prop) => prop.availableOffers.length === 0)
+    .map((prop) => ({
+      value: prop._id,
+      label: prop.listingName,
+    }));
 
   useEffect(() => {
     const fetchMyProperties = async () => {
@@ -165,7 +175,7 @@ const AddOffer = () => {
   return (
     <>
       <PageMetaData title={isEditMode ? "Edit Offer" : "Add New Offer"} />
-      <TopNavBar4 />
+      <TopNavBar />
       <main className="py-5">
         <Container>
           <Row className="justify-content-center">

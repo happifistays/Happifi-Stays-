@@ -2,7 +2,7 @@ import Offers from "../models/offerSchema.js";
 
 export const getAllOffers = async (req, res) => {
   try {
-    const offers = await Offers.find();
+    const offers = await Offers.find({ isDisabled: false });
 
     return res.status(200).json({
       success: true,

@@ -1,23 +1,32 @@
-import { PageMetaData } from '@/components';
-import AppsLink from './components/AppsLink';
-import Clients from './components/Clients';
-import FeaturedHoliday from './components/FeaturedHoliday';
-import FeaturedHotels from './components/FeaturedHotels';
-import Footer from './components/Footer';
-import FooterWithLinks from './components/FooterWithLinks';
-import Hero from './components/Hero';
-import NearbyPlaces from './components/NearbyPlaces';
-import OfferSlider from './components/OfferSlider';
-import TestimonialsSlider from './components/TestimonialsSlider';
-import TopNavBar from './components/TopNavBar';
+import { PageMetaData } from "@/components";
+import AppsLink from "./components/AppsLink";
+import Clients from "./components/Clients";
+import FeaturedHoliday from "./components/FeaturedHoliday";
+import FeaturedHotels from "./components/FeaturedHotels";
+import Footer from "./components/Footer";
+import FooterWithLinks from "./components/FooterWithLinks";
+
+import NearbyPlaces from "./components/NearbyPlaces";
+import OfferSlider from "./components/OfferSlider";
+import TestimonialsSlider from "./components/TestimonialsSlider";
+import TopNavBar from "./components/TopNavBar";
+import Hero from "../Chain/components/Hero";
+import Hero1 from "./components/Hero";
+import AvailabilityFilter from "./components/AvailabilityFilter";
+import { Container } from "react-bootstrap";
 const HotelHome = () => {
-  return <>
+  return (
+    <>
       <PageMetaData title="Hotel - Home" />
 
       <TopNavBar />
 
       <main>
-        <Hero /> 
+        {/* <Hero1 /> */}
+        <Hero />
+        <Container>
+          <AvailabilityFilter />
+        </Container>
 
         <OfferSlider />
 
@@ -37,6 +46,7 @@ const HotelHome = () => {
       <FooterWithLinks />
 
       {/* <Footer /> */}
-    </>;
+    </>
+  );
 };
 export default HotelHome;

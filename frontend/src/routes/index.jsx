@@ -7,7 +7,7 @@ import Users from "../views/agent/Bookings/Users";
 import AgentOffers from "../views/agent/offers";
 import AddOffer from "../views/agent/offers/addOffer";
 import AgentContacts from "../views/agent/contacts";
-const HotelsHome = lazy(() => import("@/views/hotels/Home"));
+const HotelsHome = lazy(() => import("@/views/hotels/Home")); 
 const HotelsChain = lazy(() => import("@/views/hotels/Chain"));
 const HotelsResort = lazy(() => import("@/views/hotels/Resort"));
 const HotelsGrid = lazy(() => import("@/views/hotels/Grid"));

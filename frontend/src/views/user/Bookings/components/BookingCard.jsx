@@ -110,13 +110,9 @@ const BookingCard = ({ booking, showActions = false, onSuccess }) => {
 
       <CardBody>
         <Row className="g-3">
-
-
-<Col sm={6} md={4}>
+          <Col sm={6} md={4}>
             <span>Booking ID:</span>
-            <h6 className="mb-0">
-               {booking?._id ?? ""}
-            </h6>
+            <h6 className="mb-0">100{booking?.bookingId ?? ""}</h6>
           </Col>
 
           <Col sm={6} md={4}>

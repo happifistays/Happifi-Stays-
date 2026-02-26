@@ -84,7 +84,7 @@ const SignIn = () => {
       setLoading(false);
     }
   };
- 
+
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
@@ -103,6 +103,10 @@ const SignIn = () => {
           token: res.data.token,
         });
 
+        if (res.data.user?.role) {
+          localStorage.setItem("role", res.data.user.role);
+        }
+
         Swal.fire({
           icon: "success",
           title: "Login Successful",
@@ -110,7 +114,13 @@ const SignIn = () => {
           showConfirmButton: false,
         });
 
-        navigate("/");
+        if (res.data.user?.role === "customer") {
+          navigate("/");
+        } else if (res.data.user?.role === "admin") {
+          navigate("/agent/dashboard");
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {
       console.error("Google login failed:", error);

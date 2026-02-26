@@ -3,6 +3,7 @@ import Bookings from "../models/bookings.js";
 export const getBookingsByCategory = async (req, res) => {
   try {
     const userId = req.userId;
+    console.log("userId-----------", userId);
     const { type } = req.query;
 
     const filter = { bookedUserId: userId };
@@ -16,7 +17,7 @@ export const getBookingsByCategory = async (req, res) => {
 
     const bookings = await Bookings.find(filter)
       .populate("propertyId", "listingName location avatar images")
-      .populate("roomId", "roomType price")
+      // .populate("roomId", "roomType price")
       .populate("shopId", "name email contactNumber")
       .sort({ createdAt: -1 });
 
