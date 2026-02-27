@@ -10,9 +10,10 @@ import Stats from "../../models/statsSchema.js";
 
 export const addReview = async (req, res) => {
   try {
-    const { fromId, propertyId, roomId, feedback, rating } = req.body;
+    console.log("=====================", req.body);
+    const { fromId, propertyId, feedback, rating } = req.body;
 
-    if (!fromId || !propertyId || !roomId || !rating) {
+    if (!fromId || !propertyId || !rating) {
       return res.status(400).json({
         success: false,
         message: "fromId, propertyId, roomId and rating are required",
@@ -24,7 +25,6 @@ export const addReview = async (req, res) => {
     const review = await addReviewService({
       fromId,
       propertyId,
-      roomId,
       feedback,
       rating,
       reviewImages,

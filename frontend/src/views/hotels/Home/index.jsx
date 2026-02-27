@@ -24,7 +24,7 @@ const HotelHome = () => {
       <main>
         {/* <Hero1 /> */}
         <Hero />
-        <Container>
+        <Container className="pt-3 pt-lg-5">
           <AvailabilityFilter />
         </Container>
 

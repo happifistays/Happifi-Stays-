@@ -199,7 +199,7 @@ const UpcomingBookings = () => {
                     </td>
                     <td>
                       <h6 className="mb-0">
-                        <Link to="">{booking.roomName}</Link>
+                        <Link to="">{booking?.propertyName ?? ""}</Link>
                       </h6>
                     </td>
                     {/* <td>{booking.additionalInfo || "N/A"}</td> */}

@@ -44,9 +44,9 @@ const AddOffer = () => {
     title: yup.string().required("Please enter the offer title"),
     description: yup.string().required("Please enter a description"),
     isDisabled: yup.boolean(),
-    appliedProperties: yup
-      .array()
-      .min(1, "Please select at least one property"),
+    // appliedProperties: yup
+    //   .array()
+    //   .min(1, "Please select at least one property"),
     offerImage: isEditMode
       ? yup.mixed().notRequired()
       : yup.mixed().required("Please upload an offer image"),
@@ -192,14 +192,14 @@ const AddOffer = () => {
                       <Col xs={12}>
                         <TextFormInput
                           name="title"
-                          label="Offer Title *"
+                          label="Offer Title"
                           placeholder="Enter offer title"
                           control={control}
                         />
                       </Col>
 
                       <Col xs={12}>
-                        <Form.Label>Apply to Properties *</Form.Label>
+                        <Form.Label>Apply to Properties</Form.Label>
                         <Controller
                           name="appliedProperties"
                           control={control}
@@ -233,7 +233,7 @@ const AddOffer = () => {
                       <Col xs={12}>
                         <TextAreaFormInput
                           name="description"
-                          label="Description *"
+                          label="Description"
                           placeholder="Describe the offer details"
                           rows={4}
                           control={control}

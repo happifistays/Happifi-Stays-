@@ -113,7 +113,7 @@ const Wishlist = () => {
               <p className="text-muted mb-3">
                 Looks like you haven't added any properties yet.
               </p>
-              <a href="/hotels/home">
+              <a href="/hotels/grid">
                 <Button variant="primary">Explore Properties</Button>
               </a>
             </div>
