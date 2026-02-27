@@ -212,13 +212,13 @@ export const AGENT_MENU_ITEMS = [
     parentKey: "acc-agent",
     icon: BsBookmarkHeart,
   },
-  {
-    key: "acc-agent-activities",
-    label: "Activities",
-    url: "/agent/activities",
-    parentKey: "acc-agent",
-    icon: BsBell,
-  },
+  // {
+  //   key: "acc-agent-activities",
+  //   label: "Activities",
+  //   url: "/agent/activities",
+  //   parentKey: "acc-agent",
+  //   icon: BsBell,
+  // },
   {
     key: "acc-agent-earnings",
     label: "Earnings",

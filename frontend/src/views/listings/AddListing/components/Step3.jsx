@@ -51,8 +51,8 @@ const Step3 = ({ isEdit }) => {
                       className="form-select js-choice border-0 z-index-9 bg-transparent"
                     >
                       <option value="INR">INR</option>
-                      <option value="USD">USD</option>
-                      <option value="EURO">EURO</option>
+                      {/* <option value="USD">USD</option>
+                      <option value="EURO">EURO</option> */}
                     </SelectFormInput>
                     {error && (
                       <div className="text-danger small mt-1">

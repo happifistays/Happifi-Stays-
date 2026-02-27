@@ -209,11 +209,11 @@ const AgentContacts = () => {
                                 </div>
                               </td>
                               <td>
-                                <div className="small text-muted mb-1">
+                                <div className="small mb-1">
                                   <FaRegEnvelope className="me-1" />{" "}
                                   {contact?.email}
                                 </div>
-                                <div className="small text-muted">
+                                <div className="small">
                                   <FaPhoneAlt className="me-1" size={10} />{" "}
                                   {contact?.phone}
                                 </div>
@@ -227,7 +227,7 @@ const AgentContacts = () => {
                                 </p>
                               </td>
                               <td>
-                                <span className="small text-muted">
+                                <span className="small">
                                   {contact.createdAt
                                     ? new Date(
                                         contact.createdAt

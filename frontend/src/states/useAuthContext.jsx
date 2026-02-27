@@ -18,41 +18,56 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies([authSessionKey]);
 
-  // Use a function to initialize state so it only runs once on mount
   const [user, setUser] = useState(() => {
     const savedSession = cookies[authSessionKey];
     if (savedSession) {
-      return typeof savedSession === "string"
-        ? JSON.parse(savedSession)
-        : savedSession;
+      try {
+        // Handle both stringified and already parsed objects
+        return typeof savedSession === "string"
+          ? JSON.parse(savedSession)
+          : savedSession;
+      } catch (error) {
+        console.error("Error parsing session cookie:", error);
+        return null;
+      }
     }
-    return undefined;
+    return null;
   });
 
   const saveSession = (userData) => {
-    // 1. Set a Max-Age (e.g., 7 days) so the cookie persists after closing/refreshing browser
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
 
+    // Save to Cookie (Primary storage for persistence)
     setCookie(authSessionKey, JSON.stringify(userData), {
       path: "/",
-      expires, // This is crucial
+      expires,
       sameSite: "lax",
     });
 
-    setUser(userData);
+    // Save to LocalStorage (Secondary storage for token access)
     localStorage.setItem("token", userData.token);
+
+    // Save to State (For immediate UI updates)
+    setUser(userData);
   };
 
   const removeSession = () => {
     removeCookie(authSessionKey, { path: "/" });
     localStorage.removeItem("token");
-    setUser(undefined);
+    localStorage.removeItem("role");
+    setUser(null);
     navigate("/auth/sign-in");
   };
 
-  // Sync state if cookies change externally (optional but helpful)
-  const isAuthenticated = !!cookies[authSessionKey];
+  // Keep state in sync if cookies are deleted elsewhere
+  useEffect(() => {
+    if (!cookies[authSessionKey] && user) {
+      setUser(null);
+    }
+  }, [cookies, user]);
+
+  const isAuthenticated = !!user || !!cookies[authSessionKey];
 
   return (
     <AuthContext.Provider

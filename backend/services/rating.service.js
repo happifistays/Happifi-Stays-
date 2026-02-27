@@ -23,19 +23,16 @@ export const getReviewsByRoomAndPropertyService = async (
   return reviews;
 };
 
-
 export const addReviewService = async ({
   fromId,
   propertyId,
-  roomId,
   feedback,
   rating,
   reviewImages,
 }) => {
   if (
     !mongoose.Types.ObjectId.isValid(fromId) ||
-    !mongoose.Types.ObjectId.isValid(propertyId) ||
-    !mongoose.Types.ObjectId.isValid(roomId)
+    !mongoose.Types.ObjectId.isValid(propertyId)
   ) {
     throw new Error("Invalid ID format");
   }
@@ -47,7 +44,6 @@ export const addReviewService = async ({
   const existingReview = await Rating.findOne({
     fromId,
     propertyId,
-    roomId,
   });
 
   if (existingReview) {
@@ -57,7 +53,6 @@ export const addReviewService = async ({
   const newReview = await Rating.create({
     fromId,
     propertyId,
-    roomId,
     feedback,
     rating,
     reviewImages,
@@ -65,8 +60,6 @@ export const addReviewService = async ({
 
   return newReview;
 };
-
-
 
 export const getReviewsByPropertyService = async (propertyId) => {
   if (!mongoose.Types.ObjectId.isValid(propertyId)) {

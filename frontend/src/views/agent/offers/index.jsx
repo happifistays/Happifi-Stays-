@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { PageMetaData, SelectFormInput } from "@/components";
+import { PageMetaData } from "@/components";
 import {
   Card,
   CardBody,
@@ -13,14 +13,14 @@ import {
   Dropdown,
   Badge,
 } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { BsBookmarkHeart, BsThreeDotsVertical } from "react-icons/bs";
-import { FaSearch, FaEye, FaEdit, FaPowerOff } from "react-icons/fa";
-import NotFound from "../../../components/NotFound/NotFound";
+import { FaSearch, FaEye, FaEdit, FaPowerOff, FaTrash } from "react-icons/fa";
 import { API_BASE_URL } from "../../../config/env";
 import { DEFAULT_AVATAR_IMAGE } from "../../../constants/images";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 // Custom Toggle component to remove the default arrow
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -110,6 +110,35 @@ const AgentOffers = () => {
     } catch (error) {
       console.error("Error updating offer status:", error);
     }
+  };
+
+  const handleDeleteOffer = async (offerId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete the offer ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const resp = await axios.delete(
+          `${API_BASE_URL}/api/v1/shops/offer/${offerId}`,
+          config
+        );
+
+        if (resp.data.success) {
+          fetchOffers(currentPage);
+        }
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
   };
 
   useEffect(() => {
@@ -325,6 +354,15 @@ const AgentOffers = () => {
                                       {offer.isDisabled
                                         ? "Reactivate"
                                         : "Deactivate"}
+                                    </Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item
+                                      className="text-danger"
+                                      onClick={() =>
+                                        handleDeleteOffer(offer._id)
+                                      }
+                                    >
+                                      <FaTrash className="me-2" /> Delete Offer
                                     </Dropdown.Item>
                                   </Dropdown.Menu>
                                 </Dropdown>

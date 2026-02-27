@@ -226,7 +226,7 @@ const ConfirmTicket = () => {
                           Booking ID:
                         </span>
                         <span className="h6 mb-0">
-                          {bookingDetails?.bookingId}
+                          {1000 + Number(bookingDetails?.bookingId ?? 0)}
                         </span>
                       </li>
                       <li className="list-group-item d-flex justify-content-between align-items-center">

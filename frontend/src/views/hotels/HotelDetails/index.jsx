@@ -22,7 +22,7 @@ const HotelDetails = () => {
   const [checkIn, setCheckIn] = useState(null);
   const [checkOut, setCheckOut] = useState(null);
   const [isAvailable, setIsAvailable] = useState(true);
-
+  console.log("11111111111");
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     if (id) {
@@ -147,7 +147,9 @@ const HotelDetails = () => {
               setCheckOut={setCheckOut}
               handleBookNow={handleBookNow}
               isAvailable={isAvailable}
-              availableOffers={hotel?.availableOffers ?? []}
+              availableOffers={
+                hotel?.availableOffers?.length ? [hotel.availableOffers[0]] : []
+              }
               policy={hotel?.policy?.description}
               discount={hotel?.discount ?? 0}
             />

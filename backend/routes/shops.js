@@ -31,6 +31,7 @@ import { addOffer } from "../controllers/shops/addOffer.js";
 import { getOffers } from "../controllers/shops/getOffers.js";
 import { editOffer } from "../controllers/shops/editOffer.js";
 import { getOfferById } from "../controllers/shops/getOfferById.js";
+import { deleteOffer } from "../controllers/shops/deleteOffer.js";
 
 const shopsRouter = express.Router();
 
@@ -75,5 +76,7 @@ shopsRouter.patch(
   userVerification,
   updatePropertyById
 );
+
+shopsRouter.delete("/offer/:id", deleteOffer);
 
 export default shopsRouter;
