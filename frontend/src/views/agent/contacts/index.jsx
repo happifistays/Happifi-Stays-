@@ -9,11 +9,11 @@ import {
   Row,
   Modal,
   Button,
-  Dropdown,
   Badge,
+  Form,
 } from "react-bootstrap";
 import clsx from "clsx";
-import { BsBookmarkHeart, BsThreeDotsVertical } from "react-icons/bs";
+import { BsBookmarkHeart, BsCloudDownload } from "react-icons/bs";
 import {
   FaSearch,
   FaEye,
@@ -23,9 +23,11 @@ import {
   FaQuoteLeft,
 } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import NotFound from "../../../components/NotFound/NotFound";
 import { API_BASE_URL } from "../../../config/env";
-import { PageMetaData, SelectFormInput } from "@/components";
+import { PageMetaData } from "@/components";
 
 const AgentContacts = () => {
   const [loading, setLoading] = useState(false);
@@ -36,16 +38,21 @@ const AgentContacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [contacts, setContacts] = useState([]);
 
+  // Search and Sort States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt:desc");
+
   const handleView = (contact) => {
     setSelectedContact(contact);
     setShowModal(true);
   };
 
-  const fetchContacts = useCallback(async (page) => {
+  const fetchContacts = useCallback(async (page, search = "", sort = "") => {
     try {
       setLoading(true);
+      // Your backend uses 'title' for regex search and 'sort' for ordering
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/auth/contacts?page=${page}`,
+        `${API_BASE_URL}/api/v1/auth/contacts?page=${page}&title=${search}&sort=${sort}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -65,9 +72,56 @@ const AgentContacts = () => {
     }
   }, []);
 
+  // Effect to handle Fetching with Debounce for search
   useEffect(() => {
-    fetchContacts(currentPage);
-  }, [fetchContacts, currentPage]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchContacts(currentPage, searchTerm, sortBy);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [fetchContacts, currentPage, searchTerm, sortBy]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page on search
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setCurrentPage(1); // Reset to first page on sort change
+  };
+
+  const downloadAllContactsPDF = () => {
+    if (contacts.length === 0) return;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("INQUIRIES & CONTACTS REPORT", 14, 20);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+    doc.text(`Total Submissions: ${totalContact}`, 14, 34);
+
+    const tableRows = contacts.map((contact, idx) => [
+      (currentPage - 1) * 10 + idx + 1,
+      contact.name,
+      contact.email,
+      contact.phone,
+      contact.message,
+      contact.createdAt
+        ? new Date(contact.createdAt).toLocaleDateString()
+        : "N/A",
+    ]);
+
+    autoTable(doc, {
+      startY: 40,
+      head: [["#", "Name", "Email", "Phone", "Message", "Date"]],
+      body: tableRows,
+      theme: "grid",
+      headStyles: { fillColor: [13, 110, 253] },
+      styles: { fontSize: 8 },
+    });
+
+    doc.save(`Contacts_Report_${new Date().getTime()}.pdf`);
+  };
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -106,15 +160,6 @@ const AgentContacts = () => {
   const startEntry = contacts.length > 0 ? (currentPage - 1) * 10 + 1 : 0;
   const endEntry = Math.min(currentPage * 10, totalContact);
 
-  if (!loading && contacts.length === 0) {
-    return (
-      <NotFound
-        title={"No Leads found!"}
-        description={"You dont have any leads yet!"}
-      />
-    );
-  }
-
   return (
     <>
       <PageMetaData title="Agent Contacts" />
@@ -136,13 +181,22 @@ const AgentContacts = () => {
           <Row>
             <Col xs={12}>
               <Card className="border shadow-sm overflow-hidden">
-                <CardHeader className="bg-light border-bottom p-3">
-                  <div className="d-sm-flex align-items-center justify-content-between">
+                <CardHeader className="bg-light border-bottom p-3 d-flex justify-content-between align-items-center">
+                  <div className="d-sm-flex align-items-center gap-2">
                     <h5 className="card-header-title mb-0">Contact List</h5>
                     <Badge bg="primary" className="rounded-pill">
                       {totalContact} Submissions
                     </Badge>
                   </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="d-flex align-items-center gap-2"
+                    onClick={downloadAllContactsPDF}
+                    disabled={loading || contacts.length === 0}
+                  >
+                    <BsCloudDownload /> Download All
+                  </Button>
                 </CardHeader>
 
                 <CardBody className="p-0">
@@ -154,6 +208,8 @@ const AgentContacts = () => {
                             className="form-control bg-light border-0 pe-5"
                             type="search"
                             placeholder="Search by name or email..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
                           />
                           <button
                             className="btn position-absolute top-50 end-0 translate-middle-y text-primary"
@@ -164,11 +220,16 @@ const AgentContacts = () => {
                         </div>
                       </Col>
                       <Col md={4}>
-                        <SelectFormInput className="form-select bg-light border-0">
-                          <option value={-1}>Sort by Date</option>
-                          <option>Newest First</option>
-                          <option>Oldest First</option>
-                        </SelectFormInput>
+                        <Form.Select
+                          className="bg-light border-0"
+                          value={sortBy}
+                          onChange={handleSortChange}
+                        >
+                          <option value="createdAt:desc">Newest First</option>
+                          <option value="createdAt:asc">Oldest First</option>
+                          <option value="name:asc">Name (A-Z)</option>
+                          <option value="name:desc">Name (Z-A)</option>
+                        </Form.Select>
                       </Col>
                     </Row>
                   </div>
@@ -192,6 +253,15 @@ const AgentContacts = () => {
                                 className="spinner-border text-primary"
                                 role="status"
                               ></div>
+                            </td>
+                          </tr>
+                        ) : contacts.length === 0 ? (
+                          <tr>
+                            <td colSpan="5" className="text-center py-5">
+                              <NotFound
+                                title={"No Leads found!"}
+                                description={"No matching inquiries found."}
+                              />
                             </td>
                           </tr>
                         ) : (
@@ -341,7 +411,7 @@ const AgentContacts = () => {
                     <FaRegEnvelope className="me-2" /> Reply via Email
                   </Button>
                   <Button
-                    variant="outline-dark"
+                    variant="outline-dark2"
                     className="rounded-pill px-4"
                     href={`tel:${selectedContact.phone}`}
                   >
@@ -361,7 +431,7 @@ const AgentContacts = () => {
                       Client Message
                     </h6>
                     <p
-                      className="fs-5 text-dark mb-0 lh-base"
+                      className="fs-5 text-dark2 mb-0 lh-base"
                       style={{ whiteSpace: "pre-wrap", fontStyle: "italic" }}
                     >
                       "{selectedContact.message}"

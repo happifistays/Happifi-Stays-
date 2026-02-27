@@ -1,23 +1,36 @@
-import Room from "../../models/roomSchema.js";
+import Property from "../../models/propertySchema.js";
+import Bookings from "../../models/bookings.js";
 import Stats from "../../models/statsSchema.js";
 
 export const getListingsCount = async (req, res) => {
   try {
     const shopId = req.userId;
 
-    const [availableRooms, bookedRooms, shopStats] = await Promise.all([
-      Room.countDocuments({ shop: shopId, isAvailable: true }),
-      Room.countDocuments({ shop: shopId, isAvailable: false }),
+    // 1. Get unique property IDs that have an active reservation status
+    // This counts a property as 'booked' if it is currently reserved or occupied
+    const bookedPropertyIds = await Bookings.distinct("propertyId", {
+      shopId: shopId,
+      status: { $in: ["booked", "checked_in"] },
+    });
+
+    const bookedProperties = bookedPropertyIds.length;
+
+    // 2. Fetch total listings and stats in parallel
+    const [totalListings, shopStats] = await Promise.all([
+      Property.countDocuments({ owner: shopId }),
       Stats.findOne({ shopId: shopId }),
     ]);
+
+    // 3. Calculate available properties (Total - Booked)
+    const availableProperties = Math.max(0, totalListings - bookedProperties);
 
     return res.status(200).send({
       success: true,
       data: {
-        availableRooms,
-        bookedRooms,
-        totalListings: availableRooms + bookedRooms,
+        availableProperties,
         earnings: shopStats ? shopStats.earnings : 0,
+        bookedProperties,
+        totalListings,
       },
     });
   } catch (error) {

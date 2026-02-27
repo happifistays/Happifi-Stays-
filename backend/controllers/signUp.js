@@ -111,9 +111,16 @@ export const verifyOTPAndSignUp = async (req, res) => {
 
     const token = createSecretToken(user._id);
 
+    // res.cookie("token", token, {
+    //   httpOnly: false,
+    //   secure: true,
+    // });
+
     res.cookie("token", token, {
-      httpOnly: false,
-      secure: true,
+      httpOnly: true, // Prevents XSS
+      secure: process.env.NODE_ENV === "production", // Only sends over HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Required for cross-site
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(201).json(successResponse({ user }));

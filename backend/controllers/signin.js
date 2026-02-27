@@ -1,6 +1,8 @@
 import User from "../models/userSchema.js";
 import bcrypt from "bcryptjs";
 import { createSecretToken } from "../utils/utils.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const sigIn = async (req, res) => {
   try {
@@ -31,9 +33,16 @@ export const sigIn = async (req, res) => {
 
     const token = createSecretToken(user._id);
 
+    // res.cookie("token", token, {
+    //   withCredentials: true,
+    //   httpOnly: false,
+    // });
+
     res.cookie("token", token, {
-      withCredentials: true,
-      httpOnly: false,
+      httpOnly: true, // Prevents XSS
+      secure: process.env.NODE_ENV === "production", // Only sends over HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Required for cross-site
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     let loggedInUser = user;

@@ -18,7 +18,6 @@ import NotFound from "../../../components/NotFound/NotFound";
 import { API_BASE_URL } from "../../../config/env";
 
 const Listings = () => {
-  const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [statistics, setStatistics] = useState([]);
   const [search, setSearch] = useState("");
@@ -37,53 +36,6 @@ const Listings = () => {
     }, 500);
     return () => clearTimeout(handler);
   }, [search]);
-
-  // const fetchRooms = useCallback(async () => {
-  //   try {
-  //     setLoading(true);
-  //     const queryParams = new URLSearchParams({
-  //       page,
-  //       limit: 5,
-  //       search: debouncedSearch,
-  //       type,
-  //     }).toString();
-
-  //     const response = await fetch(
-  //       `${API_BASE_URL}/api/v1/shops/rooms?${queryParams}`,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     const data = await response.json();
-  //     if (data.success) {
-  //       const flattenedRooms = data.data.flatMap((property) =>
-  //         property.rooms.map((room) => ({
-  //           ...room,
-  //           listingName: property.listingName,
-  //           listingType: property.listingType,
-  //           location: property.location,
-  //           amenities: property.amenities,
-  //           currency: property.currency,
-  //         }))
-  //       );
-  //       setRooms(flattenedRooms);
-  //       setPagination(data.pagination);
-  //     }
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error(error);
-  //     setLoading(false);
-  //   }
-  // }, [page, type, debouncedSearch, token]);
-
-  // useEffect(() => {
-  //   fetchRooms();
-  // }, [fetchRooms]);
 
   const fetchProperties = useCallback(async () => {
     try {
@@ -107,9 +59,10 @@ const Listings = () => {
       );
 
       const data = await response.json();
-      if (data.success && data.data.length) {
-        setProperties(data.data);
-        setPagination(data.pagination);
+      if (data.success) {
+        // Fix: Update properties even if it's an empty array so the UI refreshes
+        setProperties(data.data || []);
+        setPagination(data.pagination || { total: 0, pages: 1 });
       }
       setLoading(false);
     } catch (error) {
@@ -136,9 +89,14 @@ const Listings = () => {
           }
         );
         const result = await response.json();
+        console.log("result--------------", result);
         if (result.success) {
-          const { availableRooms, earnings, bookedRooms, totalListings } =
-            result.data;
+          const {
+            availableProperties,
+            earnings,
+            bookedProperties,
+            totalListings,
+          } = result.data;
           setStatistics([
             {
               title: "Earning",
@@ -149,16 +107,16 @@ const Listings = () => {
               href: "/agent/earnings",
             },
             {
-              title: "Booked Rooms",
-              state: bookedRooms.toString(),
+              title: "Booked Properties",
+              state: bookedProperties.toString(),
               change: totalListings.toString(),
               changeLabel: "Total Rooms",
               variant: "text-info",
               href: "/agent/bookings",
             },
             {
-              title: "Available Rooms",
-              state: availableRooms.toString(),
+              title: "Available Properties",
+              state: availableProperties.toString(),
               change: totalListings.toString(),
               changeLabel: "Total Rooms",
               variant: "text-warning",
@@ -202,7 +160,7 @@ const Listings = () => {
                   <h5 className="mb-0">
                     My Listings{" "}
                     <span className="badge bg-primary bg-opacity-10 text-primary ms-2">
-                      {rooms.length} Rooms
+                      {pagination.total} Properties
                     </span>
                   </h5>
                 </Col>
@@ -242,8 +200,8 @@ const Listings = () => {
               </Row>
             </CardHeader>
 
-            <CardBody className="vstack gap-3">
-              {loading ? (
+            <CardBody className="vstack gap-3 position-relative">
+              {loading && (
                 <div
                   className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
                   style={{
@@ -253,21 +211,20 @@ const Listings = () => {
                 >
                   <Spinner animation="border" variant="primary" />
                 </div>
-              ) : !loading && properties.length === 0 ? (
+              )}
+
+              {!loading && properties.length === 0 ? (
                 <div className="text-center p-4">
                   <NotFound
                     title={"No Properties found!"}
-                    description={
-                      "No Properties available at the moment. Please add your propery"
-                    }
+                    description={"No Properties matches your search criteria."}
                   />
                 </div>
               ) : (
                 <div>
                   {properties.map((property, idx) => (
-                    <div className="mt-2">
+                    <div className="mt-2" key={property._id || idx}>
                       <ListingCard
-                        key={property._id || idx}
                         property={property}
                         setProperties={setProperties}
                       />

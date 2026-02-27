@@ -44,14 +44,14 @@ const CenteredFooter = () => {
               </Link>
             </li>
           </ul>
-          <div className="text-body-secondary text-primary-hover mt-3">
+          {/* <div className="text-body-secondary text-primary-hover mt-3">
             {' '}
             Copyrights ©{currentYear}  Happifi Stays
             <a href={developedByLink} target="_blank" className="text-body-secondary">
               StackBros
             </a>
             .{' '}
-          </div>
+          </div> */}
         </Col>
       </Row>
     </Container>

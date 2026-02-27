@@ -102,7 +102,10 @@ const FooterWithLinks = () => {
               <li className="list-inline-item me-2">
                 {" "}
                 <Link to="">
-                  <Image src="https://res.cloudinary.com/djnaor5ed/image/upload/v1771772612/245a69c1-c9b3-436b-a3b1-0af7bdef2ebf_db4rvn.jpg" className="h-30px me-1" />
+                  <Image
+                    src="https://res.cloudinary.com/djnaor5ed/image/upload/v1771772612/245a69c1-c9b3-436b-a3b1-0af7bdef2ebf_db4rvn.jpg"
+                    className="h-30px me-1"
+                  />
                 </Link>
               </li>
               <li className="list-inline-item me-2">
@@ -119,9 +122,7 @@ const FooterWithLinks = () => {
               </li>
               <li className="list-inline-item me-2">
                 {" "}
-                <Link to="">
-
-                </Link>
+                <Link to=""></Link>
               </li>
             </ul>
           </Col>
@@ -175,7 +176,7 @@ const FooterWithLinks = () => {
         <Row>
           <Container>
             <div className="d-lg-flex justify-content-between align-items-center py-3 text-center text-lg-start">
-              <div className="text-body-secondary text-primary-hover">
+              {/* <div className="text-body-secondary text-primary-hover">
                 {" "}
                 Copyrights ©{currentYear} Booking. Build by{" "}
                 <a
@@ -186,7 +187,7 @@ const FooterWithLinks = () => {
                   StackBros
                 </a>
                 .{" "}
-              </div>
+              </div> */}
               <Nav className="nav mt-2 mt-lg-0">
                 <ul className="list-inline text-primary-hover mx-auto mb-0">
                   <li className="list-inline-item me-0">

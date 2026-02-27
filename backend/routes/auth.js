@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  sendEmailOTP,
+  sendEmailOTP, 
   sendOTP,
   signUp,
   verifyOTPAndSignUp,

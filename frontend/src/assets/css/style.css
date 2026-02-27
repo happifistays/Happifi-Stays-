@@ -3913,6 +3913,10 @@ textarea.form-control-lg {
   --bs-gradient: none;
 }
 
+.btn-outline-dark2{
+  --bs-btn-color: #ffff;
+}
+
 .btn-outline-orange {
   --bs-btn-color: #fd7e14;
   --bs-btn-border-color: #fd7e14;
@@ -10418,6 +10422,11 @@ textarea.form-control-lg {
 .text-dark {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
+}
+
+.text-dark2 {
+ 
+  color: #fff;
 }
 
 .text-orange {
@@ -22247,7 +22256,7 @@ html[dir=rtl] .choices__input {
   --bs-alert-bg: rgba(255, 255, 255, .05);
   --bs-alert-border-color: rgba(255, 255, 255, .25);
   --bs-alert-color: rgba(255, 255, 255, 0.8);
-}
+} 
 [data-bs-theme=dark] .btn-primary {
   --bs-btn-bg: var(--bs-primary);
   --bs-btn-border-color: var(--bs-primary);

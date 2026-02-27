@@ -13,8 +13,10 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import { BsBookmarkHeart } from "react-icons/bs";
+import { BsBookmarkHeart, BsCloudDownload } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import NotFound from "../../../components/NotFound/NotFound";
 import { API_BASE_URL } from "../../../config/env";
 
@@ -70,6 +72,36 @@ const Users = () => {
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
+
+  const downloadAllUsersPDF = () => {
+    if (users.length === 0) return;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("USERS REPORT", 14, 20);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+    doc.text(`Total Users: ${totalUsers}`, 14, 34);
+
+    const tableRows = users.map((user, idx) => [
+      (currentPage - 1) * limit + idx + 1,
+      user.name,
+      user.email,
+      user.provider.toUpperCase(),
+      user.isBlocked ? "BLOCKED" : "ACTIVE",
+      new Date(user.createdAt).toLocaleDateString(),
+    ]);
+
+    autoTable(doc, {
+      startY: 40,
+      head: [["#", "Name", "Email", "Provider", "Status", "Joined Date"]],
+      body: tableRows,
+      theme: "grid",
+      headStyles: { fillColor: [13, 110, 253] },
+      styles: { fontSize: 8 },
+    });
+
+    doc.save(`Users_Report_${new Date().getTime()}.pdf`);
+  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -140,6 +172,15 @@ const Users = () => {
                       {totalUsers} Users
                     </span>
                   </h5>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="d-flex align-items-center gap-2"
+                    onClick={downloadAllUsersPDF}
+                    disabled={loading || users.length === 0}
+                  >
+                    <BsCloudDownload /> Download All
+                  </Button>
                 </CardHeader>
                 <CardBody>
                   <div className="row g-3 align-items-center justify-content-between mb-3">

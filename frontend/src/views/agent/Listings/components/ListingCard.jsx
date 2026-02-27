@@ -92,7 +92,7 @@ const ListingCard = ({ property, setProperties }) => {
       setLoading(true);
       const newStatus = !isDisabled;
 
-      await axios.patch(
+      const resp = await axios.patch(
         `${API_BASE_URL}/api/v1/shops/property/${property._id}`,
         {
           isDisabled: newStatus,
@@ -104,29 +104,33 @@ const ListingCard = ({ property, setProperties }) => {
         }
       );
 
-      setRooms((prevRooms) =>
-        prevRooms.map((room) =>
-          room._id === property._id ? { ...room, isDisabled: newStatus } : room
-        )
-      );
+      if (resp.data.success) {
+        setProperties((prevProperties) =>
+          prevProperties.map((prop) =>
+            prop._id === property._id
+              ? { ...prop, isDisabled: newStatus }
+              : prop
+          )
+        );
 
-      if (newStatus) {
-        Swal.fire({
-          title: "Disabled",
-          text: "Room disabled successfully",
-          icon: "success",
-        });
-      } else {
-        Swal.fire({
-          title: "Reactivated",
-          text: "Room deactivated successfully",
-          icon: "success",
-        });
+        if (newStatus) {
+          Swal.fire({
+            title: "Disabled",
+            text: "Property disabled successfully",
+            icon: "success",
+          });
+        } else {
+          Swal.fire({
+            title: "Reactivated",
+            text: "Property reactivated successfully",
+            icon: "success",
+          });
+        }
       }
 
       setLoading(false);
     } catch (error) {
-      toast.error("Failed to update room status");
+      toast.error("Failed to update property status");
       setLoading(false);
     }
   };

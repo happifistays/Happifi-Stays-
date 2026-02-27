@@ -154,7 +154,7 @@ const CustomerReview = ({ hotelDetails, propertyId }) => {
               <div className="avatar avatar-lg me-3 flex-shrink-0">
                 <Image
                   className="avatar-img rounded-circle"
-                  src={review.fromId?.avatar || avatarDefault}
+                  src={review.fromId?.avatar || DEFAULT_AVATAR_IMAGE}
                   alt="avatar"
                 />
               </div>

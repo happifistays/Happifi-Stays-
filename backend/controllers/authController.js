@@ -1,11 +1,13 @@
 import { googleLoginService } from "../services/authService.js";
 import { createSecretToken } from "../utils/utils.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const googleLogin = async (req, res, next) => {
   try {
     const { idToken } = req.body;
 
-    if (!idToken) { 
+    if (!idToken) {
       return res.status(400).json({ message: "ID token required" });
     }
 
@@ -13,9 +15,16 @@ export const googleLogin = async (req, res, next) => {
 
     const token = createSecretToken(user._id);
 
+    // res.cookie("token", token, {
+    //   withCredentials: true,
+    //   httpOnly: false,
+    // });
+
     res.cookie("token", token, {
-      withCredentials: true,
-      httpOnly: false,
+      httpOnly: true, // Prevents XSS
+      secure: process.env.NODE_ENV === "production", // Only sends over HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Required for cross-site
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     let loggedInUser = user;

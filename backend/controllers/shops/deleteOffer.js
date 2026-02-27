@@ -1,4 +1,5 @@
 import Offers from "../../models/offerSchema.js";
+import Property from "../../models/propertySchema.js";
 
 export const deleteOffer = async (req, res) => {
   try {
@@ -13,12 +14,16 @@ export const deleteOffer = async (req, res) => {
       });
     }
 
+    await Property.updateMany(
+      { availableOffers: id },
+      { $pull: { availableOffers: id } }
+    );
+
     return res.status(200).json({
       success: true,
       message: "Offer deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting offer:", error);
     return res.status(500).json({
       success: false,
       message: error.message || "Internal server error",

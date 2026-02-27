@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { PageMetaData, SelectFormInput } from "@/components";
+import { PageMetaData } from "@/components";
 import {
   Card,
   CardBody,
@@ -10,6 +10,7 @@ import {
   Row,
   Modal,
   Button,
+  Form,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
@@ -30,17 +31,22 @@ const Bookings = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
+  // Search and Sort States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("");
+
   const handleView = (booking) => {
     setSelectedBooking(booking);
     setShowModal(true);
   };
 
   const fetchBookings = useCallback(
-    async (page) => {
+    async (page, search = "", sort = "") => {
       try {
         setLoading(true);
+        // Constructed URL with search and sort parameters
         const response = await fetch(
-          `${API_BASE_URL}/api/v1/shops/bookings?page=${page}`,
+          `${API_BASE_URL}/api/v1/shops/bookings?page=${page}&search=${search}&sort=${sort}`,
           {
             method: "GET",
             headers: {
@@ -66,9 +72,24 @@ const Bookings = () => {
     [token]
   );
 
+  // Unified effect for page, search, and sort changes
   useEffect(() => {
-    fetchBookings(currentPage);
-  }, [fetchBookings, currentPage]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchBookings(currentPage, searchTerm, sortBy);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentPage, searchTerm, sortBy, fetchBookings]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to page 1 on search
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setCurrentPage(1); // Reset to page 1 on sort
+  };
 
   const downloadAllBookingsPDF = () => {
     if (bookings.length === 0) return;
@@ -81,7 +102,7 @@ const Bookings = () => {
 
     const tableRows = bookings.map((booking, idx) => [
       idx + 1,
-      booking.roomName,
+      booking.propertyName || booking.roomName || "N/A",
       `${booking.checkInDate} to ${booking.checkOutDate}`,
       booking.status.toUpperCase(),
       booking.paymentStatus.toUpperCase(),
@@ -90,7 +111,7 @@ const Bookings = () => {
 
     autoTable(doc, {
       startY: 40,
-      head: [["#", "Room Name", "Duration", "Status", "Payment", "Amount"]],
+      head: [["#", "Property Name", "Duration", "Status", "Payment", "Amount"]],
       body: tableRows,
       theme: "grid",
       headStyles: { fillColor: [13, 110, 253] }, // Primary Blue
@@ -125,15 +146,6 @@ const Bookings = () => {
 
   const startEntry = bookings.length > 0 ? (currentPage - 1) * 10 + 1 : 0;
   const endEntry = Math.min(currentPage * 10, totalBooking);
-
-  // if (!loading && bookings.length === 0) {
-  //   return (
-  //     <NotFound
-  //       title={"No Bookings found!"}
-  //       description={"You dont have any bookings yet!"}
-  //     />
-  //   );
-  // }
 
   return (
     <>
@@ -171,12 +183,14 @@ const Bookings = () => {
                 <CardBody>
                   <div className="row g-3 align-items-center justify-content-between mb-3">
                     <div className="col-md-8">
-                      <form className="rounded position-relative">
+                      <div className="rounded position-relative">
                         <input
                           className="form-control pe-5"
                           type="search"
-                          placeholder="Search"
+                          placeholder="Search property name..."
                           aria-label="Search"
+                          value={searchTerm}
+                          onChange={handleSearchChange}
                         />
                         <button
                           className="btn border-0 px-3 py-0 position-absolute top-50 end-0 translate-middle-y"
@@ -184,20 +198,18 @@ const Bookings = () => {
                         >
                           <FaSearch className="mb-1" />
                         </button>
-                      </form>
+                      </div>
                     </div>
                     <Col md={3}>
-                      <form>
-                        <SelectFormInput
-                          className="form-select js-choice"
-                          aria-label=".form-select-sm"
-                        >
-                          <option value={-1}>Sort by</option>
-                          <option>Free</option>
-                          <option>Newest</option>
-                          <option>Oldest</option>
-                        </SelectFormInput>
-                      </form>
+                      <Form.Select
+                        className="form-select"
+                        value={sortBy}
+                        onChange={handleSortChange}
+                      >
+                        <option value="">Sort by (Default)</option>
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                      </Form.Select>
                     </Col>
                   </div>
                   <div className="table-responsive border-0">
@@ -227,19 +239,20 @@ const Bookings = () => {
                       <tbody className="border-top-0">
                         {loading ? (
                           <tr>
-                            <td colSpan="7" className="text-center">
+                            <td colSpan="6" className="text-center">
+                              <div
+                                className="spinner-border spinner-border-sm text-primary me-2"
+                                role="status"
+                              ></div>
                               Loading...
                             </td>
                           </tr>
-                        ) : bookings?.length == 0 ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                          >
-                            No bookings found
-                          </div>
+                        ) : bookings?.length === 0 ? (
+                          <tr>
+                            <td colSpan="6" className="text-center py-4">
+                              No bookings found
+                            </td>
+                          </tr>
                         ) : (
                           bookings.map((booking, idx) => (
                             <tr key={booking._id || idx}>
@@ -250,7 +263,9 @@ const Bookings = () => {
                               </td>
                               <td>
                                 <h6 className="mb-0">
-                                  <Link to="">{booking.roomName}</Link>
+                                  <Link to="">
+                                    {booking?.propertyName ?? "N/A"}
+                                  </Link>
                                 </h6>
                               </td>
                               <td>
@@ -282,17 +297,16 @@ const Bookings = () => {
                                       : "bg-warning text-warning"
                                   )}
                                 >
-                                  {booking.paymentStatus}
+                                  {booking.paymentStatus?.replace("_", " ")}
                                 </div>
                               </td>
                               <td>
-                                <Link
+                                <button
                                   onClick={() => handleView(booking)}
-                                  to=""
                                   className="btn btn-sm btn-light mb-0"
                                 >
                                   View
-                                </Link>
+                                </button>
                               </td>
                             </tr>
                           ))
@@ -359,7 +373,15 @@ const Bookings = () => {
           {selectedBooking && (
             <div className="p-2">
               <div className="mb-4">
-                <h4 className="fw-bold mb-1">{selectedBooking.roomName}</h4>
+                <h4 className="fw-bold mb-1">
+                  {selectedBooking.propertyName || selectedBooking.roomName}
+                </h4>
+                {selectedBooking.customer && (
+                  <p className="text-muted small">
+                    Customer: {selectedBooking.customer.name} (
+                    {selectedBooking.customer.email})
+                  </p>
+                )}
               </div>
               <div className="d-flex gap-3 mb-4 flex-wrap">
                 <span
@@ -380,7 +402,9 @@ const Bookings = () => {
                       : "bg-warning text-dark"
                   )}
                 >
-                  {selectedBooking.paymentStatus.toUpperCase()}
+                  {selectedBooking.paymentStatus
+                    .toUpperCase()
+                    .replace("_", " ")}
                 </span>
               </div>
               <div className="card border-0 shadow-sm mb-3">

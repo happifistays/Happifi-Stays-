@@ -99,7 +99,7 @@ const TwoFactorAuth = () => {
               Verify and Process
             </button>
 
-            <div className="text-primary-hover mt-3 text-center">
+            {/* <div className="text-primary-hover mt-3 text-center">
               Copyrights ©{currentYear} Booking. Build by{" "}
               <a
                 href={developedByLink}
@@ -110,7 +110,7 @@ const TwoFactorAuth = () => {
                 StackBros
               </a>
               .
-            </div>
+            </div> */}
           </form>
         </div>
       </Col>

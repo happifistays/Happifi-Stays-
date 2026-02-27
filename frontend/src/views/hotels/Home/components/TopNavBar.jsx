@@ -34,6 +34,7 @@ import {
   BsMoonStars,
   BsPower,
   BsSun,
+  BsPersonFill,
 } from "react-icons/bs";
 import { FaHotel } from "react-icons/fa6";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -306,6 +307,16 @@ const TopNavBar = () => {
 
                     {user?.role === "customer" && (
                       <>
+                        <DropdownItem
+                          onClick={() =>
+                            token
+                              ? navigate("/customer/profile")
+                              : navigate("/auth/sign-in")
+                          }
+                        >
+                          <BsPersonFill className=" me-2" />
+                          My Profile
+                        </DropdownItem>
                         <DropdownItem
                           onClick={() =>
                             token
