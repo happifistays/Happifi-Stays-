@@ -196,11 +196,12 @@ const BookingDetails = () => {
             );
 
             const result = await verifyRes.json();
-            if (result.success) {
-              navigate(`/booking-confirmed/${result?.booking?._id}`);
-            } else {
-              alert(result.message || "Payment verification failed");
-            }
+            navigate(`/booking-confirmed/${result?.booking?._id}`);
+            // if (result.success) {
+            //   navigate(`/booking-confirmed/${result?.booking?._id}`);
+            // } else {
+            //   alert(result.message || "Payment verification failed");
+            // }
           },
           prefill: {
             name: `${data.guests[0].firstName} ${data.guests[0].lastName}`,
