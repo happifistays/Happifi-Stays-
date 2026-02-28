@@ -18,7 +18,6 @@ import { BsBookmarkHeart, BsCloudDownload } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import NotFound from "../../../components/NotFound/NotFound";
 import { API_BASE_URL } from "../../../config/env";
 
 const Bookings = () => {
@@ -33,7 +32,7 @@ const Bookings = () => {
 
   // Search and Sort States
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
 
   const handleView = (booking) => {
     setSelectedBooking(booking);
@@ -44,7 +43,6 @@ const Bookings = () => {
     async (page, search = "", sort = "") => {
       try {
         setLoading(true);
-        // Constructed URL with search and sort parameters
         const response = await fetch(
           `${API_BASE_URL}/api/v1/shops/bookings?page=${page}&search=${search}&sort=${sort}`,
           {
@@ -72,7 +70,6 @@ const Bookings = () => {
     [token]
   );
 
-  // Unified effect for page, search, and sort changes
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       fetchBookings(currentPage, searchTerm, sortBy);
@@ -83,12 +80,12 @@ const Bookings = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on search
+    setCurrentPage(1);
   };
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on sort
+    setCurrentPage(1);
   };
 
   const downloadAllBookingsPDF = () => {
@@ -114,7 +111,7 @@ const Bookings = () => {
       head: [["#", "Property Name", "Duration", "Status", "Payment", "Amount"]],
       body: tableRows,
       theme: "grid",
-      headStyles: { fillColor: [13, 110, 253] }, // Primary Blue
+      headStyles: { fillColor: [13, 110, 253] },
       styles: { fontSize: 8 },
     });
 
@@ -188,7 +185,6 @@ const Bookings = () => {
                           className="form-control pe-5"
                           type="search"
                           placeholder="Search property name..."
-                          aria-label="Search"
                           value={searchTerm}
                           onChange={handleSearchChange}
                         />
@@ -206,44 +202,27 @@ const Bookings = () => {
                         value={sortBy}
                         onChange={handleSortChange}
                       >
-                        <option value="">Sort by (Default)</option>
                         <option value="newest">Newest</option>
                         <option value="oldest">Oldest</option>
                       </Form.Select>
                     </Col>
                   </div>
                   <div className="table-responsive border-0">
-                    <table className="table align-middle p-4 mb-0 table-hover table-shrink">
+                    <table className="table align-middle p-4 mb-0 table-hover">
                       <thead className="table-light">
                         <tr>
-                          <th scope="col" className="border-0 rounded-start">
-                            #
-                          </th>
-                          <th scope="col" className="border-0">
-                            Name
-                          </th>
-                          <th scope="col" className="border-0">
-                            Date
-                          </th>
-                          <th scope="col" className="border-0">
-                            Status
-                          </th>
-                          <th scope="col" className="border-0">
-                            Payment
-                          </th>
-                          <th scope="col" className="border-0 rounded-end">
-                            Action
-                          </th>
+                          <th scope="col">#</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Payment</th>
+                          <th scope="col">Action</th>
                         </tr>
                       </thead>
-                      <tbody className="border-top-0">
+                      <tbody>
                         {loading ? (
                           <tr>
                             <td colSpan="6" className="text-center">
-                              <div
-                                className="spinner-border spinner-border-sm text-primary me-2"
-                                role="status"
-                              ></div>
                               Loading...
                             </td>
                           </tr>
@@ -255,34 +234,17 @@ const Bookings = () => {
                           </tr>
                         ) : (
                           bookings.map((booking, idx) => (
-                            <tr key={booking._id || idx}>
-                              <td>
-                                <h6 className="mb-0">
-                                  {(currentPage - 1) * 10 + idx + 1}
-                                </h6>
-                              </td>
-                              <td>
-                                <h6 className="mb-0">
-                                  <Link to="">
-                                    {booking?.propertyName ?? "N/A"}
-                                  </Link>
-                                </h6>
-                              </td>
-                              <td>
-                                <h6 className="mb-0 fw-light">
-                                  {booking.checkInDate}
-                                </h6>
-                              </td>
+                            <tr key={booking._id}>
+                              <td>{(currentPage - 1) * 10 + idx + 1}</td>
+                              <td>{booking?.propertyName ?? "N/A"}</td>
+                              <td>{booking.checkInDate}</td>
                               <td>
                                 <div
                                   className={clsx(
                                     "badge",
-                                    booking.status === "cancel" ||
-                                      booking.status === "cancelled"
+                                    booking.status === "cancelled"
                                       ? "bg-danger"
-                                      : booking.status === "booked"
-                                      ? "bg-success"
-                                      : "bg-warning"
+                                      : "bg-success"
                                   )}
                                 >
                                   {booking.status}
@@ -297,13 +259,13 @@ const Bookings = () => {
                                       : "bg-warning text-warning"
                                   )}
                                 >
-                                  {booking.paymentStatus?.replace("_", " ")}
+                                  {booking.paymentStatus}
                                 </div>
                               </td>
                               <td>
                                 <button
                                   onClick={() => handleView(booking)}
-                                  className="btn btn-sm btn-light mb-0"
+                                  className="btn btn-sm btn-light"
                                 >
                                   View
                                 </button>
@@ -315,17 +277,14 @@ const Bookings = () => {
                     </table>
                   </div>
                 </CardBody>
-                <CardFooter className="pt-0">
+                <CardFooter>
                   <div className="d-sm-flex justify-content-sm-between align-items-sm-center">
-                    <p className="mb-sm-0 text-center text-sm-start">
+                    <p className="mb-sm-0">
                       Showing {startEntry} to {endEntry} of {totalBooking}{" "}
                       entries
                     </p>
-                    <nav
-                      className="mb-sm-0 d-flex justify-content-center"
-                      aria-label="navigation"
-                    >
-                      <ul className="pagination pagination-sm pagination-primary-soft mb-0">
+                    <nav>
+                      <ul className="pagination pagination-sm mb-0">
                         <li
                           className={clsx("page-item", {
                             disabled: currentPage === 1,
@@ -361,92 +320,22 @@ const Bookings = () => {
         </Container>
       </section>
 
-      {/* View Details Modal */}
       <Modal
         show={showModal}
         onHide={() => setShowModal(false)}
         centered
         size="lg"
       >
-        <Modal.Header closeButton className="border-0 pb-0" />
+        <Modal.Header closeButton />
         <Modal.Body>
           {selectedBooking && (
             <div className="p-2">
-              <div className="mb-4">
-                <h4 className="fw-bold mb-1">
-                  {selectedBooking.propertyName || selectedBooking.roomName}
-                </h4>
-                {selectedBooking.customer && (
-                  <p className="text-muted small">
-                    Customer: {selectedBooking.customer.name} (
-                    {selectedBooking.customer.email})
-                  </p>
-                )}
-              </div>
-              <div className="d-flex gap-3 mb-4 flex-wrap">
-                <span
-                  className={clsx(
-                    "badge px-3 py-2",
-                    selectedBooking.status === "booked"
-                      ? "bg-success"
-                      : "bg-danger"
-                  )}
-                >
-                  {selectedBooking.status.toUpperCase()}
-                </span>
-                <span
-                  className={clsx(
-                    "badge px-3 py-2",
-                    selectedBooking.paymentStatus === "paid"
-                      ? "bg-primary"
-                      : "bg-warning text-dark"
-                  )}
-                >
-                  {selectedBooking.paymentStatus
-                    .toUpperCase()
-                    .replace("_", " ")}
-                </span>
-              </div>
-              <div className="card border-0 shadow-sm mb-3">
-                <div className="card-body">
-                  <div className="row mb-2">
-                    <div className="col-6">Booking ID</div>
-                    <div className="col-6 text-end fw-semibold">
-                      #{selectedBooking._id.slice(-6)}
-                    </div>
-                  </div>
-                  <div className="row mb-2">
-                    <div className="col-6">Check In - Out</div>
-                    <div className="col-6 text-end fw-semibold">
-                      {selectedBooking.checkInDate} →{" "}
-                      {selectedBooking.checkOutDate}
-                    </div>
-                  </div>
-                  <div className="row mb-2">
-                    <div className="col-6">Requirements</div>
-                    <div className="col-6 text-end">
-                      {selectedBooking.additionalInfo || "N/A"}
-                    </div>
-                  </div>
-                  <div className="row mb-2">
-                    <div className="col-6">Total Amount</div>
-                    <div className="col-6 text-end fw-bold text-success">
-                      ₹ {selectedBooking.totalAmount}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <h4>{selectedBooking.propertyName}</h4>
+              <p>Booking ID: #{selectedBooking._id.slice(-6)}</p>
+              <p>Amount: ₹{selectedBooking.totalAmount}</p>
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer className="border-0">
-          <Button
-            variant="outline-secondary"
-            onClick={() => setShowModal(false)}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

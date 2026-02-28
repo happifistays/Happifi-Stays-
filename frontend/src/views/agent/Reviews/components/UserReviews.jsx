@@ -74,6 +74,29 @@ const UserReviews = () => {
     }
   };
 
+  // Logic to toggle review status
+  const handleToggleStatus = async (reviewId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.patch(
+        `${API_BASE_URL}/api/v1/shops/reviews/${reviewId}/disable`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setReviews((prev) =>
+          prev.map((r) =>
+            r._id === reviewId ? { ...r, isActive: response.data.isActive } : r
+          )
+        );
+      }
+    } catch (error) {
+      toast.error("Failed to update status");
+    }
+  };
+
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
       setPagination((prev) => ({ ...prev, currentPage: newPage }));
@@ -125,6 +148,7 @@ const UserReviews = () => {
                 review={review}
                 onDelete={handleDeleteReview}
                 onReply={handleReplyReview}
+                onToggleStatus={handleToggleStatus} // Pass down to Card
               />
               {reviews.length - 1 !== idx && <hr />}
             </Fragment>

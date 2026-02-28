@@ -1,10 +1,20 @@
 import Bookings from "../../models/bookings.js";
+
 import { format } from "date-fns";
+import Property from "../../models/propertySchema.js";
 
 export const getAllBookings = async (req, res) => {
   try {
     const shopId = req.userId;
-    const { page = 1, limit = 10, status, paymentStatus, filter } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      paymentStatus,
+      filter,
+      sort,
+      search,
+    } = req.query;
 
     const query = { shopId };
 
@@ -18,6 +28,25 @@ export const getAllBookings = async (req, res) => {
 
     if (filter === "upcoming") {
       query.checkInDate = { $gte: new Date() };
+    }
+
+    // Handle Search (Searching by property name)
+    if (search) {
+      const properties = await Property.find({
+        listingName: { $regex: search, $options: "i" },
+      }).select("_id");
+      const propertyIds = properties.map((p) => p._id);
+      query.propertyId = { $in: propertyIds };
+    }
+
+    // Handle Sorting
+    let sortConfig = { createdAt: -1 }; // Default: Newest first
+    if (sort === "oldest") {
+      sortConfig = { createdAt: 1 };
+    } else if (sort === "newest") {
+      sortConfig = { createdAt: -1 };
+    } else if (filter === "upcoming") {
+      sortConfig = { checkInDate: 1 };
     }
 
     const total = await Bookings.countDocuments(query);
@@ -38,7 +67,7 @@ export const getAllBookings = async (req, res) => {
       .select(
         "checkInDate checkOutDate status paymentStatus roomId totalAmount propertyId paymentId trafficSource utm createdAt"
       )
-      .sort(filter === "upcoming" ? { checkInDate: 1 } : { createdAt: 1 })
+      .sort(sortConfig)
       .limit(Number(limit))
       .skip((Number(page) - 1) * Number(limit))
       .lean();
@@ -63,6 +92,7 @@ export const getAllBookings = async (req, res) => {
       trafficSource: booking.trafficSource,
       utm: booking.utm || null,
       customer: booking?.bookedUserId,
+      createdAt: booking.createdAt,
     }));
 
     return res.status(200).json({

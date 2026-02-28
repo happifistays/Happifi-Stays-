@@ -157,12 +157,12 @@ const Step3 = ({ isEdit }) => {
                 )}
               />
             </Col>
-            <TextFormInput
+            {/* <TextFormInput
               name="charges"
               label="Charges *"
               control={control}
               containerClass="col-md-6"
-            />
+            /> */}
           </Row>
         </CardBody>
       </Card>

@@ -177,7 +177,7 @@ const ListingForms = () => {
       basePrice: "",
       discount3: "",
       listingPolicyDescription: "",
-      charges: "",
+      // charges: "",
       isOfferApplied: false,
       selectedOffer: "",
     },
@@ -223,7 +223,7 @@ const ListingForms = () => {
               basePrice: item.basePrice,
               discount3: item.discount,
               listingPolicyDescription: item.policy.description,
-              charges: item.policy.extraCharges,
+              // charges: item.policy.extraCharges,
               isOfferApplied:
                 item.availableOffers && item.availableOffers.length > 0,
               selectedOffer: item.availableOffers?.[0] || "",
@@ -273,7 +273,7 @@ const ListingForms = () => {
       policy: {
         description: formData.listingPolicyDescription,
         cancellationOption: "Flexible",
-        extraCharges: parseFloat(formData.charges),
+        // extraCharges: parseFloat(formData.charges),
       },
       currency: formData.currency,
       basePrice: parseFloat(formData.basePrice),

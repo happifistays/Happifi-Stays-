@@ -1,13 +1,27 @@
 import { GlightBox } from "@/components";
 import { useToggle } from "@/hooks";
-import { Button, Col, Collapse, Image, Row, Dropdown } from "react-bootstrap";
-import { BsThreeDotsVertical, BsTrash3, BsReply } from "react-icons/bs";
-import { FaPaperPlane, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import {
+  Button,
+  Col,
+  Collapse,
+  Image,
+  Row,
+  Dropdown,
+  Badge,
+} from "react-bootstrap";
+import {
+  BsThreeDotsVertical,
+  BsTrash3,
+  BsReply,
+  BsEye,
+  BsEyeSlash,
+} from "react-icons/bs";
+import { FaPaperPlane, FaStar } from "react-icons/fa";
 import { DEFAULT_AVATAR_IMAGE } from "../../../../constants/images";
 import { format } from "date-fns";
 import { useState } from "react";
 
-const ReviewCard = ({ review = {}, onDelete, onReply }) => {
+const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
   const { isOpen, toggle } = useToggle();
   const [replyText, setReplyText] = useState(review?.reply || "");
 
@@ -18,7 +32,9 @@ const ReviewCard = ({ review = {}, onDelete, onReply }) => {
   };
 
   return (
-    <div className="bg-light rounded p-3">
+    <div
+      className={`bg-light rounded p-3 ${!review.isActive ? "opacity-75" : ""}`}
+    >
       <div className="d-sm-flex justify-content-between">
         <div className="d-sm-flex align-items-center mb-3">
           <Image
@@ -27,7 +43,14 @@ const ReviewCard = ({ review = {}, onDelete, onReply }) => {
             alt="avatar"
           />
           <div>
-            <h6 className="m-0">{review?.fromId?.firstName ?? "User"}</h6>
+            <h6 className="m-0">
+              {review?.fromId?.firstName ?? "User"}
+              {!review.isActive && (
+                <Badge bg="danger" className="ms-2">
+                  Disabled
+                </Badge>
+              )}
+            </h6>
             <span className="me-3 small">
               {review?.createdAt &&
                 format(new Date(review.createdAt), "dd MMM yyyy, hh:mm a")}
@@ -59,6 +82,20 @@ const ReviewCard = ({ review = {}, onDelete, onReply }) => {
               <BsThreeDotsVertical />
             </Dropdown.Toggle>
             <Dropdown.Menu className="min-w-auto shadow">
+              <Dropdown.Item
+                className="d-flex align-items-center"
+                onClick={() => onToggleStatus(review._id)}
+              >
+                {review.isActive ? (
+                  <>
+                    <BsEyeSlash className="me-2" /> Disable review
+                  </>
+                ) : (
+                  <>
+                    <BsEye className="me-2" /> Enable review
+                  </>
+                )}
+              </Dropdown.Item>
               <Dropdown.Item
                 className="text-danger d-flex align-items-center"
                 onClick={() => onDelete(review._id)}

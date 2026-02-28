@@ -32,6 +32,7 @@ import { getOffers } from "../controllers/shops/getOffers.js";
 import { editOffer } from "../controllers/shops/editOffer.js";
 import { getOfferById } from "../controllers/shops/getOfferById.js";
 import { deleteOffer } from "../controllers/shops/deleteOffer.js";
+import { disableReview } from "../controllers/shops/disableReview.js";
 
 const shopsRouter = express.Router();
 
@@ -78,5 +79,10 @@ shopsRouter.patch(
 );
 
 shopsRouter.delete("/offer/:id", deleteOffer);
+shopsRouter.patch(
+  "/reviews/:reviewId/disable",
+  userVerification,
+  disableReview
+);
 
 export default shopsRouter;

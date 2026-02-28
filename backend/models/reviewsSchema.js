@@ -12,15 +12,12 @@ const reviewsSchema = new mongoose.Schema(
       ref: "Property",
       required: true,
     },
-    // roomId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Room",
-    //   required: true,
-    // },
+
     feedback: { type: String },
     rating: { type: Number },
     reviewImages: [{ type: String }],
     reply: { type: String },
+    isActive: { type: Boolean, default: true }, // Added field for enable/disable
   },
   { timestamps: true }
 );

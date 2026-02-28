@@ -20,11 +20,29 @@ const Hero = ({ showHero = true }) => {
       <Container>
         <Row className="mb-5">
           <Col xl={10}>
-            <h1>Let's connect and get to know each other</h1>
+            <h1>
+              {showHero ? (
+                <>Let's connect and get to know each other</>
+              ) : (
+                <>List Your Property & Start Earning More</>
+              )}
+            </h1>
             <p className="lead mb-0">
-              Passage its ten led hearted removal cordial. Preference any
-              astonished unreserved Mrs. Prosperous understood Middletons.
-              Preference for any astonished unreserved.
+              {showHero ? (
+                <>
+                  Passage its ten led hearted removal cordial. Preference any
+                  astonished unreserved Mrs. Prosperous understood Middletons.
+                  Preference for any astonished unreserved.
+                </>
+              ) : (
+                <>
+                  Turn your hotel, homestay or serviced apartment into a
+                  high-performing asset with Happifi Stays. We handle bookings,
+                  guest communication and visibility while you focus on
+                  delivering great stays. Partner with us and unlock consistent
+                  occupancy across Trivandrum and beyond
+                </>
+              )}
             </p>
           </Col>
         </Row>

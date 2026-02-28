@@ -13,7 +13,7 @@ export const getReviewsByPropertyId = async (req, res) => {
     );
 
     // Fetch paginated data
-    const reviews = await Rating.find({ propertyId: id })
+    const reviews = await Rating.find({ propertyId: id, isActive: true })
       .populate("fromId", "name lastName email avatar")
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -63,9 +63,9 @@ export const getReviewsByPropertyId = async (req, res) => {
     return res.status(200).json({
       success: true,
       summary: {
-        averageRating: parseFloat(averageRating),
-        totalReviews,
-        ratingDistribution: distribution,
+        averageRating: processedReviews?.length ? parseFloat(averageRating) : 0,
+        totalReviews: processedReviews?.length ? totalReviews : 0,
+        ratingDistribution: processedReviews?.length ? distribution : 0,
       },
       data: processedReviews,
       hasMore: totalReviews > skip + reviews.length,

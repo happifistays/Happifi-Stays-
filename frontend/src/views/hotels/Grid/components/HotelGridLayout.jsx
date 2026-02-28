@@ -73,7 +73,7 @@ const HotelGridLayout = ({ filters }) => {
                   feature={hotel.amenities}
                   images={hotel.gallery}
                   rating={hotel.starRating}
-                  sale={hotel.discount}
+                  sale={hotel.discount} 
                   showChip={true}
                   offerText={hotel?.availableOffers[0]?.title ?? ""}
                 />

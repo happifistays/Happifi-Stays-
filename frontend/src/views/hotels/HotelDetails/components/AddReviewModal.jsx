@@ -101,7 +101,7 @@ const AddReviewModal = ({ show, handleClose, propertyId, roomId, userId }) => {
             </Col>
           </Row>
 
-          <Row className="mb-3">
+          {/* <Row className="mb-3">
             <Col xs={12}>
               <Form.Label>Upload Images (Optional)</Form.Label>
               <Form.Control
@@ -135,7 +135,7 @@ const AddReviewModal = ({ show, handleClose, propertyId, roomId, userId }) => {
                 ))}
               </Row>
             </Col>
-          </Row>
+          </Row> */}
         </Form>
       </Modal.Body>
 

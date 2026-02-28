@@ -130,57 +130,70 @@ const ConfirmTicket = () => {
     doc.setLineWidth(0.5);
     doc.line(20, 35, 190, 35);
 
+    let currentY = 45;
+
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text("Booking ID:", 20, 45);
+    doc.text("Booking ID:", 20, currentY);
     doc.setFont("helvetica", "normal");
-    doc.text(`100${bookingDetails?.bookingId || "N/A"}`, 55, 45);
+    doc.text(`100${bookingDetails?.bookingId || "N/A"}`, 50, currentY);
 
     doc.setFont("helvetica", "bold");
-    doc.text("Status:", 130, 45);
+    doc.text("Status:", 120, currentY);
     doc.setFont("helvetica", "normal");
-    doc.text(`${bookingDetails?.status?.toUpperCase() || "N/A"}`, 155, 45);
+    doc.text(
+      `${bookingDetails?.status?.toUpperCase() || "N/A"}`,
+      150,
+      currentY
+    );
 
+    currentY += 10;
     doc.setFont("helvetica", "bold");
-    doc.text("Check-In:", 20, 55);
+    doc.text("Check-In:", 20, currentY);
     doc.setFont("helvetica", "normal");
     doc.text(
       bookingDetails?.checkInDate
         ? format(new Date(bookingDetails.checkInDate), "dd MMM yyyy")
         : "N/A",
-      55,
-      55
+      50,
+      currentY
     );
 
     doc.setFont("helvetica", "bold");
-    doc.text("Check-Out:", 130, 55);
+    doc.text("Check-Out:", 120, currentY);
     doc.setFont("helvetica", "normal");
     doc.text(
       bookingDetails?.checkOutDate
         ? format(new Date(bookingDetails.checkOutDate), "dd MMM yyyy")
         : "N/A",
-      155,
-      55
+      150,
+      currentY
     );
 
-    doc.setFont("helvetica", "bold");
-    doc.text("Guest List Details", 20, 70);
-
     if (bookingDetails.paymentType === "online") {
-      // for payent status
-      doc.setFontSize(11);
+      currentY += 10;
       doc.setFont("helvetica", "bold");
-      doc.text("Payment status:", 20, 45);
+      doc.text("Payment status:", 20, currentY);
       doc.setFont("helvetica", "normal");
-      doc.text(`${bookingDetails?.totalAmount || "-"}`, 55, 45);
+      doc.text(
+        `${bookingDetails?.paymentStatus?.replace(/_/g, " ") || "-"}`,
+        55,
+        currentY
+      );
 
-      // for paid amount
-      doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
-      doc.text("Paid Amount:", 20, 45);
+      doc.text("Paid Amount:", 120, currentY);
       doc.setFont("helvetica", "normal");
-      doc.text(`${bookingDetails?.totalAmount || "-"}`, 55, 45);
+      doc.text(
+        `${currency}${bookingDetails?.totalAmount || "-"}`,
+        150,
+        currentY
+      );
     }
+
+    currentY += 15;
+    doc.setFont("helvetica", "bold");
+    doc.text("Guest List Details", 20, currentY);
 
     const tableRows = bookingDetails?.guests?.map((guest, index) => [
       index + 1,
@@ -190,7 +203,7 @@ const ConfirmTicket = () => {
     ]);
 
     autoTable(doc, {
-      startY: 75,
+      startY: currentY + 5,
       head: [["#", "Full Name", "Email Address", "Phone Number"]],
       body: tableRows,
       theme: "grid",
@@ -307,33 +320,6 @@ const ConfirmTicket = () => {
                   </Col>
                 </Row>
                 <div className="d-sm-flex justify-content-sm-end d-grid">
-                  {/* <Dropdown className="me-sm-2 mb-2 mb-sm-0">
-                    <DropdownToggle
-                      as="button"
-                      className="btn btn-light mb-0 w-100"
-                    >
-                      <BsShare className="me-2" />
-                      Share
-                    </DropdownToggle>
-                    <DropdownMenu align="end">
-                      <DropdownItem>
-                        <FaTwitterSquare className="me-2" />
-                        Twitter
-                      </DropdownItem>
-                      <DropdownItem>
-                        <FaFacebookSquare className="me-2" />
-                        Facebook
-                      </DropdownItem>
-                      <DropdownItem>
-                        <FaLinkedin className="me-2" />
-                        LinkedIn
-                      </DropdownItem>
-                      <DropdownItem>
-                        <FaCopy className="me-2" />
-                        Copy link
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown> */}
                   <button
                     onClick={downloadPDF}
                     className="btn btn-primary mb-0"
