@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 
 const AuthContext = createContext(undefined);
 
@@ -16,18 +15,15 @@ const authSessionKey = "_BOOKING_AUTH_KEY_";
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
-  const [cookies, setCookie, removeCookie] = useCookies([authSessionKey]);
 
+  // 1. Initialize state directly from localStorage (Synchronous)
   const [user, setUser] = useState(() => {
-    const savedSession = cookies[authSessionKey];
+    const savedSession = localStorage.getItem(authSessionKey);
     if (savedSession) {
       try {
-        // Handle both stringified and already parsed objects
-        return typeof savedSession === "string"
-          ? JSON.parse(savedSession)
-          : savedSession;
+        return JSON.parse(savedSession);
       } catch (error) {
-        console.error("Error parsing session cookie:", error);
+        console.error("Error parsing session:", error);
         return null;
       }
     }
@@ -35,39 +31,27 @@ export function AuthProvider({ children }) {
   });
 
   const saveSession = (userData) => {
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 7);
+    // Save the whole user object (including token) to localStorage
+    localStorage.setItem(authSessionKey, JSON.stringify(userData));
+    localStorage.setItem("token", userData.token); // Keep for your axios interceptors
+    if (userData.role) localStorage.setItem("role", userData.role);
 
-    // Save to Cookie (Primary storage for persistence)
-    setCookie(authSessionKey, JSON.stringify(userData), {
-      path: "/",
-      expires,
-      sameSite: "lax",
-    });
-
-    // Save to LocalStorage (Secondary storage for token access)
-    localStorage.setItem("token", userData.token);
-
-    // Save to State (For immediate UI updates)
     setUser(userData);
   };
 
   const removeSession = () => {
-    removeCookie(authSessionKey, { path: "/" });
+    localStorage.removeItem(authSessionKey);
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     setUser(null);
     navigate("/auth/sign-in");
   };
 
-  // Keep state in sync if cookies are deleted elsewhere
-  useEffect(() => {
-    if (!cookies[authSessionKey] && user) {
-      setUser(null);
-    }
-  }, [cookies, user]);
+  // 2. Remove the useEffect that was clearing the user.
+  // It was likely detecting "no cookie" for a split second on refresh
+  // and calling setUser(null).
 
-  const isAuthenticated = !!user || !!cookies[authSessionKey];
+  const isAuthenticated = !!user;
 
   return (
     <AuthContext.Provider
