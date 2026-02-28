@@ -1,6 +1,6 @@
 import { useFileUploader } from "@/hooks";
-import { useEffect, useRef } from "react";
-import { Col, FormLabel } from "react-bootstrap";
+import { useEffect, useRef, useState } from "react";
+import { Col, FormLabel, FormText } from "react-bootstrap";
 import Dropzone from "react-dropzone";
 import { BsUpload } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
@@ -9,7 +9,9 @@ const DropzoneFormInput = ({ label, onFileUpload, value, showPreview }) => {
   const { selectedFiles, handleAcceptedFiles, removeFile, setSelectedFiles } =
     useFileUploader(showPreview);
 
+  const [errorMessage, setErrorMessage] = useState("");
   const isInitialized = useRef(false);
+  const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
   useEffect(() => {
     if (
@@ -39,9 +41,19 @@ const DropzoneFormInput = ({ label, onFileUpload, value, showPreview }) => {
     <div>
       {label && <FormLabel>{label}</FormLabel>}
       <Dropzone
+        accept={{ "image/*": [] }}
+        maxSize={MAX_SIZE}
         onDrop={(files) => {
+          setErrorMessage("");
           isInitialized.current = true;
           handleAcceptedFiles(files);
+        }}
+        onDropRejected={(fileRejections) => {
+          if (
+            fileRejections.some((rejection) => rejection.file.size > MAX_SIZE)
+          ) {
+            setErrorMessage("One or more images exceed the 5MB limit.");
+          }
         }}
       >
         {({ getRootProps, getInputProps }) => (
@@ -52,7 +64,13 @@ const DropzoneFormInput = ({ label, onFileUpload, value, showPreview }) => {
                 <BsUpload size={30} />
               </div>
               <p>Drop files here or click to upload.</p>
+              <small className="text-muted">Maximum file size: 5MB</small>
             </div>
+            {errorMessage && (
+              <FormText className="text-danger d-block mt-2 text-center">
+                {errorMessage}
+              </FormText>
+            )}
             {showPreview && selectedFiles.length > 0 && (
               <div className="dz-preview row g-4 mt-2">
                 {selectedFiles.map((file, idx) => (

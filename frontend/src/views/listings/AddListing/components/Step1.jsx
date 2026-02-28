@@ -1,7 +1,7 @@
 import {
   CheckFormInput,
   DropzoneFormInput,
-  FileFormInput,
+  FileFormInput, 
   SelectFormInput,
   TextAreaFormInput,
   TextFormInput,
@@ -280,7 +280,7 @@ const Step1 = () => {
         </CardHeader>
         <CardBody>
           <Row className="g-3">
-            <Col xs={12}>
+            <Col xs={12}> 
               <FileFormInput
                 name="thumbnail"
                 control={control}

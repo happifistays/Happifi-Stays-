@@ -29,6 +29,7 @@ import { API_BASE_URL } from "../../../config/env";
 import { useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
 import TopNavBar from "../../hotels/Home/components/TopNavBar";
+import AgentNavBar from "../../../layouts/AgentLayout/AgentNavBar";
 
 const AddOffer = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -176,7 +177,8 @@ const AddOffer = () => {
     <>
       <PageMetaData title={isEditMode ? "Edit Offer" : "Add New Offer"} />
       <TopNavBar />
-      <main className="py-5">
+      <AgentNavBar />
+      <main className="py-1">
         <Container>
           <Row className="justify-content-center">
             <Col lg={8}>
