@@ -66,7 +66,7 @@
   --bs-btn-disabled-color: var(--bs-primary);
   --bs-btn-disabled-border-color: var(--bs-primary);
 }
-.btn-primary-soft{
+/* .btn-primary-soft{
   color: var(--bs-primary);
   background-color: rgba(var(--bs-primary-rgb), 0.1);
 }
@@ -74,7 +74,13 @@
   color:  var(--bs-white);
   background-color: var(--bs-primary) !important;
   border-color: var(--bs-primary) !important;
+} */
+
+.btn-primary-soft {
+  color: #5143d9;
+  background-color: #5143d9;
 }
+
 .btn-primary-soft:focus{
   color:  var(--bs-white);
   background-color: var(--bs-primary) !important;

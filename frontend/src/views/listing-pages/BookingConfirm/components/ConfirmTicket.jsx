@@ -166,6 +166,22 @@ const ConfirmTicket = () => {
     doc.setFont("helvetica", "bold");
     doc.text("Guest List Details", 20, 70);
 
+    if (bookingDetails.paymentType === "online") {
+      // for payent status
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("Payment status:", 20, 45);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${bookingDetails?.totalAmount || "-"}`, 55, 45);
+
+      // for paid amount
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("Paid Amount:", 20, 45);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${bookingDetails?.totalAmount || "-"}`, 55, 45);
+    }
+
     const tableRows = bookingDetails?.guests?.map((guest, index) => [
       index + 1,
       `${guest.title} ${guest.firstName} ${guest.lastName}`,
@@ -198,6 +214,7 @@ const ConfirmTicket = () => {
   };
 
   if (loading) return <div className="text-center p-5">Loading...</div>;
+  console.log("bookingDetails---------------", bookingDetails);
 
   return (
     <section className="pt-4">

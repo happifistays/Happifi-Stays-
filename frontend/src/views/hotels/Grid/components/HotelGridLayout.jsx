@@ -66,7 +66,7 @@ const HotelGridLayout = ({ filters }) => {
           ) : hotelsData.length > 0 ? (
             hotelsData.map((hotel, idx) => (
               <Col key={idx} md={6} xl={4} className="grid-height-style">
-                <HotelGridCard
+                <HotelGridCard 
                   id={hotel._id}
                   name={hotel.listingName}
                   price={hotel.basePrice}

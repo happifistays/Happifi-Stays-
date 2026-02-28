@@ -87,7 +87,7 @@ const HotelGridCard = ({
 
         {showChip && offerText && (
           <div className="position-absolute top-0 end-0 z-index-1 m-4">
-            <div className="badge bg-success text-white">{offerText}</div>
+            <div className="badge  bg-danger text-white">{offerText}</div>
           </div>
         )}
 
@@ -113,13 +113,13 @@ const HotelGridCard = ({
           <h5 className="card-title">
             <Link to={`/hotels/detail/${id}`}>{name}</Link>
           </h5>
-          <ul className="nav nav-divider mb-2 mb-sm-3">
+          {/* <ul className="nav nav-divider mb-2 mb-sm-3">
             {feature.map((f, idx) => (
               <li key={idx} className="nav-item">
                 {f}
               </li>
             ))}
-          </ul>
+          </ul> */}
         </CardBody>
         <CardFooter className="pt-0">
           <div className="d-sm-flex justify-content-sm-between align-items-center">

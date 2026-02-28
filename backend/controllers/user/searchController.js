@@ -44,7 +44,7 @@ export const searchByLocation = async (req, res) => {
       $or: [
         { "location.city": { $regex: location, $options: "i" } },
         { "location.state": { $regex: location, $options: "i" } },
-        { "location.country": { $regex: location, $options: "i" } },
+        { "location.district": { $regex: location, $options: "i" } },
       ],
     };
 

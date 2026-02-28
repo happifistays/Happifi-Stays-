@@ -16841,11 +16841,13 @@ textarea.form-control-lg {
   padding-right: 0;
 }
 */
+
 .btn-primary-soft {
   color: #5143d9;
-  background-color: rgba(81, 67, 217, 0.1);
-      border: 2px solid !important;
+  background-color: #5143d9;
 }
+
+
 .btn-primary-soft:active, .btn-primary-soft:hover, .btn-primary-soft:focus {
   color: #fff;
   background-color: #5143d9;

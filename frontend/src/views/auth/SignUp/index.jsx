@@ -71,7 +71,7 @@ const SignUp = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-
+ 
       const idToken = await signInWithGoogle();
 
       const res = await axios.post(

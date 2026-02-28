@@ -7,31 +7,31 @@ const PropertySchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    listingType: { type: String, required: true },
-    listingName: { type: String, required: true, trim: true },
+    listingType: { type: String },
+    listingName: { type: String, trim: true },
     listingUse: {
       type: String,
       enum: ["Entire Place", "For Guests", "For Personal"],
       default: "Entire Place",
     },
-    shortDescription: { type: String, required: true },
+    shortDescription: { type: String },
 
     location: {
-      country: { type: String, required: true },
-      state: { type: String, required: true },
-      city: { type: String, required: true },
-      street: { type: String, required: true },
-      postalCode: { type: String, required: true },
+      district: { type: String },
+      state: { type: String },
+      city: { type: String },
+      street: { type: String },
+      postalCode: { type: String },
       coordinates: {
         type: { type: String, enum: ["Point"], default: "Point" },
-        coordinates: { type: [Number], required: true },
+        coordinates: { type: [Number] },
       },
     },
 
     amenities: [{ type: String }],
     description: { type: String },
 
-    thumbnail: { type: String, required: true },
+    thumbnail: { type: String },
     gallery: [{ type: String }],
 
     policy: {
@@ -41,7 +41,7 @@ const PropertySchema = new mongoose.Schema(
     },
 
     currency: { type: String, default: "USD" },
-    basePrice: { type: Number, required: true },
+    basePrice: { type: Number },
     discount: { type: Number, default: 0 },
     starRating: { type: Number, min: 1, max: 5 },
 

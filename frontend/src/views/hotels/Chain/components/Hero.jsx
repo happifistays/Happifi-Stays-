@@ -87,7 +87,13 @@ const Hero = () => {
                         </p>
                         <div className="hstack gap-4 flex-wrap align-items-center justify-content-center">
                           <a href="/hotels/grid">
-                            <button className="btn btn-primary-soft mb-0">
+                            <button
+                              className="btn btn-primary-soft mb-0"
+                              style={{
+                                backgroundColor: "#5143d9",
+                                color: "#fff",
+                              }}
+                            >
                               Book Now
                             </button>
                           </a>

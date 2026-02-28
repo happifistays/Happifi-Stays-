@@ -44,6 +44,8 @@ const SignIn = () => {
           token: result.token,
         };
 
+        console.log("SESSION DATA--------------", sessionData);
+
         saveSession(sessionData);
 
         Swal.fire({
@@ -54,9 +56,9 @@ const SignIn = () => {
           showConfirmButton: false,
         });
 
-        if (result?.user?.role) {
-          localStorage.setItem("role", result.user.role);
-        }
+        // if (result?.user?.role) {
+        //   localStorage.setItem("role", result.user.role);
+        // }
 
         if (result?.user?.role === "customer") {
           navigate("/");

@@ -17221,7 +17221,7 @@ textarea.form-control-lg {
 */
 .btn-primary-soft {
   color: #5143d9;
-  background-color: rgba(81, 67, 217, 0.1);
+  background-color: #5143d9 !important;
 }
 .btn-primary-soft:active, .btn-primary-soft:hover, .btn-primary-soft:focus {
   color: #fff;

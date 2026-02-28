@@ -158,26 +158,29 @@ const BookingDetails = () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              amount: finalCalculatedTotal,
+              // amount: Math.round(finalCalculatedTotal * 100),
+              amount: 10 * 100,
               currency: "INR",
             }),
           }
         );
 
         const orderData = await orderRes.json();
+        console.log("orderData------------", orderData);
 
         // 2. Open Razorpay Checkout
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,
           amount: orderData.amount,
           currency: orderData.currency,
-          name: "Your App Name",
+          name: "Happifi",
           description: "Booking Payment",
           order_id: orderData.id,
           handler: async function (response) {
             // 3. Verify and Create Booking
+            console.log("response--------------", response);
             const verifyRes = await fetch(
-              `${API_BASE_URL}/api/v1/customer/booking/${propertyId}/${roomId}`,
+              `${API_BASE_URL}/api/v1/customer/booking/${propertyId}`,
               {
                 method: "POST",
                 headers: {
@@ -196,12 +199,13 @@ const BookingDetails = () => {
             );
 
             const result = await verifyRes.json();
-            navigate(`/booking-confirmed/${result?.booking?._id}`);
-            // if (result.success) {
-            //   navigate(`/booking-confirmed/${result?.booking?._id}`);
-            // } else {
-            //   alert(result.message || "Payment verification failed");
-            // }
+            console.log("result-------------", result);
+
+            if (result.success) {
+              navigate(`/booking-confirmed/${result?.booking?._id}`);
+            } else {
+              alert(result.message || "Payment verification failed");
+            }
           },
           prefill: {
             name: `${data.guests[0].firstName} ${data.guests[0].lastName}`,
@@ -212,6 +216,7 @@ const BookingDetails = () => {
         };
 
         const paymentObject = new window.Razorpay(options);
+        console.log("paymentObject------------", paymentObject);
         paymentObject.open();
       } else {
         // Handle offline payment

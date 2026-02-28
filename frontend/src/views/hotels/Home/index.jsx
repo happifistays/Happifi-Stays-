@@ -20,7 +20,7 @@ const HotelHome = () => {
       <PageMetaData title="Hotel - Home" />
 
       <TopNavBar />
-
+ 
       <main>
         {/* <Hero1 /> */}
         <Hero />

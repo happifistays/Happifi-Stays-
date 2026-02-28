@@ -1,7 +1,7 @@
 import {
   CheckFormInput,
   DropzoneFormInput,
-  FileFormInput, 
+  FileFormInput,
   SelectFormInput,
   TextAreaFormInput,
   TextFormInput,
@@ -9,7 +9,7 @@ import {
 import { Button, Card, CardBody, CardHeader, Col, Row } from "react-bootstrap";
 import { useWizard } from "react-use-wizard";
 import { Controller, useFormContext } from "react-hook-form";
-import { countries } from "../../../../constants/datas";
+import { availableLocations, countries } from "../../../../constants/datas";
 
 const keralaDistricts = [
   "Alappuzha",
@@ -137,7 +137,7 @@ const Step1 = () => {
                   containerClass="form-check radio-bg-light me-4"
                   id="entire-place"
                   value="Entire Place"
-                  defaultValue={'Entire Place'}
+                  defaultValue={"Entire Place"}
                 />
                 <CheckFormInput
                   name="listingUse"
@@ -179,33 +179,6 @@ const Step1 = () => {
         <CardBody>
           <Row className="g-3">
             <Col md={6}>
-              <label className="form-label">Country/Region *</label>
-              <Controller
-                name="country"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <SelectFormInput
-                      {...field}
-                      className="form-select js-choice"
-                    >
-                      <option value="">Select Country</option>
-                      {countries.map((country) => (
-                        <option key={country} value={country}>
-                          {country}
-                        </option>
-                      ))}
-                    </SelectFormInput>
-                    {error && (
-                      <div className="text-danger small mt-1">
-                        {error.message}
-                      </div>
-                    )}
-                  </>
-                )}
-              />
-            </Col>
-            <Col md={6}>
               <label className="form-label">State *</label>
               <Controller
                 name="state"
@@ -220,6 +193,36 @@ const Step1 = () => {
                       {indiaStates.map((state) => (
                         <option key={state} value={state}>
                           {state}
+                        </option>
+                      ))}
+                    </SelectFormInput>
+                    {error && (
+                      <div className="text-danger small mt-1">
+                        {error.message}
+                      </div>
+                    )}
+                  </>
+                )}
+              />
+            </Col>
+            <Col md={6}>
+              <label className="form-label">District *</label>
+              <Controller
+                name="district"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <SelectFormInput
+                      {...field}
+                      className="form-select js-choice"
+                    >
+                      <option value="">Select District</option>
+                      {availableLocations.map((district) => (
+                        <option
+                          key={district?.district}
+                          value={district?.district}
+                        >
+                          {district?.district}
                         </option>
                       ))}
                     </SelectFormInput>
