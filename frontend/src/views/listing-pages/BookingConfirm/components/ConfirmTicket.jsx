@@ -169,7 +169,10 @@ const ConfirmTicket = () => {
       150,
       currentY
     );
-
+    console.log(
+      "bookingDetails.paymentType-------------",
+      bookingDetails.paymentType
+    );
     if (bookingDetails.paymentType === "online") {
       currentY += 10;
       doc.setFont("helvetica", "bold");

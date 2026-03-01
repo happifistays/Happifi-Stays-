@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(undefined);
@@ -46,10 +46,6 @@ export function AuthProvider({ children }) {
     setUser(null);
     navigate("/auth/sign-in");
   };
-
-  // 2. Remove the useEffect that was clearing the user.
-  // It was likely detecting "no cookie" for a split second on refresh
-  // and calling setUser(null).
 
   const isAuthenticated = !!user;
 

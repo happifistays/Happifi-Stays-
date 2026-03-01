@@ -21,7 +21,7 @@ import { addContact } from "../controllers/addContact.js";
 import { getContacts } from "../controllers/shops/getContacts.js";
 
 const authRouter = express.Router();
-
+ 
 authRouter.post("/signup", signUp);
 authRouter.post("/signin", sigIn);
 authRouter.post("/google-login", googleLogin);

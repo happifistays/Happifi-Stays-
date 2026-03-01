@@ -15,19 +15,9 @@ export const googleLogin = async (req, res, next) => {
 
     const token = createSecretToken(user._id);
 
-    // res.cookie("token", token, {
-    //   withCredentials: true,
-    //   httpOnly: false,
-    // });
+    // Removed res.cookie logic
 
-    res.cookie("token", token, {
-      httpOnly: true, // Prevents XSS
-      secure: process.env.NODE_ENV === "production", // Only sends over HTTPS
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Required for cross-site
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
-    let loggedInUser = user;
+    let loggedInUser = user.toObject ? user.toObject() : user;
     loggedInUser["token"] = token;
 
     res.status(201).json({
@@ -37,12 +27,6 @@ export const googleLogin = async (req, res, next) => {
       user: loggedInUser,
       token,
     });
-
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Login successful",
-    //   user,
-    // });
   } catch (error) {
     next(error);
   }

@@ -88,7 +88,7 @@ const Hero = () => {
                           <GlightBox
                             data-glightbox
                             data-gallery="office-tour"
-                            href="https://www.youtube.com/watch?v=qemqQHaeCYo"
+                            href="https://www.youtube.com/watch?v=4yVp8JeLZAU"
                             className="d-flex align-items-center"
                           >
                             <div

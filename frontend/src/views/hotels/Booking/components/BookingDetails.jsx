@@ -158,8 +158,7 @@ const BookingDetails = () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              // amount: Math.round(finalCalculatedTotal * 100),
-              amount: 10 * 100,
+              amount: Math.round(finalCalculatedTotal * 100),
               currency: "INR",
             }),
           }
@@ -173,7 +172,7 @@ const BookingDetails = () => {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,
           amount: orderData.amount,
           currency: orderData.currency,
-          name: "Happifi",
+          name: "Happifi Stays",
           description: "Booking Payment",
           order_id: orderData.id,
           handler: async function (response) {

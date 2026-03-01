@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { PasswordFormInput, TextFormInput } from "@/components";
 import { Col } from "react-bootstrap";
-import { FaFacebookF } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import signInImg from "@/assets/images/element/signin.svg";
-import logoIcon from "@/assets/images/logo-icon.svg";
 import logo from "../../../assets/images/logo.png";
-
-import { developedByLink, currentYear } from "@/states";
+import { currentYear } from "@/states";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { useAuthContext } from "../../../states/useAuthContext";
@@ -30,7 +27,7 @@ const SignIn = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        // credentials: "include" removed as cookies are not used
         body: JSON.stringify({
           email: data.email,
           password: data.password,
@@ -57,10 +54,6 @@ const SignIn = () => {
           showConfirmButton: false,
         });
 
-        // if (result?.user?.role) {
-        //   localStorage.setItem("role", result.user.role);
-        // }
-
         if (result?.user?.role === "customer") {
           navigate("/");
         } else if (result?.user?.role === "admin") {
@@ -68,8 +61,6 @@ const SignIn = () => {
         } else {
           navigate("/auth/sign-in");
         }
-
-        // navigate("/agent/dashboard");
       } else {
         Swal.fire({
           icon: "error",
@@ -94,21 +85,15 @@ const SignIn = () => {
 
       const idToken = await signInWithGoogle();
 
-      const res = await axios.post(
-        `${API_BASE_URL}/api/v1/auth/google-login`,
-        { idToken },
-        { withCredentials: true }
-      );
+      const res = await axios.post(`${API_BASE_URL}/api/v1/auth/google-login`, {
+        idToken,
+      });
 
       if (res.data.success) {
         saveSession({
           ...res.data.user,
           token: res.data.token,
         });
-
-        if (res.data.user?.role) {
-          localStorage.setItem("role", res.data.user.role);
-        }
 
         Swal.fire({
           icon: "success",
@@ -127,7 +112,6 @@ const SignIn = () => {
       }
     } catch (error) {
       console.error("Google login failed:", error);
-
       Swal.fire({
         icon: "error",
         title: "Google Login Failed",
@@ -222,13 +206,6 @@ const SignIn = () => {
                 <FcGoogle size={16} className="fab fa-fw me-2" />
                 Continue with Google
               </button>
-              {/* <button type="button" className="btn btn-light mb-0">
-                <FaFacebookF
-                  size={16}
-                  className="fab fa-fw text-facebook me-2"
-                />
-                Continue with Facebook
-              </button> */}
             </div>
 
             <div className="text-primary-hover text-body mt-3 text-center">

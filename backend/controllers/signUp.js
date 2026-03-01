@@ -24,7 +24,7 @@ export const signUp = async (req, res) => {
     if (existingUser) {
       return res
         .status(409)
-        .send(conflictResponse("User already exists with this email "));
+        .send({ message: "User already exists with this email" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -36,16 +36,11 @@ export const signUp = async (req, res) => {
 
     const token = createSecretToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: false,
-    });
+    // Removed res.cookie logic
 
-    const data = { user };
-
-    // return res.status(200).json(successResponse(data));
     res.status(201).json({
       status: 200,
-      message: "User logged in successfully",
+      message: "User registered successfully",
       success: true,
       user,
       token,

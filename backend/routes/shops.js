@@ -33,6 +33,7 @@ import { editOffer } from "../controllers/shops/editOffer.js";
 import { getOfferById } from "../controllers/shops/getOfferById.js";
 import { deleteOffer } from "../controllers/shops/deleteOffer.js";
 import { disableReview } from "../controllers/shops/disableReview.js";
+import { sendWhatsAppMessage } from "../utils/sendWhatsAppMessage.js";
 
 const shopsRouter = express.Router();
 
@@ -84,5 +85,10 @@ shopsRouter.patch(
   userVerification,
   disableReview
 );
+
+shopsRouter.get("/test", async (req, res) => {
+  await sendWhatsAppMessage("9526374812", "test");
+  res.send("dsdsds");
+});
 
 export default shopsRouter;
