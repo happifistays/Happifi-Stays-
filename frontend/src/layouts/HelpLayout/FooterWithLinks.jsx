@@ -83,7 +83,7 @@ const FooterWithLinks = () => {
             </Row>
           </Col>
         </Row>
-        <Row className="mt-5">
+        {/* <Row className="mt-5">
           <h5 className="mb-2 text-white">Top Links</h5>
           <ul className="list-inline text-primary-hover lh-lg">
             {topLinks.map((item, idx) => (
@@ -94,7 +94,7 @@ const FooterWithLinks = () => {
               </li>
             ))}
           </ul>
-        </Row>
+        </Row> */}
         <Row className="g-4 justify-content-between mt-0 mt-md-2">
           <Col sm={7} md={6} lg={4}>
             <h5 className="text-white mb-2">Payment &amp; Security</h5>
@@ -191,7 +191,7 @@ const FooterWithLinks = () => {
               <Nav className="nav mt-2 mt-lg-0">
                 <ul className="list-inline text-primary-hover mx-auto mb-0">
                   <li className="list-inline-item me-0">
-                    <NavLink className="text-body-secondary py-1" href="">
+                    <NavLink className="text-body-secondary py-1" href="/help/privacy-policy">
                       Privacy policy
                     </NavLink>
                   </li>

@@ -135,19 +135,17 @@ const FooterWithLinks = () => {
             <Nav className="nav mt-2 mt-lg-0">
               <ul className="list-inline text-primary-hover mx-auto mb-0">
                 <li className="list-inline-item me-0">
-                  <NavLink className="text-body-secondary py-1" href="">
+                  <NavLink className="text-body-secondary py-1" href="/help/privacy-policy">
                     Privacy policy
                   </NavLink>
                 </li>
                 <li className="list-inline-item me-0">
-                  <NavLink className="text-body-secondary py-1" href="">
+                  <NavLink className="text-body-secondary py-1" href="/help/service">
                     Terms and conditions
                   </NavLink>
                 </li>
                 <li className="list-inline-item me-0">
-                  <NavLink className="text-body-secondary py-1 pe-0" href="">
-                    Refund policy
-                  </NavLink>
+
                 </li>
               </ul>
             </Nav>

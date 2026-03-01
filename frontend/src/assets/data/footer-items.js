@@ -4,6 +4,7 @@ import { IoPeopleSharp } from "react-icons/io5";
 import { FaHandsHelping } from "react-icons/fa";
 import { LuMessageCircleQuestion } from "react-icons/lu";
 import { IoNewspaper } from "react-icons/io5";
+import { IoCall } from "react-icons/io5";
 
 const footerLinks = [
   {
@@ -29,10 +30,10 @@ const footerLinks = [
         name: "FAQ",
         link: "/faqs",
       },
-      {
-        name: "Help Center",
-        link: "/help/center",
-      },
+      // {
+      //   name: "Help Center",
+      //   link: "/help/center",
+      // },
     ],
   },
   {
@@ -54,13 +55,13 @@ const footerLinks = [
         name: "Terms",
         link: "/help/service",
       },
-      {
-        name: "Cookie",
-      },
-      {
-        name: "Support",
-        link: "/help/center",
-      },
+      // {
+      //   name: "Cookie",
+      // },
+      // {
+      //   name: "Support",
+      //   link: "/help/center",
+      // },
     ],
   },
   {
@@ -87,15 +88,16 @@ const footerLinks = [
         icon: IoPeopleSharp,
         link: "/pages/about",
       },
-      {
-        name: "FAQs",
-        icon: LuMessageCircleQuestion,
-        link: "/faqs",
-      },
+     
       {
         name: "Blogs",
         icon: IoNewspaper,
         link: "/blogs/blog",
+      },
+       {
+        name: "Contact Us",
+        icon: IoCall,
+        link: "/pages/contact",
       },
     ],
   },

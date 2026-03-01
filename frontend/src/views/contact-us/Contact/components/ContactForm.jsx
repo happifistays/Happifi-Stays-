@@ -59,7 +59,7 @@ const ContactForm = () => {
     <section className="pt-0 pt-lg-5">
       <Container>
         <Row className="g-4 g-lg-5 align-items-center">
-          <Col lg={6} className="text-center">
+          <Col lg={6} className="text-center margin-top-mbl-new-cls">
             <Image src={contactImg} />
           </Col>
           <Col lg={6}>
