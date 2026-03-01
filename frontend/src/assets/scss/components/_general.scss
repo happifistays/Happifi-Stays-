@@ -340,8 +340,30 @@ height: 31px;
   color: inherit !important;
 }
 
+@media (max-width: 430px)  {
+.hstack.gap-4.flex-wrap.align-items-center.justify-content-center {
+    gap: 1.0rem !important;
+}
+
+  h1.mb-4.mt-5.mt-md-5.display-5.text-white {
+    font-size: 30px !important;
+}
+}
 
 @media (max-width: 900px) {
+
+.text-center.margin-top-mbl-new-cls.col-lg-6 img {
+  margin-top: 30px;
+}
+  
+section.pt-4.pt-md-5.section-space-out-new {
+    padding-bottom: 0px !important;
+}
+
+.container-fluid.mbl-mrg-top-10 {
+    margin-top: 10px;
+}
+
 .review-resize-mbl h5 {
 font-size: 18px;
 }
@@ -376,4 +398,8 @@ font-size: 18px;
 
 .grid-height-style{
       height: 450px;
+}
+
+footer img.h-30px.me-1 {
+    border-radius: 5px;
 }

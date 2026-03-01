@@ -42,7 +42,7 @@ const Hero = () => {
   }, []);
   return (
     <div className="">
-      <div className="container-fluid">
+      <div className="container-fluid mbl-mrg-top-10" >
         <Row className="g-4 g-lg-5 mb-4">
           <Col lg={11} className="mx-auto">
             <div className="tiny-slider arrow-round arrow-blur arrow-hover rounded-3 overflow-hidden">
@@ -78,7 +78,7 @@ const Hero = () => {
                             <button
                               className="btn btn-primary-soft mb-0"
                               style={{
-                                backgroundColor: "#5143d9",
+                                backgroundColor: "#8169dd",
                                 color: "#fff",
                               }}
                             >

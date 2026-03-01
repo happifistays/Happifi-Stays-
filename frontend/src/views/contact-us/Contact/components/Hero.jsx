@@ -16,7 +16,7 @@ import {
 import { Link } from "react-router-dom";
 const Hero = ({ showHero = true }) => {
   return (
-    <section className="pt-4 pt-md-5">
+    <section className="pt-4 pt-md-5 section-space-out-new">
       <Container>
         <Row className="mb-5">
           <Col xl={10}>
