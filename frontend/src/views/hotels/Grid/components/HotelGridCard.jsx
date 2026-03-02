@@ -125,8 +125,7 @@ const HotelGridCard = ({
           <div className="d-sm-flex justify-content-sm-between align-items-center">
             <div className="d-flex align-items-center">
               <h5 className="fw-normal text-success mb-0 me-1">
-                {currency}
-                {price}
+                {currency} {Number(price).toLocaleString("en-IN")}
               </h5>
               <span className="mb-0 me-2">/day</span>
               {discountPercentage > 0 && (

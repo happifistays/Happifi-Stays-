@@ -1,4 +1,4 @@
-export const currency = "Rs";
+export const currency = "Rs ";
 export const currentYear = new Date().getFullYear();
 export const buyLink = "";
 export const developedByLink = "";

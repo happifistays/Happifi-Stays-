@@ -78,8 +78,7 @@ const FeaturedHotels = () => {
                   </h5>
                   <div className="d-flex justify-content-between align-items-center">
                     <h6 className="text-success mb-0">
-                      {currency}
-                      {hotel.basePrice}{" "}
+                      {currency} {Number(hotel.basePrice).toLocaleString("en-IN")}{" "}
                       <small className="fw-light">/starting at</small>
                     </h6>
                     <h6 className="mb-0 d-flex align-items-center">
