@@ -77,11 +77,11 @@ const FeaturedHotels = () => {
                     </Link>
                   </h5>
                   <div className="d-flex justify-content-between align-items-center">
-                    <h6 className="text-success mb-0">
+                    <h6 className="text-success mb-0 new-hotel-cls-name-sz">
                       {currency} {Number(hotel.basePrice).toLocaleString("en-IN")}{" "}
                       <small className="fw-light">/starting at</small>
                     </h6>
-                    <h6 className="mb-0 d-flex align-items-center">
+                    <h6 className="mb-0 d-flex align-items-center new-hotel-cls-name-sz">
                       {hotel?.averageRating}
                       <FaStar size={18} className="text-warning ms-1" />
                     </h6>
