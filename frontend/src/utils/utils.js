@@ -19,3 +19,12 @@ export const formatLabel = (value) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
+
+export const formatCurrency = (amount) => {
+  if (isNaN(amount) || amount === null) return "0.00";
+
+  return new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};

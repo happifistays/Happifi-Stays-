@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import signInImg from "@/assets/images/element/signin.svg";
 import logoIcon from "../../../assets/images/logo.png";
-import { developedByLink, currentYear } from "@/states";
+import { currentYear } from "@/states";
 import { API_BASE_URL } from "../../../config/env";
 import { signInWithGoogle } from "@/firebase";
 import Swal from "sweetalert2";
@@ -45,7 +45,6 @@ const SignUp = () => {
       });
 
       if (response.status === 201) {
-        console.log("response------------", response?.data);
         saveSession({
           ...response.data.user,
           token: response.data.token,
@@ -71,14 +70,10 @@ const SignUp = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
- 
       const idToken = await signInWithGoogle();
-
-      const res = await axios.post(
-        `${API_BASE_URL}/api/v1/auth/google-login`,
-        { idToken },
-        { withCredentials: true }
-      );
+      const res = await axios.post(`${API_BASE_URL}/api/v1/auth/google-login`, {
+        idToken,
+      });
 
       if (res.data.success) {
         saveSession({
@@ -97,7 +92,6 @@ const SignUp = () => {
       }
     } catch (error) {
       console.error("Google login failed:", error);
-
       Swal.fire({
         icon: "error",
         title: "Google Login Failed",

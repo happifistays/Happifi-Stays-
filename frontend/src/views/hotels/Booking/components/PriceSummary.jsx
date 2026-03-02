@@ -8,6 +8,15 @@ import {
   CardTitle,
 } from "react-bootstrap";
 
+// Utility function to add commas and handle 2 decimal places
+const formatCurrency = (amount) => {
+  if (isNaN(amount) || amount === null) return "0.00";
+  return new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
+
 const PriceSummary = ({
   nights,
   roomCharges,
@@ -36,7 +45,7 @@ const PriceSummary = ({
               Room Charges ({nights} {nights > 1 ? "nights" : "night"})
             </span>
             <span className="fs-5">
-              {symbol} {roomCharges}
+              {symbol} {formatCurrency(roomCharges)}
             </span>
           </li>
 
@@ -44,19 +53,18 @@ const PriceSummary = ({
             <span className="h6 fw-light mb-0">
               Total Discount
               <span className="badge text-bg-danger smaller mb-0 ms-2">
-                Saved {symbol} {discount}
+                Saved {symbol} {formatCurrency(discount)}
               </span>
             </span>
             <span className="fs-5 text-success">
-              {symbol}
-              {discount}
+              {symbol} {formatCurrency(discount)}
             </span>
           </li>
 
           <li className="list-group-item d-flex justify-content-between align-items-center">
-            <span className="h6 fw-light mb-0">Price before offer</span>
+            <span className="h6 fw-light mb-0">Price after discount</span>
             <span className="fs-5">
-              {symbol} {roomCharges - discount}
+              {symbol} {formatCurrency(roomCharges - discount)}
             </span>
           </li>
 
@@ -66,7 +74,7 @@ const PriceSummary = ({
                 Rate after offer ({appliedOffer.title})
               </span>
               <span className="fs-5 text-success">
-                -{symbol} {offerDiscountAmount.toFixed(2)}
+                -{symbol} {formatCurrency(offerDiscountAmount)}
               </span>
             </li>
           )}
@@ -90,9 +98,8 @@ const PriceSummary = ({
       <CardFooter className="border-top">
         <div className="d-flex justify-content-between align-items-center">
           <span className="h5 mb-0">Payable Now</span>
-          <span className="h5 mb-0">
-            {symbol}
-            {totalAmount.toFixed(2)}
+          <span className="h5 mb-0 text-primary">
+            {symbol} {formatCurrency(totalAmount)}
           </span>
         </div>
       </CardFooter>

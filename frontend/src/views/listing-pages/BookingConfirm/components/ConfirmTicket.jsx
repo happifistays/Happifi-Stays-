@@ -31,6 +31,14 @@ import { API_BASE_URL } from "../../../../config/env";
 import axios from "axios";
 import confetti from "canvas-confetti";
 
+const formatCurrency = (amount) => {
+  if (isNaN(amount) || amount === null) return "0.00";
+  return new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
+
 const ConfirmTicket = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -110,6 +118,11 @@ const ConfirmTicket = () => {
     };
   }, [id]);
 
+  console.log(
+    "bookingDetails.paymentType-------------",
+    bookingDetails?.paymentType
+  );
+
   const downloadPDF = () => {
     if (!bookingDetails) return;
     const doc = new jsPDF();
@@ -134,12 +147,12 @@ const ConfirmTicket = () => {
 
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text("Booking ID:", 20, currentY);
+    doc.text("Booking ID :", 20, currentY);
     doc.setFont("helvetica", "normal");
     doc.text(`100${bookingDetails?.bookingId || "N/A"}`, 50, currentY);
 
     doc.setFont("helvetica", "bold");
-    doc.text("Status:", 120, currentY);
+    doc.text("Status :", 120, currentY);
     doc.setFont("helvetica", "normal");
     doc.text(
       `${bookingDetails?.status?.toUpperCase() || "N/A"}`,
@@ -149,7 +162,7 @@ const ConfirmTicket = () => {
 
     currentY += 10;
     doc.setFont("helvetica", "bold");
-    doc.text("Check-In:", 20, currentY);
+    doc.text("Check-In :", 20, currentY);
     doc.setFont("helvetica", "normal");
     doc.text(
       bookingDetails?.checkInDate
@@ -160,7 +173,7 @@ const ConfirmTicket = () => {
     );
 
     doc.setFont("helvetica", "bold");
-    doc.text("Check-Out:", 120, currentY);
+    doc.text("Check-Out :", 120, currentY);
     doc.setFont("helvetica", "normal");
     doc.text(
       bookingDetails?.checkOutDate
@@ -173,7 +186,7 @@ const ConfirmTicket = () => {
     if (bookingDetails.paymentType === "online") {
       currentY += 10;
       doc.setFont("helvetica", "bold");
-      doc.text("Payment status:", 20, currentY);
+      doc.text("Payment status :", 20, currentY);
       doc.setFont("helvetica", "normal");
       doc.text(
         `${bookingDetails?.paymentStatus?.replace(/_/g, " ") || "-"}`,
@@ -182,11 +195,19 @@ const ConfirmTicket = () => {
       );
 
       doc.setFont("helvetica", "bold");
-      doc.text("Paid Amount:", 120, currentY);
+      doc.text(
+        bookingDetails?.paymentStatus?.replace(/_/g, " ") === "pay at hotel"
+          ? "Payable Amount :"
+          : "Paid Amount :",
+        120,
+        currentY
+      );
+
       doc.setFont("helvetica", "normal");
       doc.text(
-        `${currency}${bookingDetails?.totalAmount || "-"}`,
-        150,
+        // I removed the leading spaces here since we are adjusting the X coordinate instead
+        `${currency} ${formatCurrency(bookingDetails?.totalAmount || "-")}`,
+        160, // Increased from 150 to 165 to add more space
         currentY
       );
     }
@@ -217,7 +238,9 @@ const ConfirmTicket = () => {
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
     doc.text(
-      `Total Amount: ${currency}${bookingDetails?.totalAmount || 0}`,
+      `Total Amount: ${currency} ${formatCurrency(
+        bookingDetails?.totalAmount || 0
+      )}`,
       105,
       finalY + 10,
       { align: "center" }
@@ -228,6 +251,10 @@ const ConfirmTicket = () => {
 
   if (loading) return <div className="text-center p-5">Loading...</div>;
   console.log("bookingDetails---------------", bookingDetails);
+  console.log(
+    'bookingDetails?.paymentStatus?.replace(/_/g, " ")--------------',
+    bookingDetails?.paymentStatus?.replace(/_/g, " ")
+  );
 
   return (
     <section className="pt-4">

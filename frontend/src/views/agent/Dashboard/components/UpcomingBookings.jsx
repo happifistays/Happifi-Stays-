@@ -21,7 +21,7 @@ const UpcomingBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
   const token = localStorage.getItem("token");
 
   const fetchBookings = useCallback(
@@ -143,7 +143,6 @@ const UpcomingBookings = () => {
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
-              <option value="">Sort by</option>
               <option value="newest">Newest</option>
               <option value="oldest">Oldest</option>
             </select>

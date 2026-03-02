@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
@@ -29,6 +29,7 @@ import { API_BASE_URL } from "../../../config/env";
 import { useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
 import TopNavBar from "../../hotels/Home/components/TopNavBar";
+import AgentNavBar from "../../../layouts/AgentLayout/AgentNavBar";
 
 const AddOffer = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -44,15 +45,16 @@ const AddOffer = () => {
     title: yup.string().required("Please enter the offer title"),
     description: yup.string().required("Please enter a description"),
     isDisabled: yup.boolean(),
-    // appliedProperties: yup
-    //   .array()
-    //   .min(1, "Please select at least one property"),
+    appliedProperties: yup
+      .array()
+      .of(yup.string())
+      .min(1, "Please select at least one property"),
     offerImage: isEditMode
       ? yup.mixed().notRequired()
       : yup.mixed().required("Please upload an offer image"),
   });
 
-  const { control, handleSubmit, reset, watch } = useForm({
+  const { control, handleSubmit, reset, watch, setValue } = useForm({
     resolver: yupResolver(offerSchema),
     defaultValues: {
       title: "",
@@ -63,26 +65,32 @@ const AddOffer = () => {
     },
   });
 
-  console.log("Apply to Properties------------", properties);
+  // Watch selected properties to ensure the dropdown shows them even if they have an offer (the current one)
+  const currentSelected = watch("appliedProperties");
 
-  // const propertyOptions = properties.map((prop) => ({
-  //   value: prop._id,
-  //   label: prop.listingName,
-  // }));
-
-  const propertyOptions = properties
-    .filter((prop) => prop.availableOffers.length === 0)
-    .map((prop) => ({
-      value: prop._id,
-      label: prop.listingName,
-    }));
+  const propertyOptions = useMemo(() => {
+    return properties
+      .filter((prop) => {
+        // Show properties with no offers OR properties that are already selected for this offer
+        const hasNoOffers = prop.availableOffers.length === 0;
+        const isSelected = currentSelected?.includes(prop._id);
+        return hasNoOffers || isSelected;
+      })
+      .map((prop) => ({
+        value: prop._id,
+        label: prop.listingName,
+      }));
+  }, [properties, currentSelected]);
 
   useEffect(() => {
     const fetchMyProperties = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/v1/shops/rooms`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${API_BASE_URL}/api/v1/shops/propertiess`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (res.data.success) {
           setProperties(res.data.data);
         }
@@ -176,7 +184,8 @@ const AddOffer = () => {
     <>
       <PageMetaData title={isEditMode ? "Edit Offer" : "Add New Offer"} />
       <TopNavBar />
-      <main className="py-5">
+      <AgentNavBar />
+      <main className="py-1">
         <Container>
           <Row className="justify-content-center">
             <Col lg={8}>
@@ -217,7 +226,9 @@ const AddOffer = () => {
                                   field.value?.includes(opt.value)
                                 )}
                                 onChange={(val) =>
-                                  field.onChange(val.map((v) => v.value))
+                                  field.onChange(
+                                    val ? val.map((v) => v.value) : []
+                                  )
                                 }
                               />
                               {fieldState.error && (

@@ -1,14 +1,13 @@
-import { Preloader } from '@/components';
-import { Suspense, lazy } from 'react';
-import TopNavBar from '../../views/hotels/Home/components/TopNavBar';
-const FooterWithLinks = lazy(() => import('./FooterWithLinks'));
-const HelpLayout = ({
-  children
-}) => {
-  return <>
+import { Preloader } from "@/components";
+import { Suspense, lazy } from "react";
+import TopNavBar from "../../views/hotels/Home/components/TopNavBar";
+import FooterWithLinks from "../../views/hotels/Home/components/FooterWithLinks";
+
+const HelpLayout = ({ children }) => {
+  return (
+    <>
       <Suspense>
-   <TopNavBar />
-   
+        <TopNavBar />
       </Suspense>
 
       <Suspense fallback={<Preloader />}>
@@ -18,6 +17,7 @@ const HelpLayout = ({
       <Suspense>
         <FooterWithLinks />
       </Suspense>
-    </>;
+    </>
+  );
 };
 export default HelpLayout;

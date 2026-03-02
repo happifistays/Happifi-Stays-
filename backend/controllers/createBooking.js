@@ -11,6 +11,7 @@ import crypto from "crypto";
 
 export const createBooking = async (req, res) => {
   try {
+    console.log("11111111111");
     const {
       currency,
       checkInDate,
@@ -20,7 +21,7 @@ export const createBooking = async (req, res) => {
       razorpay_signature,
       paymentMethod,
       guests,
-      totalAmount, 
+      totalAmount,
     } = req.body;
 
     const { propertyId } = req.params;
@@ -90,7 +91,7 @@ export const createBooking = async (req, res) => {
       { $inc: { earnings: totalAmount, visitors: 1 } },
       { upsert: true }
     );
-
+    console.log("guests-----------", guests);
     if (guests?.length > 0) {
       for (const guest of guests) {
         await Guests.create({
@@ -98,8 +99,8 @@ export const createBooking = async (req, res) => {
           title: guest.title,
           firstName: guest.firstName,
           lastName: guest.lastName,
-          email: req.body.email,
-          phone: req.body.phone,
+          email: guest.email,
+          phone: guest.phone,
           bookingId: createdBooking._id,
         });
       }

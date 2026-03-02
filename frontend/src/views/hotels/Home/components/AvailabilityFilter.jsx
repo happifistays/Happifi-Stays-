@@ -102,8 +102,8 @@ const AvailabilityFilter = () => {
   };
 
   return (
-    <Row>
-      <Col xl={10} className="position-relative mt-n3 mt-xl-n9">
+    <Row className="">
+      <Col xl={10} className="position-relative mt-n3 mt-xl-n9 col-xl-12">
         <h6 className="d-none d-xl-block mb-3">Checks Availability</h6>
 
         <Card

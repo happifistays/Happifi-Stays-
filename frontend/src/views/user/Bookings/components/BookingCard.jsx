@@ -7,27 +7,91 @@ import {
   Row,
   Dropdown,
 } from "react-bootstrap";
-import { FaHotel } from "react-icons/fa";
+import { FaHotel, FaDownload } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { format, differenceInHours } from "date-fns";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { API_BASE_URL } from "../../../../config/env";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const BookingCard = ({ booking, showActions = false, onSuccess }) => {
+  console.log("booking-----------", booking);
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(22);
+    doc.text("BOOKINGS REPORT", 14, 20);
+
+    // Meta Information
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(
+      `Generated on: ${format(new Date(), "M/dd/yyyy, h:mm:ss a")}`,
+      14,
+      30
+    );
+    doc.text("Total Bookings: 1", 14, 38);
+
+    // Table Data
+    const tableColumn = [
+      "#",
+      "Room Name",
+      "Duration",
+      "Status",
+      "Payment",
+      "Amount",
+    ];
+    const tableRows = [
+      [
+        1,
+        booking?.propertyId?.listingName ?? "N/A",
+        `${
+          booking?.checkInDate
+            ? format(new Date(booking.checkInDate), "dd MMM yyyy")
+            : ""
+        } to ${
+          booking?.checkOutDate
+            ? format(new Date(booking.checkOutDate), "dd MMM yyyy")
+            : ""
+        }`,
+        booking?.status?.toUpperCase() ?? "",
+        booking?.paymentStatus?.toUpperCase() ?? "",
+        `INR ${booking?.totalAmount ?? 0}`,
+      ],
+    ];
+
+    autoTable(doc, {
+      startY: 45,
+      head: [tableColumn],
+      body: tableRows,
+      theme: "grid",
+      headStyles: {
+        fillColor: [13, 110, 253], // Bootstrap blue
+        textColor: [255, 255, 255],
+        fontSize: 10,
+        fontStyle: "bold",
+      },
+      bodyStyles: {
+        fontSize: 9,
+        textColor: [50, 50, 50],
+      },
+      alternateRowStyles: {
+        fillColor: [255, 255, 255],
+      },
+      margin: { top: 45 },
+    });
+
+    doc.save(`booking_report_${booking?.bookingId || "id"}.pdf`);
+  };
+
   const handleCancel = async () => {
     const checkIn = new Date(booking.checkInDate);
     const now = new Date();
     const hoursDifference = differenceInHours(checkIn, now);
-
-    // if (hoursDifference < 3) {
-    //   Swal.fire({
-    //     icon: "error",
-    //     title: "Cannot Cancel",
-    //     text: "You can only cancel this booking at least 3 hours before the check-in time.",
-    //   });
-    //   return;
-    // }
 
     Swal.fire({
       title: "Are you sure?",
@@ -88,24 +152,35 @@ const BookingCard = ({ booking, showActions = false, onSuccess }) => {
           </div>
         </div>
 
-        {showActions && (
-          <Dropdown align="end">
-            <Dropdown.Toggle
-              as="a"
-              className="btn btn-light btn-round mb-0 arrow-none"
-            >
-              <BsThreeDotsVertical />
-            </Dropdown.Toggle>
+        <div className="d-flex align-items-center">
+          <Button
+            variant="light"
+            className="btn-round mb-0 me-2"
+            onClick={generatePDF}
+            title="Download PDF"
+          >
+            <FaDownload />
+          </Button>
 
-            <Dropdown.Menu className="dropdown-menu-end min-w-auto shadow">
-              <li>
-                <Dropdown.Item className="text-danger" onClick={handleCancel}>
-                  Cancel booking
-                </Dropdown.Item>
-              </li>
-            </Dropdown.Menu>
-          </Dropdown>
-        )}
+          {showActions && (
+            <Dropdown align="end">
+              <Dropdown.Toggle
+                as="a"
+                className="btn btn-light btn-round mb-0 arrow-none"
+              >
+                <BsThreeDotsVertical />
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="dropdown-menu-end min-w-auto shadow">
+                <li>
+                  <Dropdown.Item className="text-danger" onClick={handleCancel}>
+                    Cancel booking
+                  </Dropdown.Item>
+                </li>
+              </Dropdown.Menu>
+            </Dropdown>
+          )}
+        </div>
       </CardHeader>
 
       <CardBody>
