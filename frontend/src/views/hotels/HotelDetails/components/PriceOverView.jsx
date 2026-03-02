@@ -133,7 +133,7 @@ const PriceOverView = ({
 
         <div className="d-grid mt-3">
           <Button
-            variant={checkIn && checkOut && isAvailable ? "dark" : "secondary"}
+            variant={checkIn && checkOut && isAvailable ? "indigo" : "secondary"}
             size="lg"
             disabled={!checkIn || !checkOut || !isAvailable}
             onClick={handleBookNow}

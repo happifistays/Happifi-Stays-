@@ -16,10 +16,10 @@ const HotelPolicies = ({ policy }) => {
       <CardHeader className="border-bottom bg-transparent px-0 pt-0">
         <h3 className="mb-0">Hotel Policies</h3>
       </CardHeader>
-      <CardBody className="pt-4 p-0">
+      <CardBody className="pt-4 p-0 description-content-added">
         {/* Render the HTML string here */}
         <div
-          className="rich-text-container mb-4"
+          className="rich-text-container mb-4 description-content-added"
           dangerouslySetInnerHTML={{ __html: policy }}
         />
 
