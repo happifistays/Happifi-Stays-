@@ -106,7 +106,6 @@ const ConfirmTicket = () => {
         );
         if (res && res.status === 200) setBookingDetails(res.data?.data);
       } catch (error) {
-        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -117,11 +116,6 @@ const ConfirmTicket = () => {
       confetti.reset();
     };
   }, [id]);
-
-  console.log(
-    "bookingDetails.paymentType-------------",
-    bookingDetails?.paymentType
-  );
 
   const downloadPDF = () => {
     if (!bookingDetails) return;
@@ -250,11 +244,6 @@ const ConfirmTicket = () => {
   };
 
   if (loading) return <div className="text-center p-5">Loading...</div>;
-  console.log("bookingDetails---------------", bookingDetails);
-  console.log(
-    'bookingDetails?.paymentStatus?.replace(/_/g, " ")--------------',
-    bookingDetails?.paymentStatus?.replace(/_/g, " ")
-  );
 
   return (
     <section className="pt-4">

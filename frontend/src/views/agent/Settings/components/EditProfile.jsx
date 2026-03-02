@@ -132,9 +132,6 @@ const EditProfile = () => {
         birthday: formattedDate,
       };
 
-      console.log("payload-----------", payload);
-      console.log("avatarFile------------", avatarFile);
-
       if (avatarFile && avatarFile.base64) {
         const base64Avatar = avatarFile.base64;
         payload.avatar = base64Avatar;

@@ -9,14 +9,14 @@ export const getReviews = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const ratingFilter = req.query.rating; // optional rating filter (1-5)
- 
+
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     // 1. Get all rooms belonging to this shop
     const shopProperties = await Property.find({ owner: shopId }).select("_id");
     const propertyIds = shopProperties.map((property) => property._id);
-    console.log("propertyIds--------------", propertyIds);
+
     // 2. Base Query
     const query = { propertyId: { $in: propertyIds } };
     if (ratingFilter) {

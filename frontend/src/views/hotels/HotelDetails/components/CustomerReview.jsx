@@ -202,7 +202,7 @@ const CustomerReview = ({ hotelDetails, propertyId }) => {
                     alt="avatar"
                   />
                   <div className="mt-2 mt-md-0">
-                    <h6 className="mb-1">Manager</h6>
+                    <h6 className="mb-1">{newReviewData.owner.name}</h6>
                     <p className="mb-0">{review.reply}</p>
                   </div>
                 </div>

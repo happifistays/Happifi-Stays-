@@ -11,7 +11,6 @@ export const addContact = async (req, res) => {
       message: "Contactss created successfully",
     });
   } catch (error) {
-    console.log("1111111111111");
     return res.status(500).send({
       success: false,
       message: error.message || "Internal server error",

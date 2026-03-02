@@ -22,7 +22,7 @@ const BookingDetails = () => {
   const [appliedOffer, setAppliedOffer] = useState(null);
 
   const bookingData = location.state || {};
-  console.log("bookingData-----------", bookingData);
+
   const token = localStorage.getItem("token");
 
   // --- START CALCULATIONS ---
@@ -172,7 +172,6 @@ const BookingDetails = () => {
         );
 
         const orderData = await orderRes.json();
-        console.log("orderData------------", orderData);
 
         // 2. Open Razorpay Checkout
         const options = {
@@ -180,11 +179,12 @@ const BookingDetails = () => {
           amount: orderData.amount,
           currency: orderData.currency,
           name: "Happifi Stays",
+
           description: "Booking Payment",
           order_id: orderData.id,
           handler: async function (response) {
             // 3. Verify and Create Booking
-            console.log("response--------------", response);
+
             const verifyRes = await fetch(
               `${API_BASE_URL}/api/v1/customer/booking/${propertyId}`,
               {
@@ -205,7 +205,6 @@ const BookingDetails = () => {
             );
 
             const result = await verifyRes.json();
-            console.log("result-------------", result);
 
             if (result.success) {
               navigate(`/booking-confirmed/${result?.booking?._id}`);
@@ -222,7 +221,7 @@ const BookingDetails = () => {
         };
 
         const paymentObject = new window.Razorpay(options);
-        console.log("paymentObject------------", paymentObject);
+
         paymentObject.open();
       } else {
         // Handle offline payment

@@ -66,8 +66,6 @@ const AboutHotel = ({
     }
   }, [id]);
 
-  console.log("22222222222", hotelDetails);
-
   return (
     <section className="pt-0">
       <Container data-sticky-container>

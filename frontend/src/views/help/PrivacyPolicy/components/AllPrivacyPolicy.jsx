@@ -5,7 +5,6 @@ import DateChangePolicy from "./DateChangePolicy";
 import SpecialRequest from "./SpecialRequest";
 import about3 from "@/assets/images/about/03.jpg";
 const AllPrivacyPolicy = () => {
-  console.log("2222222");
   return (
     <section className="pt-4 pt-lg-5">
       <Container>

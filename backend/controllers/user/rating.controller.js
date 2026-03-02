@@ -10,7 +10,6 @@ import Stats from "../../models/statsSchema.js";
 
 export const addReview = async (req, res) => {
   try {
-    console.log("=====================", req.body);
     const { fromId, propertyId, feedback, rating } = req.body;
 
     if (!fromId || !propertyId || !rating) {

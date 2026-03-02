@@ -1,4 +1,5 @@
 import Rating from "../models/reviewsSchema.js";
+import Property from "../models/propertySchema.js";
 
 export const getReviewsByPropertyId = async (req, res) => {
   try {
@@ -7,14 +8,16 @@ export const getReviewsByPropertyId = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // We fetch all ratings to keep the summary (average/distribution) accurate
+    const propertyDetails = await Property.findById(id)
+      .select("owner")
+      .populate("owner", "name email avatar contactNumber location");
+
     const allReviewsForSummary = await Rating.find({ propertyId: id }).select(
       "rating"
     );
 
-    // Fetch paginated data
     const reviews = await Rating.find({ propertyId: id, isActive: true })
-      .populate("fromId", "name lastName email avatar")
+      .populate("fromId", "name email avatar")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -41,8 +44,7 @@ export const getReviewsByPropertyId = async (req, res) => {
       const reviewData = review.toObject();
       if (!reviewData.fromId) {
         reviewData.fromId = {
-          firstName: "Verified",
-          lastName: "Guest",
+          name: "Verified Guest",
           email: "guest@example.com",
         };
       }
@@ -62,6 +64,7 @@ export const getReviewsByPropertyId = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      owner: propertyDetails ? propertyDetails.owner : null,
       summary: {
         averageRating: processedReviews?.length ? parseFloat(averageRating) : 0,
         totalReviews: processedReviews?.length ? totalReviews : 0,

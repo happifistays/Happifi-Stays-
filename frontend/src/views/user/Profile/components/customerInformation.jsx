@@ -114,7 +114,7 @@ const CustomerInformation = () => {
   const onSubmit = async (data) => {
     try {
       setSubmitting(true);
-      console.log("data------------", data);
+
       const payload = {
         name: data.name,
         contactNumber: data.contactNumber,

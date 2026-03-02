@@ -20,7 +20,6 @@ import {
   TextAreaFormInput,
   FileFormInput,
 } from "@/components";
-
 import Footer from "../../listings/Added/components/Footer";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
@@ -45,10 +44,7 @@ const AddOffer = () => {
     title: yup.string().required("Please enter the offer title"),
     description: yup.string().required("Please enter a description"),
     isDisabled: yup.boolean(),
-    appliedProperties: yup
-      .array()
-      .of(yup.string())
-      .min(1, "Please select at least one property"),
+    appliedProperties: yup.array().of(yup.string()),
     offerImage: isEditMode
       ? yup.mixed().notRequired()
       : yup.mixed().required("Please upload an offer image"),
@@ -65,22 +61,24 @@ const AddOffer = () => {
     },
   });
 
-  // Watch selected properties to ensure the dropdown shows them even if they have an offer (the current one)
   const currentSelected = watch("appliedProperties");
 
   const propertyOptions = useMemo(() => {
     return properties
       .filter((prop) => {
-        // Show properties with no offers OR properties that are already selected for this offer
         const hasNoOffers = prop.availableOffers.length === 0;
         const isSelected = currentSelected?.includes(prop._id);
-        return hasNoOffers || isSelected;
+        const belongsToThisOffer = prop.availableOffers.some((offer) =>
+          typeof offer === "string" ? offer === id : offer._id === id
+        );
+
+        return hasNoOffers || isSelected || belongsToThisOffer;
       })
       .map((prop) => ({
         value: prop._id,
         label: prop.listingName,
       }));
-  }, [properties, currentSelected]);
+  }, [properties, currentSelected, id]);
 
   useEffect(() => {
     const fetchMyProperties = async () => {

@@ -69,7 +69,7 @@ customerRouter.put(
   userVerification,
   upload.single("profileImage"),
   updateUserProfile
-);
+); 
 customerRouter.get("/profile/details", userVerification, getUserProfile);
 customerRouter.get("/reviews-by-property-id/:id", getReviewsByPropertyId);
 customerRouter.get("/reviews-by-room-id/:id", getReviewsByRoomId);

@@ -296,9 +296,9 @@ const TopNavBar = () => {
                         </div>
                         <div>
                           <h6 className="h6 mt-2 mt-sm-0">
-                            {user?.name ?? ""}
+                            {profile?.name ?? ""}
                           </h6>
-                          <p className="small m-0">{user?.email ?? ""}</p>
+                          <p className="small m-0">{profile?.email ?? ""}</p>
                         </div>
                       </div>
                     </li>

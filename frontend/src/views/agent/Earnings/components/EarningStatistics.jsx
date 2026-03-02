@@ -33,6 +33,15 @@ const EarningStatistics = ({ selectedDate }) => {
     earningsLastMonth: 0,
   });
 
+  const formatCurrency = (amount) => {
+    if (isNaN(amount) || amount === null) return "0.00";
+
+    return new Intl.NumberFormat("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
+
   useEffect(() => {
     const fetchEarningStatus = async () => {
       try {
@@ -66,7 +75,9 @@ const EarningStatistics = ({ selectedDate }) => {
           <h6 className="mb-0">Earnings this month</h6>
           <h3 className="mb-2 mt-2">
             {currency}
-            {earningStatus.earningsCurrentMonth.toLocaleString()}
+            {formatCurrency(
+              earningStatus.earningsCurrentMonth.toLocaleString()
+            )}
           </h3>
           <p className="mb-0 mt-auto text-success">
             Last month: {currency}

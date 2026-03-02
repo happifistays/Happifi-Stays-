@@ -11,7 +11,6 @@ import crypto from "crypto";
 
 export const createBooking = async (req, res) => {
   try {
-    console.log("11111111111");
     const {
       currency,
       checkInDate,
@@ -91,7 +90,7 @@ export const createBooking = async (req, res) => {
       { $inc: { earnings: totalAmount, visitors: 1 } },
       { upsert: true }
     );
-    console.log("guests-----------", guests);
+
     if (guests?.length > 0) {
       for (const guest of guests) {
         await Guests.create({

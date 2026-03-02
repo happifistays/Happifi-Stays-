@@ -93,7 +93,7 @@ const ListingCard = ({ property, setProperties }) => {
       const newStatus = !isDisabled;
 
       const resp = await axios.patch(
-        `${API_BASE_URL}/api/v1/shops/property/${property._id}`,
+        `${API_BASE_URL}/api/v1/shops/property/disable/${property._id}`,
         {
           isDisabled: newStatus,
         },
@@ -134,8 +134,6 @@ const ListingCard = ({ property, setProperties }) => {
       setLoading(false);
     }
   };
-
-  console.log("property--------------", property);
 
   return (
     <>

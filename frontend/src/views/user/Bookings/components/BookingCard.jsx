@@ -17,8 +17,6 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const BookingCard = ({ booking, showActions = false, onSuccess }) => {
-  console.log("booking-----------", booking);
-
   const generatePDF = () => {
     const doc = new jsPDF();
 

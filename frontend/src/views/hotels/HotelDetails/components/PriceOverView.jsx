@@ -49,6 +49,14 @@ const PriceOverView = ({
     setCheckOut(date[0]);
   };
 
+  const formatCurrency = (amount) => {
+    if (isNaN(amount) || amount === null) return "0.00";
+    return new Intl.NumberFormat("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
+
   return (
     <Sticky disabled={width <= 1199} topOffset={100} boundaryElement="aside">
       <Card as={CardBody} className="border">
@@ -57,7 +65,7 @@ const PriceOverView = ({
             <span>Entire Property</span>
             <h4 className="card-title mb-0">
               {currency}
-              {rate}
+              {formatCurrency(total)}
             </h4>
           </div>
           <div>
@@ -121,7 +129,7 @@ const PriceOverView = ({
                   </span>
                   <span className="h6 fw-light">
                     {currency}
-                    {total}
+                    {formatCurrency(total)}
                   </span>
                 </li>
               </ul>
@@ -133,7 +141,9 @@ const PriceOverView = ({
 
         <div className="d-grid mt-3">
           <Button
-            variant={checkIn && checkOut && isAvailable ? "indigo" : "secondary"}
+            variant={
+              checkIn && checkOut && isAvailable ? "indigo" : "secondary"
+            }
             size="lg"
             disabled={!checkIn || !checkOut || !isAvailable}
             onClick={handleBookNow}

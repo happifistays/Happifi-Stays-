@@ -89,19 +89,21 @@ const Listings = () => {
           }
         );
         const result = await response.json();
-        console.log("result--------------", result);
+
         if (result.success) {
           const {
             availableProperties,
             earnings,
             bookedProperties,
             totalListings,
+            totalEarnings,
+            growth,
           } = result.data;
           setStatistics([
             {
               title: "Earning",
-              state: `${earnings.toLocaleString()}`,
-              change: "0.00%",
+              state: `${totalEarnings.toLocaleString()}`,
+              change: `${growth?.earningsPercentage ?? 0}%`,
               changeLabel: "vs last month",
               variant: "text-success",
               href: "/agent/earnings",
@@ -110,7 +112,7 @@ const Listings = () => {
               title: "Booked Properties",
               state: bookedProperties.toString(),
               change: totalListings.toString(),
-              changeLabel: "Total Rooms",
+              changeLabel: "Total Properties",
               variant: "text-info",
               href: "/agent/bookings",
             },
@@ -118,7 +120,7 @@ const Listings = () => {
               title: "Available Properties",
               state: availableProperties.toString(),
               change: totalListings.toString(),
-              changeLabel: "Total Rooms",
+              changeLabel: "Total Properties",
               variant: "text-warning",
               href: "/agent/rooms",
             },

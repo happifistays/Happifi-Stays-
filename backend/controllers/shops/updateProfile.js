@@ -4,6 +4,21 @@ export const updateProfile = async (req, res) => {
   try {
     const userId = req.userId;
 
+    if (req.body.avatar) {
+      const base64Data = req.body.avatar.includes("base64,")
+        ? req.body.avatar.split("base64,")[1]
+        : req.body.avatar;
+
+      const sizeInBytes = Buffer.byteLength(base64Data, "base64");
+
+      if (sizeInBytes > 1 * 1024) {
+        return res.status(400).send({
+          success: false,
+          message: "Avatar size must be less than 500KB",
+        });
+      }
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send({ message: "User not found" });
@@ -14,12 +29,8 @@ export const updateProfile = async (req, res) => {
       contactNumber: req.body.contactNumber,
       location: req.body.location,
       birthday: req.body.birthday,
-      avatar: req.body?.avatar,
+      avatar: req.body.avatar,
     };
-
-    if (req.file) {
-      updateData.avatar = req.file.path;
-    }
 
     Object.keys(updateData).forEach(
       (key) => updateData[key] === undefined && delete updateData[key]

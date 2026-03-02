@@ -1,7 +1,6 @@
 import { Card, CardBody, CardHeader } from "react-bootstrap";
 import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 const BookingPolicy = () => {
-  console.log("11111111");
   return (
     <Card className="p-0 bg-transparent">
       <CardHeader className="border-bottom bg-transparent px-0">

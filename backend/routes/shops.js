@@ -35,6 +35,7 @@ import { deleteOffer } from "../controllers/shops/deleteOffer.js";
 import { disableReview } from "../controllers/shops/disableReview.js";
 import { sendWhatsAppMessage } from "../utils/sendWhatsAppMessage.js";
 import { getPropertiesName } from "../controllers/shops/getPropertiesName.js";
+import { disableProperty } from "../controllers/shops/disableProperty.js";
 
 const shopsRouter = express.Router();
 
@@ -46,12 +47,17 @@ shopsRouter.post("/property", userVerification, createProperty);
 shopsRouter.get("/property/:propertyId", getPropertyById);
 shopsRouter.get("/rooms", userVerification, getProperties);
 shopsRouter.patch("/property/:propertyId", userVerification, updateProperty);
+shopsRouter.patch(
+  "/property/disable/:propertyId",
+  userVerification,
+  disableProperty
+);
 shopsRouter.delete("/rooms/:roomId", userVerification, deleteRoomById);
 shopsRouter.delete(
   "/property/:propertyId",
   userVerification,
   deletePropertyById
-);
+); 
 shopsRouter.get("/bookings", userVerification, getAllBookings);
 shopsRouter.get("/stats", userVerification, getStats);
 shopsRouter.post("/listing", userVerification);

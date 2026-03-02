@@ -42,8 +42,6 @@ const SignIn = () => {
           token: result.token,
         };
 
-        console.log("SESSION DATA--------------", sessionData);
-
         saveSession(sessionData);
 
         Swal.fire({

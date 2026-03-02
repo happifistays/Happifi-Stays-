@@ -22,7 +22,7 @@ const HotelDetails = () => {
   const [checkIn, setCheckIn] = useState(null);
   const [checkOut, setCheckOut] = useState(null);
   const [isAvailable, setIsAvailable] = useState(true);
-  console.log("11111111111");
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     if (id) {
@@ -132,7 +132,7 @@ const HotelDetails = () => {
               }}
               gallery={hotel.gallery}
             />
-            {console.log("hotel------------", hotel)}
+
             <AboutHotel
               hotelDetails={{
                 about: hotel.shortDescription,

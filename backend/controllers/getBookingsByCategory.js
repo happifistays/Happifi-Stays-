@@ -3,7 +3,7 @@ import Bookings from "../models/bookings.js";
 export const getBookingsByCategory = async (req, res) => {
   try {
     const userId = req.userId;
-    console.log("userId-----------", userId);
+
     const { type } = req.query;
 
     const filter = { bookedUserId: userId };
