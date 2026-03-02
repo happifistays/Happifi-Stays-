@@ -408,3 +408,7 @@ button.btn.btn-indigo.btn-lg {
   background: #7a6deb !important;
   color: white !important;
 }
+
+[data-bs-theme=dark] span.badge.bg-light.text-dark.new-dark-theme-clr-change {
+  color: white !important;
+}

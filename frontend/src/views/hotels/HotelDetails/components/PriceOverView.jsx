@@ -56,7 +56,7 @@ const PriceOverView = ({
           <div>
             <span>Entire Property</span>
             <h4 className="card-title mb-0">
-              {currency}
+              {currency} {" "}
               {rate}
             </h4>
           </div>

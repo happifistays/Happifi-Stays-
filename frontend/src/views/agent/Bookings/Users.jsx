@@ -272,7 +272,7 @@ const Users = () => {
                                 </td>
                                 <td>{user.email}</td>
                                 <td>
-                                  <span className="badge bg-light text-dark">
+                                  <span className="badge bg-light text-dark new-dark-theme-clr-change">
                                     {user.provider}
                                   </span>
                                 </td>
