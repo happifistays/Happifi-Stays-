@@ -164,7 +164,7 @@ const Bookings = () => {
                   <h5 className="card-header-title mb-0">
                     Bookings
                     <span className="badge bg-primary bg-opacity-10 text-primary ms-2">
-                      {totalBooking} Rooms
+                      {totalBooking} 
                     </span>
                   </h5>
                   <Button

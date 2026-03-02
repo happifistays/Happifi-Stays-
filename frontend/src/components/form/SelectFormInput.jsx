@@ -20,6 +20,7 @@ const SelectFormInput = ({
       choicesInstance.current = new Choices(selectRef.current, {
         allowHTML: true,
         shouldSort: false,
+        removeItemButton: true, 
         ...choiceOptions,
       });
 
@@ -61,6 +62,7 @@ const SelectFormInput = ({
       name={name}
       onBlur={onBlur}
       defaultValue={value}
+      
     >
       {children}
     </select>
