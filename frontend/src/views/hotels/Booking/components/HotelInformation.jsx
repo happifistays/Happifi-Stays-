@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../../../../config/env";
-const HotelInformation = () => {
+const HotelInformation = ({ nights, guestCount }) => {
   const location = useLocation();
   const [reviews, setReviews] = useState([]);
   const [data, setData] = useState([]);
@@ -177,15 +177,11 @@ const HotelInformation = () => {
           </Col>
           <Col lg={4}>
             <div className="bg-light py-3 px-4 rounded-3">
-              <h6 className="fw-light small mb-1">Rooms &amp; Guests</h6>
-              <h5 className="mb-1">
-                {parsedData?.guests.adults} G - {parsedData?.guests.rooms} R{" "}
-                {parsedData?.guests.children > 0
-                  ? parsedData?.guests.children + " C"
-                  : ""}
-              </h5>
+              <h6 className="fw-light small mb-1">Guests</h6>
+              <h5 className="mb-1">{guestCount} G </h5>
               <small className="items-center">
-                <BsBrightnessHigh className=" me-1" />3 Nights - 4 Days
+                <BsBrightnessHigh className=" me-1" />
+                {nights} Nights
               </small>
             </div>
           </Col>

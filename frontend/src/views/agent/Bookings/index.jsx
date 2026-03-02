@@ -326,16 +326,123 @@ const Bookings = () => {
         centered
         size="lg"
       >
-        <Modal.Header closeButton />
+        <Modal.Header closeButton className="border-0 pb-0" />
         <Modal.Body>
           {selectedBooking && (
             <div className="p-2">
-              <h4>{selectedBooking.propertyName}</h4>
-              <p>Booking ID: #{selectedBooking._id.slice(-6)}</p>
-              <p>Amount: ₹{selectedBooking.totalAmount}</p>
+              <div className="mb-4">
+                <h4 className="fw-bold mb-1">
+                  {selectedBooking.propertyName || selectedBooking.roomName}
+                </h4>
+              </div>
+
+              <div className="d-flex gap-3 mb-4 flex-wrap">
+                <span
+                  className={clsx(
+                    "badge px-3 py-2",
+                    selectedBooking.status === "booked"
+                      ? "bg-success"
+                      : "bg-danger"
+                  )}
+                >
+                  {selectedBooking.status?.toUpperCase()}
+                </span>
+
+                <span
+                  className={clsx(
+                    "badge px-3 py-2",
+                    selectedBooking.paymentStatus === "paid"
+                      ? "bg-primary"
+                      : "bg-warning text-dark"
+                  )}
+                >
+                  {selectedBooking.paymentStatus
+                    ?.toUpperCase()
+                    ?.replace(/_/g, " ")}
+                </span>
+              </div>
+
+              {/* Customer Details */}
+              <div className="card border-0 shadow-sm mb-3">
+                <div className="card-body">
+                  <h6 className="fw-bold mb-3">Customer Details</h6>
+                  <div className="row mb-2">
+                    <div className="col-6">Customer name</div>
+                    <div className="col-6 text-end">
+                      {selectedBooking.customer?.name ?? "N/A"}
+                    </div>
+                  </div>
+                  <div className="row mb-2">
+                    <div className="col-6">Email</div>
+                    <div className="col-6 text-end">
+                      {selectedBooking.customer?.email ?? "N/A"}
+                    </div>
+                  </div>
+                  <div className="row mb-2">
+                    <div className="col-6">Contact Number</div>
+                    <div className="col-6 text-end">
+                      {selectedBooking.customer?.contactNumber ?? "Unavailable"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Booking Info */}
+              <div className="card border-0 shadow-sm mb-3">
+                <div className="card-body">
+                  {/* <div className="row mb-2">
+                    <div className="col-6">Booking ID</div>
+                    <div className="col-6 text-end fw-semibold">
+                      {selectedBooking?.bookingId}
+                    </div>
+                  </div> */}
+                  <div className="row mb-2">
+                    <div className="col-6">Check In - Out</div>
+                    <div className="col-6 text-end fw-semibold">
+                      {selectedBooking.checkInDate} →{" "}
+                      {selectedBooking.checkOutDate}
+                    </div>
+                  </div>
+                  <div className="row mb-2">
+                    <div className="col-6">Total Amount</div>
+                    <div className="col-6 text-end fw-bold text-success">
+                      ₹ {selectedBooking.totalAmount}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Details */}
+              <div className="card border-0 shadow-sm mb-3">
+                <div className="card-body">
+                  <h6 className="fw-bold mb-3">Payment Details</h6>
+                  <div className="row mb-2">
+                    <div className="col-6">Payment ID</div>
+                    <div className="col-6 text-end">
+                      {selectedBooking.paymentDetails?._id?.slice(-6) || "N/A"}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-6">Source</div>
+                    <div className="col-6 text-end">
+                      {selectedBooking.trafficSource ||
+                        selectedBooking.utm?.source ||
+                        "Organic"}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </Modal.Body>
+        <Modal.Footer className="border-0">
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowModal(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

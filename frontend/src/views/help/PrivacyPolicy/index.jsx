@@ -1,10 +1,14 @@
-import { PageMetaData } from '@/components';
-import AllPrivacyPolicy from './components/AllPrivacyPolicy';
+import { PageMetaData } from "@/components";
+import AllPrivacyPolicy from "./components/AllPrivacyPolicy";
 const PrivacyPolicy = () => {
-  return <>
+  console.log("1111111111");
+  return (
+    <>
       <PageMetaData title="Privacy Policy" />
 
       <AllPrivacyPolicy />
-    </>;
+    </>
+  );
 };
 export default PrivacyPolicy;
+ 

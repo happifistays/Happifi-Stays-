@@ -39,16 +39,17 @@ const GuestDetails = ({ control }) => {
       <CardBody className="p-4">
         <div className="row g-4">
           {fields.map((field, index) => (
-            <div key={field.id} className="row g-4 mb-3">
+            <div key={field.id} className="row g-4 mb-4 pb-4 border-bottom">
               <Col xs={12}>
-                <div className="bg-light rounded-2 px-4 py-3 d-flex justify-content-between align-items-center">
-                  <h6 className="mb-0">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <h6 className="mb-0 text-primary">
                     {index === 0 ? "Main Guest" : `Guest ${index + 1}`}
                   </h6>
                   {index > 0 && (
                     <Button
                       variant="outline-danger"
                       size="sm"
+                      className="border-0"
                       onClick={() => remove(index)}
                     >
                       <BsTrash />
@@ -56,9 +57,10 @@ const GuestDetails = ({ control }) => {
                   )}
                 </div>
               </Col>
+
               <Col md={2}>
                 <div className="form-size-lg">
-                  <label className="form-label">Title</label>
+                  <label className="form-label text-muted">Title</label>
                   <SelectFormInput
                     name={`guests.${index}.title`}
                     control={control}
@@ -87,44 +89,50 @@ const GuestDetails = ({ control }) => {
                 className="form-control-lg"
                 containerClass="col-md-5"
               />
+
+              <Col md={6}>
+                <TextFormInput
+                  name={`guests.${index}.email`}
+                  label="Email id"
+                  type="text"
+                  control={control}
+                  placeholder="Enter your email"
+                  className="form-control-lg"
+                />
+                <div className="form-text mt-2">
+                  (Booking voucher will be sent to this email ID)
+                </div>
+              </Col>
+              <TextFormInput
+                name={`guests.${index}.phone`}
+                label="Mobile number"
+                type="text"
+                control={control}
+                placeholder="Enter your mobile number"
+                className="form-control-lg"
+                containerClass="col-md-6"
+              />
             </div>
           ))}
 
-          <Col xs={12}>
+          <Col xs={12} className="mt-2">
             <Button
               variant="link"
-              className="mb-0 p-0 items-center"
+              className="mb-0 p-0 d-flex align-items-center text-decoration-none fw-bold"
               onClick={() =>
-                append({ title: "Mr", firstName: "", lastName: "" })
+                append({
+                  title: "Mr",
+                  firstName: "",
+                  lastName: "",
+                  email: "",
+                  phone: "",
+                })
               }
             >
-              <FaPlus className="fa-solid me-2" />
+              <FaPlus className="me-2" />
               Add New Guest
             </Button>
           </Col>
-
-          <Col md={6}>
-            <TextFormInput
-              name="email"
-              label="Email id"
-              type="text"
-              control={control}
-              placeholder="Enter your email"
-              className="form-control-lg"
-            />
-            <div id="emailHelp" className="form-text">
-              (Booking voucher will be sent to this email ID)
-            </div>
-          </Col>
-          <TextFormInput
-            name="phone"
-            label="Mobile number"
-            type="text"
-            control={control}
-            placeholder="Enter your mobile number"
-            className="form-control-lg"
-            containerClass="col-md-6"
-          />
         </div>
         {/* <Alert variant="info" className="my-4" role="alert">
           <Link to="/auth/sign-up" className="alert-heading h6">

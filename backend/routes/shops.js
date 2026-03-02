@@ -34,6 +34,7 @@ import { getOfferById } from "../controllers/shops/getOfferById.js";
 import { deleteOffer } from "../controllers/shops/deleteOffer.js";
 import { disableReview } from "../controllers/shops/disableReview.js";
 import { sendWhatsAppMessage } from "../utils/sendWhatsAppMessage.js";
+import { getPropertiesName } from "../controllers/shops/getPropertiesName.js";
 
 const shopsRouter = express.Router();
 
@@ -90,5 +91,7 @@ shopsRouter.get("/test", async (req, res) => {
   await sendWhatsAppMessage("9526374812", "test");
   res.send("dsdsds");
 });
+
+shopsRouter.get("/propertiess", userVerification, getPropertiesName);
 
 export default shopsRouter;

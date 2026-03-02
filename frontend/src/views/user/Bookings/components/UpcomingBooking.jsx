@@ -1,7 +1,7 @@
 import BookingCard from "./BookingCard";
 
 const UpcomingBooking = ({ bookings, onRefresh }) => {
-  return (
+  return ( 
     <>
       <h6>Upcoming bookings ({bookings.length})</h6>
 

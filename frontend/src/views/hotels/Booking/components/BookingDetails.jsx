@@ -63,10 +63,10 @@ const BookingDetails = () => {
           title: "Mr",
           firstName: "",
           lastName: "",
+          email: "",
+          phone: "",
         },
       ],
-      email: "",
-      phone: "",
       specialRequests: [],
       paymentMethod: "online", // added for radio toggle
       selectedPaymentTypeId: 1,
@@ -82,6 +82,13 @@ const BookingDetails = () => {
       status: "booked",
     },
   });
+
+  // Watch guests to get the length
+  const guests = useWatch({
+    control: methods.control,
+    name: "guests",
+  });
+  const guestCount = guests?.length || 0;
 
   // Sync the form total whenever finalCalculatedTotal changes
   useEffect(() => {
@@ -208,8 +215,8 @@ const BookingDetails = () => {
           },
           prefill: {
             name: `${data.guests[0].firstName} ${data.guests[0].lastName}`,
-            email: data.email,
-            contact: data.phone,
+            email: data.guests[0].email,
+            contact: data.guests[0].phone,
           },
           theme: { color: "#3399cc" },
         };
@@ -256,7 +263,7 @@ const BookingDetails = () => {
   };
 
   const handlePayAtHotelClick = async () => {
-    const isValid = await methods.trigger(["guests", "email", "phone"]);
+    const isValid = await methods.trigger(["guests"]);
     if (!isValid) return;
 
     Swal.fire({
@@ -284,7 +291,7 @@ const BookingDetails = () => {
             <Row className="g-4 g-lg-5">
               <Col xl={8}>
                 <div className="vstack gap-5">
-                  <HotelInformation />
+                  <HotelInformation nights={nights} guestCount={guestCount} />
                   <GuestDetails control={methods.control} />
 
                   {/* Price Summary for Mobile (Visible below xl breakpoint) */}
