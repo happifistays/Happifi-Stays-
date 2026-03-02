@@ -198,7 +198,7 @@ const CustomerReview = ({ hotelDetails, propertyId }) => {
                 <div className="d-md-flex p-3 bg-light rounded-3">
                   <img
                     className="avatar avatar-sm rounded-circle me-3"
-                    src={DEFAULT_AVATAR_IMAGE}
+                    src={newReviewData?.owner?.avatar ?? DEFAULT_AVATAR_IMAGE}
                     alt="avatar"
                   />
                   <div className="mt-2 mt-md-0">

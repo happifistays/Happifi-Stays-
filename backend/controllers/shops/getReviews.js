@@ -4,6 +4,7 @@ import Property from "../../models/propertySchema.js";
 
 export const getReviews = async (req, res) => {
   try {
+    console.log("*************");
     const shopId = req.user.id;
     // Get query parameters
     const page = parseInt(req.query.page) || 1;
@@ -44,7 +45,7 @@ export const getReviews = async (req, res) => {
     const totalReviewsCount = await Rating.countDocuments(query);
     const reviews = await Rating.find(query)
       .populate("propertyId", "listingName gallery")
-      //   .populate("roomId", "roomName roomThumbnail price")
+      .populate("fromId", "name avatar")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
