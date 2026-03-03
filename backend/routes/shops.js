@@ -57,7 +57,7 @@ shopsRouter.delete(
   "/property/:propertyId",
   userVerification,
   deletePropertyById
-); 
+);
 shopsRouter.get("/bookings", userVerification, getAllBookings);
 shopsRouter.get("/stats", userVerification, getStats);
 shopsRouter.post("/listing", userVerification);
@@ -94,6 +94,7 @@ shopsRouter.patch(
 );
 
 shopsRouter.get("/test", async (req, res) => {
+  console.log("*****************");
   await sendWhatsAppMessage("9526374812", "test");
   res.send("dsdsds");
 });
