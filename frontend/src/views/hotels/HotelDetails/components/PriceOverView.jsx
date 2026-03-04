@@ -38,15 +38,24 @@ const PriceOverView = ({
   const total = rate * (nights || 1);
 
   const handleCheckInChange = (date) => {
-    const selectedDate = date[0];
-    setCheckIn(selectedDate);
-    if (checkOut && selectedDate >= checkOut) {
-      setCheckOut(null);
+    if (date.length > 0) {
+      const selectedDate = new Date(date[0]);
+      // Set to noon local time to prevent timezone offset from shifting the date back a day when converted to UTC/ISO
+      selectedDate.setHours(12, 0, 0, 0);
+      setCheckIn(selectedDate);
+      if (checkOut && selectedDate >= checkOut) {
+        setCheckOut(null);
+      }
     }
   };
 
   const handleCheckOutChange = (date) => {
-    setCheckOut(date[0]);
+    if (date.length > 0) {
+      const selectedDate = new Date(date[0]);
+      // Set to noon local time to prevent timezone offset from shifting the date back a day when converted to UTC/ISO
+      selectedDate.setHours(12, 0, 0, 0);
+      setCheckOut(selectedDate);
+    }
   };
 
   const formatCurrency = (amount) => {
@@ -64,8 +73,7 @@ const PriceOverView = ({
           <div>
             <span>Entire Property</span>
             <h4 className="card-title mb-0">
-              {currency}  {" "}
-              {formatCurrency(total)}
+              {currency} {formatCurrency(total)}
             </h4>
           </div>
           <div>
@@ -156,7 +164,7 @@ const PriceOverView = ({
       <div className="mt-4 d-none d-xl-block">
         {availableOffers?.length > 0 &&
           availableOffers?.map((offer, idx) => (
-            <Card className="shadow rounded-3 overflow-hidden">
+            <Card key={idx} className="shadow rounded-3 overflow-hidden">
               <Row className="g-0 align-items-center">
                 <Col lg={6}>
                   <Image src={offer?.image} className="card-img rounded-0" />

@@ -1,35 +1,114 @@
-import { AdminLayout, AgentLayout, AuthLayout, DefaultLayout, HelpLayout, UserLayout } from '@/layouts';
-import { adminRoutes, agentRoutes, appRoutes, authRoutes, helpRoutes, userRoutes } from '@/routes/index';
-import { useAuthContext } from '@/states';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import ScrollToTop from '../ScrollToTop';
-const AppRouter = props => {
-  const {
-    isAuthenticated
-  } = useAuthContext();
-  return <>
-    <ScrollToTop />
-    <Routes>
-      {(appRoutes || []).map((route, idx) => <Route key={idx + route.name} path={route.path} element={<DefaultLayout {...props}>{route.element}</DefaultLayout>} />)}
+import {
+  AdminLayout,
+  AgentLayout,
+  AuthLayout,
+  DefaultLayout,
+  HelpLayout,
+  UserLayout,
+} from "@/layouts";
+import {
+  adminRoutes,
+  agentRoutes,
+  appRoutes,
+  authRoutes,
+  helpRoutes,
+  userRoutes,
+} from "@/routes/index";
+import { useAuthContext } from "@/states";
+import { Navigate, Route, Routes } from "react-router-dom";
+import ScrollToTop from "../ScrollToTop";
 
-      {(authRoutes || []).map((route, idx) => <Route key={idx + route.name} path={route.path} element={<AuthLayout {...props}>{route.element}</AuthLayout>} />)}
+const AppRouter = (props) => {
+  const { isAuthenticated, user } = useAuthContext();
+  console.log("USER------------", user?.role === "admin");
 
-      {(helpRoutes || []).map((route, idx) => <Route key={idx + route.name} path={route.path} element={<HelpLayout {...props}>{route.element}</HelpLayout>} />)}
+  return (
+    <>
+      <ScrollToTop />
+      <Routes>
+        {(appRoutes || []).map((route, idx) => (
+          <Route
+            key={idx + route.name}
+            path={route.path}
+            element={<DefaultLayout {...props}>{route.element}</DefaultLayout>}
+          />
+        ))}
 
-      {(userRoutes || []).map((route, idx) => <Route key={idx + route.name} path={route.path} element={isAuthenticated ? <UserLayout {...props}>{route.element}</UserLayout> : <Navigate to={{
-        pathname: '/auth/sign-in',
-        search: 'redirectTo=' + route.path
-      }} />} />)}
+        {(authRoutes || []).map((route, idx) => (
+          <Route
+            key={idx + route.name}
+            path={route.path}
+            element={<AuthLayout {...props}>{route.element}</AuthLayout>}
+          />
+        ))}
 
-      {(agentRoutes || []).map((route, idx) => <Route key={idx + route.name} path={route.path} element={isAuthenticated ? <AgentLayout {...props}>{route.element}</AgentLayout> : <Navigate to={{
-        pathname: '/auth/sign-in',
-        search: 'redirectTo=' + route.path
-      }} />} />)}
+        {(helpRoutes || []).map((route, idx) => (
+          <Route
+            key={idx + route.name}
+            path={route.path}
+            element={<HelpLayout {...props}>{route.element}</HelpLayout>}
+          />
+        ))}
 
-      {(adminRoutes || []).map((route, idx) => <Route key={idx + route.name} path={route.path} element={isAuthenticated ? <AdminLayout {...props}>{route.element}</AdminLayout> : <Navigate to={{
-        pathname: '/auth/sign-in',
-        search: 'redirectTo=' + route.path
-      }} />} />)}
-    </Routes></>;
+        {(userRoutes || []).map((route, idx) => (
+          <Route
+            key={idx + route.name}
+            path={route.path}
+            element={
+              isAuthenticated ? (
+                <UserLayout {...props}>{route.element}</UserLayout>
+              ) : (
+                <Navigate
+                  to={{
+                    pathname: "/auth/sign-in",
+                    search: "redirectTo=" + route.path,
+                  }}
+                />
+              )
+            }
+          />
+        ))}
+
+        {(agentRoutes || []).map((route, idx) => (
+          <Route
+            key={idx + route.name}
+            path={route.path}
+            element={
+              isAuthenticated && user?.role === "admin" ? (
+                <AgentLayout {...props}>{route.element}</AgentLayout>
+              ) : (
+                <Navigate
+                  to={{
+                    pathname: "/auth/sign-in",
+                    search: "redirectTo=" + route.path,
+                  }}
+                />
+              )
+            }
+          />
+        ))}
+
+        {(adminRoutes || []).map((route, idx) => (
+          <Route
+            key={idx + route.name}
+            path={route.path}
+            element={
+              isAuthenticated ? (
+                <AdminLayout {...props}>{route.element}</AdminLayout>
+              ) : (
+                <Navigate
+                  to={{
+                    pathname: "/auth/sign-in",
+                    search: "redirectTo=" + route.path,
+                  }}
+                />
+              )
+            }
+          />
+        ))}
+      </Routes>
+    </>
+  );
 };
+
 export default AppRouter;
