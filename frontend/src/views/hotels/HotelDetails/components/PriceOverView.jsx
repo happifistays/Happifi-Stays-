@@ -111,7 +111,7 @@ const PriceOverView = ({
                   options={{
                     dateFormat: "d M Y",
                     minDate: checkIn
-                      ? new Date(new Date(checkIn).getTime() + 86400000)
+                      ? new Date(new Date(checkIn).getTime() + 3600000) // Ensure minDate is just slightly after checkIn but within the same day cycle to allow next-day selection
                       : "today",
                   }}
                   onChange={handleCheckOutChange}
