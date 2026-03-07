@@ -50,7 +50,7 @@ const Earnings = () => {
           <EarningStatistics selectedDate={selectedDate} />
 
           <Row>
-            <Col xs={12}>
+            <Col xs={12}> 
               <EarningChart selectedDate={selectedDate} />
             </Col>
           </Row>

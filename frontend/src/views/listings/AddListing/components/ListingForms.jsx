@@ -112,6 +112,7 @@ const ListingForms = () => {
       listingPolicyDescription: "",
       isOfferApplied: false,
       selectedOffer: "",
+      highlights: [],
     },
   });
 
@@ -164,6 +165,7 @@ const ListingForms = () => {
                 discount: r.discount,
                 roomThumbnail: r.roomThumbnail,
               })),
+              highlights: item.highlights || [],
             });
           }
         } catch (error) {
@@ -213,6 +215,7 @@ const ListingForms = () => {
       totalRooms: parseInt(formData.totalRooms),
       propertyArea: parseInt(formData.propertyArea),
       availableOffers: formData.isOfferApplied ? [formData.selectedOffer] : [],
+      highlights: formData.highlights,
     };
 
     try {

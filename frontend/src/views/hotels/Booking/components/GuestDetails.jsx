@@ -134,34 +134,6 @@ const GuestDetails = ({ control }) => {
             </Button>
           </Col>
         </div>
-        {/* <Alert variant="info" className="my-4" role="alert">
-          <Link to="/auth/sign-up" className="alert-heading h6">
-            Login
-          </Link>{" "}
-          to prefill all details and get access to secret deals
-        </Alert> */}
-        {/* <Card className="border mt-4">
-          <CardHeader className="border-bottom">
-            <h5 className="card-title mb-0">Special request</h5>
-          </CardHeader>
-          <CardBody>
-            <div className="hstack flex-wrap gap-3">
-              {SpecialRequest.map((request, idx) => {
-                return (
-                  <CheckFormInput
-                    key={idx}
-                    id={`checkbox-${idx}`}
-                    type="checkbox"
-                    name="specialRequests"
-                    value={request}
-                    label={request}
-                    control={control}
-                  />
-                );
-              })}
-            </div>
-          </CardBody>
-        </Card> */}
       </CardBody>
     </Card>
   );

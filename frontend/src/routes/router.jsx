@@ -20,7 +20,6 @@ import ScrollToTop from "../ScrollToTop";
 
 const AppRouter = (props) => {
   const { isAuthenticated, user } = useAuthContext();
-  console.log("USER------------", user?.role === "admin");
 
   return (
     <>

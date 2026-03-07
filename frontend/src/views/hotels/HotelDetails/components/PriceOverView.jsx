@@ -161,7 +161,7 @@ const PriceOverView = ({
         </div>
       </Card>
 
-      <div className="mt-4 d-none d-xl-block">
+      <div className="mt-4  d-xl-block">
         {availableOffers?.length > 0 &&
           availableOffers?.map((offer, idx) => (
             <Card key={idx} className="shadow rounded-3 overflow-hidden">

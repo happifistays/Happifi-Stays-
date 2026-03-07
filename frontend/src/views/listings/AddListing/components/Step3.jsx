@@ -109,7 +109,7 @@ const Step3 = ({ isEdit }) => {
               </div>
             </Col> */}
 
-            {isOfferApplied && (
+            {/* {isOfferApplied && (
               <Col md={12}>
                 <label className="form-label">Select Offer *</label>
                 <Controller
@@ -134,7 +134,7 @@ const Step3 = ({ isEdit }) => {
                   )}
                 />
               </Col>
-            )}
+            )} */}
 
             <Col xs={12}>
               <label className="form-label">Add description *</label>

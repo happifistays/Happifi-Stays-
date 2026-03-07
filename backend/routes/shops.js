@@ -57,15 +57,15 @@ shopsRouter.delete(
   "/property/:propertyId",
   userVerification,
   deletePropertyById
-); 
+);  
 shopsRouter.get("/bookings", userVerification, getAllBookings);
 shopsRouter.get("/stats", userVerification, getStats);
 shopsRouter.post("/listing", userVerification);
-shopsRouter.get("/listings/count", userVerification, getListingsCount);
+shopsRouter.get("/listings/count", userVerification, getListingsCount); 
 shopsRouter.get("/stats/graph", userVerification, getGraphStats);
 shopsRouter.get("/reviews", userVerification, getReviews);
 shopsRouter.get("/invoices", userVerification, getInvoiceHistory);
-shopsRouter.get("/earning-statuses", userVerification, getEarningStats);
+shopsRouter.get("/earning-statuses", userVerification, getEarningStats);  
 shopsRouter.get("/activity", userVerification, getUserActivities);
 shopsRouter.delete("/activity/:activityId", userVerification, deleteActivity);
 shopsRouter.delete("/activity", userVerification, deleteAllActivities);

@@ -137,15 +137,22 @@ const BookingDetails = () => {
 
   const onSubmit = async (data) => {
     try {
-      if (
-        data.guests &&
-        data.guests.length == 1 &&
-        data.guests[0].firstName?.trim() == ""
-      ) {
+      // Validate all guests in the array
+      const incompleteGuestIndex = data.guests.findIndex(
+        (guest) =>
+          !guest.firstName?.trim() ||
+          !guest.lastName?.trim() ||
+          !guest.email?.trim() ||
+          !guest.phone?.trim()
+      );
+
+      if (incompleteGuestIndex !== -1) {
         Swal.fire({
           icon: "error",
           title: "Guest details are missing",
-          text: "Please add guest details",
+          text: `Please provide complete details for Guest ${
+            incompleteGuestIndex + 1
+          }.`,
         });
         return;
       }
@@ -262,24 +269,8 @@ const BookingDetails = () => {
   };
 
   const handlePayAtHotelClick = async () => {
-    const isValid = await methods.trigger(["guests"]);
-    if (!isValid) return;
-
-    Swal.fire({
-      title: "Confirm Booking",
-      text: "Do you want to confirm that pay at hotel?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, confirm it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        methods.setValue("paymentStatus", "unpaid");
-        methods.setValue("paymentMethod", "pay_at_hotel");
-        methods.handleSubmit(onSubmit)();
-      }
-    });
+    // Manually trigger submission to run the validation logic inside onSubmit
+    methods.handleSubmit(onSubmit)();
   };
 
   return (

@@ -50,6 +50,7 @@ const EarningStatistics = ({ selectedDate }) => {
           `${API_BASE_URL}/api/v1/shops/earning-statuses?date=${selectedDate}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+
         if (response.data) setEarningStatus(response.data);
       } catch (error) {
         console.error("Error fetching earning stats", error);
@@ -75,9 +76,7 @@ const EarningStatistics = ({ selectedDate }) => {
           <h6 className="mb-0">Earnings this month</h6>
           <h3 className="mb-2 mt-2">
             {currency}
-            {formatCurrency(
-              earningStatus.earningsCurrentMonth.toLocaleString()
-            )}
+            {formatCurrency(earningStatus?.earningsCurrentMonth ?? "")}
           </h3>
           <p className="mb-0 mt-auto text-success">
             Last month: {currency}

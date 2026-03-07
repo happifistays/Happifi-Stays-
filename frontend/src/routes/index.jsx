@@ -11,7 +11,7 @@ const HotelsHome = lazy(() => import("@/views/hotels/Home"));
 const HotelsChain = lazy(() => import("@/views/hotels/Chain"));
 const HotelsResort = lazy(() => import("@/views/hotels/Resort"));
 const HotelsGrid = lazy(() => import("@/views/hotels/Grid"));
-const HotelsList = lazy(() => import("@/views/hotels/List"));
+const HotelsList = lazy(() => import("@/views/hotels/List")); 
 const HotelDetails = lazy(() => import("@/views/hotels/HotelDetails"));
 const RoomDetails = lazy(() => import("@/views/hotels/RoomDetails"));
 const HotelBooking = lazy(() => import("@/views/hotels/Booking"));
@@ -118,7 +118,7 @@ const hotelRoutes = [
     element: <HotelsList />,
   },
   {
-    path: "/hotels/detail/:id",
+    path: "/hotels/detail/:id", 
     name: "hotels.details",
     element: <HotelDetails />,
   },

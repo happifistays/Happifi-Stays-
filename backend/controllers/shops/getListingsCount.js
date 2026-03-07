@@ -20,9 +20,12 @@ export const getListingsCount = async (req, res) => {
     );
 
     // 2. Fetch Current Data (as you had before)
+    // Modified: Find properties currently occupied/booked for the current timestamp
     const bookedPropertyIds = await Bookings.distinct("propertyId", {
       shopId: shopId,
-      status: { $in: ["booked", "checked_in", "checked_out"] },
+      status: { $in: ["booked", "checked_in"] },
+      checkInDate: { $lte: now },
+      checkOutDate: { $gte: now },
     });
 
     const [totalListings, shopStats] = await Promise.all([

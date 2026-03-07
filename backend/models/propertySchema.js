@@ -61,6 +61,7 @@ const PropertySchema = new mongoose.Schema(
       },
     ],
     isDisabled: { type: Boolean, default: false },
+    highlights: [{ type: String }],
   },
   { timestamps: true }
 );

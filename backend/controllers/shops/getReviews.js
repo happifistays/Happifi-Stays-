@@ -4,7 +4,6 @@ import Property from "../../models/propertySchema.js";
 
 export const getReviews = async (req, res) => {
   try {
-    console.log("*************");
     const shopId = req.user.id;
     // Get query parameters
     const page = parseInt(req.query.page) || 1;
