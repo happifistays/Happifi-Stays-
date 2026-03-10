@@ -106,7 +106,7 @@ const TestimonialsSlider = () => {
                       </li>
                     </ul>
                     <h6 className="mb-0">Anjali Menon</h6>
-                    <span>Entrepreneur, Thiruvananthapuram</span>
+                    <span>Entrepreneur, Trivandrum</span>
                   </Col>
                 </Row>
               </div>

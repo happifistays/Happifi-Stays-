@@ -68,6 +68,13 @@ const HotelGallery = ({ hotelDetails, gallery }) => {
   const longitude = hotelDetails?.address?.coordinates?.coordinates?.[0];
   const latitude = hotelDetails?.address?.coordinates?.coordinates?.[1];
 
+  const handleOpenGoogleMaps = () => {
+    if (latitude && longitude) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+      window.open(url, "_blank");
+    }
+  };
+
   return (
     <>
       <section className="py-0 pt-sm-5">
@@ -285,6 +292,7 @@ const HotelGallery = ({ hotelDetails, gallery }) => {
           <button
             type="button"
             className="btn btn-sm btn-primary mb-0 items-center"
+            onClick={handleOpenGoogleMaps}
           >
             <BsPinMapFill className="me-2" />
             View In Google Map

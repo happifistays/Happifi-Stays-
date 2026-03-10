@@ -149,7 +149,8 @@ const AboutHotel = ({
           <Col as={"aside"} xl={5} className="order-xl-2">
             <PriceOverView
               rate={hotelDetails?.rate ?? 0}
-              rating={hotelDetails?.rating ?? 0}
+              // rating={hotelDetails?.rating ?? 0}
+              rating={reviewsData?.summary?.averageRating ?? 0}
               rooms={hotelDetails?.rooms}
               amenities={hotelDetails?.amenities ?? []}
               checkIn={checkIn}
