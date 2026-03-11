@@ -352,6 +352,22 @@ height: 31px;
 
 @media (max-width: 900px) {
 
+
+  ul.list-inline.text-end.new-mbl-display-block-flex-run {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+a.ms-3.text-decoration-underline.items-center.new-mbl-display-block-margin {
+    margin-left: 0px !important;
+}
+
+
+p.fw-bold.mb-0.items-center.flex-wrap.new-mbl-display-block {
+    display: block !important;
+}
+
 .new-hotel-cls-name-sz {
   font-size: 23px !important;
 }

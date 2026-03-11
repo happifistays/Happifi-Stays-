@@ -1,7 +1,7 @@
 export const availableLocations = [
   {
-    district: "Thiruvananthapuram",
-    cities: ["Thiruvananthapuram", "Neyyattinkara", "Varkala", "Attingal"],
+    district: "Trivandrum",
+    cities: ["Trivandrum", "Neyyattinkara", "Varkala", "Attingal"],
   },
   {
     district: "Kollam",

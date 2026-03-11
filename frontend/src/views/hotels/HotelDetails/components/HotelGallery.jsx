@@ -84,13 +84,13 @@ const HotelGallery = ({ hotelDetails, gallery }) => {
               <div className="d-lg-flex justify-content-lg-between mb-1">
                 <div className="mb-2 mb-lg-0">
                   <h1 className="fs-2">{hotelDetails?.name ?? ""}</h1>
-                  <p className="fw-bold mb-0 items-center flex-wrap">
+                  <p className="fw-bold mb-0 items-center flex-wrap new-mbl-display-block">
                     <BsGeoAlt className=" me-2" />
                     {`${hotelDetails?.address?.street}, ${hotelDetails?.address?.city}, ${hotelDetails?.address?.state}, ${hotelDetails?.address?.country}, ${hotelDetails?.address?.postalCode}`}
                     <Link
                       to=""
                       onClick={toggle}
-                      className="ms-3 text-decoration-underline items-center"
+                      className="ms-3 text-decoration-underline items-center new-mbl-display-block-margin "
                       data-bs-toggle="modal"
                       data-bs-target="#mapmodal"
                     >
@@ -99,7 +99,7 @@ const HotelGallery = ({ hotelDetails, gallery }) => {
                     </Link>
                   </p>
                 </div>
-                <ul className="list-inline text-end">
+                <ul className="list-inline text-end new-mbl-display-block-flex-run">
                   <li className="list-inline-item">
                     <Button
                       variant="light"

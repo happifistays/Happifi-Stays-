@@ -68,7 +68,7 @@ const footerLinks = [
   title: "Locations",
   items: [
     { name: "Kochi", link: "/hotels/grid" },
-    { name: "Thiruvananthapuram", link: "/hotels/grid" },
+    { name: "Trivandrum", link: "/hotels/grid" },
     { name: "Kozhikode", link: "/hotels/grid" },
     { name: "Alappuzha", link: "/hotels/grid" },
     { name: "Palakkad", link: "/hotels/grid" },
