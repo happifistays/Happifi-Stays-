@@ -56,10 +56,10 @@ shopsRouter.delete("/rooms/:roomId", userVerification, deleteRoomById);
 shopsRouter.delete(
   "/property/:propertyId",
   userVerification,
-  deletePropertyById
+  deletePropertyById 
 );  
 shopsRouter.get("/bookings", userVerification, getAllBookings);
-shopsRouter.get("/stats", userVerification, getStats);
+shopsRouter.get("/stats", userVerification, getStats); 
 shopsRouter.post("/listing", userVerification);
 shopsRouter.get("/listings/count", userVerification, getListingsCount); 
 shopsRouter.get("/stats/graph", userVerification, getGraphStats);

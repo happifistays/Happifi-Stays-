@@ -82,7 +82,7 @@ customerRouter.get(
   "/bookings/category",
   userVerification,
   getBookingsByCategory
-);
+); 
 
 customerRouter.patch(
   "/booking/cancel/:bookingId",
