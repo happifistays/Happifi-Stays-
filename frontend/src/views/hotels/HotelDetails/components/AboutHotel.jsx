@@ -16,7 +16,10 @@ import {
   FaCheckCircle,
   FaConciergeBell,
   FaSwimmingPool,
-  FaVolumeUp,
+  FaDumbbell,
+  FaParking,
+  FaSpa,
+  FaUtensils,
 } from "react-icons/fa";
 import { FaAngleDown, FaAngleUp, FaSnowflake, FaWifi } from "react-icons/fa6";
 import CustomerReview from "./CustomerReview";
@@ -26,6 +29,18 @@ import RoomOptions from "./RoomOptions";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../../../../config/env";
+
+// Map strings to icons for display
+const highlightIconMap = {
+  "Free Wifi": <FaWifi size={24} />,
+  "Swimming Pool": <FaSwimmingPool size={24} />,
+  "Central AC": <FaSnowflake size={24} />,
+  "Free Service": <FaConciergeBell size={24} />,
+  Gym: <FaDumbbell size={24} />,
+  Parking: <FaParking size={24} />,
+  Spa: <FaSpa size={24} />,
+  Restaurant: <FaUtensils size={24} />,
+};
 
 const AboutHotel = ({
   hotelDetails,
@@ -46,6 +61,7 @@ const AboutHotel = ({
 
   const [reviewsData, setReviewsData] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const fetchReviews = async () => {
     try {
       setLoading(true);
@@ -77,32 +93,26 @@ const AboutHotel = ({
                   <h3 className="mb-0">About This Hotel </h3>
                 </CardHeader>
                 <CardBody className="pt-4 p-0">
-                  <h5 className="fw-light mb-4">Main Highlights</h5>
-                  <div className="hstack gap-3 mb-3">
-                    <OverlayTrigger overlay={<Tooltip>Free Wifi</Tooltip>}>
-                      <div className="icon-lg bg-light h5 rounded-2 flex-centered">
-                        <FaWifi size={24} />
+                  {/* Dynamic Rendering of Highlights */}
+                  {hotelDetails?.highlights?.length > 0 && (
+                    <>
+                      <h5 className="fw-light mb-4">Main Highlights</h5>
+                      <div className="hstack gap-3 mb-3">
+                        {hotelDetails.highlights.map((name, idx) => (
+                          <OverlayTrigger
+                            key={idx}
+                            overlay={<Tooltip>{name}</Tooltip>}
+                          >
+                            <div className="icon-lg bg-light h5 rounded-2 flex-centered">
+                              {highlightIconMap[name] || <FaCheckCircle />}
+                            </div>
+                          </OverlayTrigger>
+                        ))}
                       </div>
-                    </OverlayTrigger>
-                    <OverlayTrigger overlay={<Tooltip>Swimming Pool</Tooltip>}>
-                      <div className="icon-lg bg-light h5 rounded-2 flex-centered">
-                        <FaSwimmingPool size={24} />
-                      </div>
-                    </OverlayTrigger>
-                    <OverlayTrigger overlay={<Tooltip>Central AC</Tooltip>}>
-                      <div className="icon-lg bg-light h5 rounded-2 flex-centered">
-                        <FaSnowflake size={24} />
-                      </div>
-                    </OverlayTrigger>
-                    <OverlayTrigger overlay={<Tooltip>Free Service</Tooltip>}>
-                      <div className="icon-lg bg-light h5 rounded-2 flex-centered">
-                        <FaConciergeBell />
-                      </div>
-                    </OverlayTrigger>
-                  </div>
-                  <p className="mb-3">{hotelDetails?.about}</p>
+                    </>
+                  )}
 
-                  <h5 className="fw-light mb-2">Advantages</h5>
+                  <p className="mb-3">{hotelDetails?.about}</p>
                 </CardBody>
               </Card>
               <Card className="bg-transparent">
@@ -127,13 +137,6 @@ const AboutHotel = ({
                 </CardBody>
               </Card>
 
-              {/* {shoRoomOptions && (
-                <RoomOptions
-                  rooms={hotelDetails?.rooms}
-                  features={hotelDetails?.amenities ?? []}
-                />
-              )} */}
-
               <CustomerReview
                 hotelDetails={hotelDetails}
                 propertyId={propertyId}
@@ -146,7 +149,8 @@ const AboutHotel = ({
           <Col as={"aside"} xl={5} className="order-xl-2">
             <PriceOverView
               rate={hotelDetails?.rate ?? 0}
-              rating={hotelDetails?.rating ?? 0}
+              // rating={hotelDetails?.rating ?? 0}
+              rating={reviewsData?.summary?.averageRating ?? 0}
               rooms={hotelDetails?.rooms}
               amenities={hotelDetails?.amenities ?? []}
               checkIn={checkIn}

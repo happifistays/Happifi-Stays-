@@ -40,40 +40,40 @@ const PriceSummary = ({
       </CardHeader>
       <CardBody>
         <ul className="list-group list-group-borderless">
-          <li className="list-group-item d-flex justify-content-between align-items-center">
+          <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
             <span className="h6 fw-light mb-0">
               Room Charges ({nights} {nights > 1 ? "nights" : "night"})
             </span>
-            <span className="fs-5">
+            <span className="fs-6 fs-sm-5 fw-bold">
               {symbol} {formatCurrency(roomCharges)}
             </span>
           </li>
 
-          <li className="list-group-item d-flex justify-content-between align-items-center">
-            <span className="h6 fw-light mb-0">
-              Total Discount
-              <span className="badge text-bg-danger smaller mb-0 ms-2">
+          <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+            <div className="d-flex flex-column align-items-start">
+              <span className="h6 fw-light mb-0">Total Discount</span>
+              <span className="badge text-bg-danger smaller mt-1">
                 Saved {symbol} {formatCurrency(discount)}
               </span>
-            </span>
-            <span className="fs-5 text-success">
+            </div>
+            <span className="fs-6 fs-sm-5 text-success fw-bold">
               {symbol} {formatCurrency(discount)}
             </span>
           </li>
 
-          <li className="list-group-item d-flex justify-content-between align-items-center">
+          <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
             <span className="h6 fw-light mb-0">Price after discount</span>
-            <span className="fs-5">
+            <span className="fs-6 fs-sm-5 fw-bold">
               {symbol} {formatCurrency(roomCharges - discount)}
             </span>
           </li>
 
           {appliedOffer && (
-            <li className="list-group-item d-flex justify-content-between align-items-center bg-light-success rounded">
+            <li className="list-group-item d-flex justify-content-between align-items-center bg-light-success rounded flex-wrap mt-2 p-2">
               <span className="h6 fw-light mb-0 text-success">
                 Rate after offer ({appliedOffer.title})
               </span>
-              <span className="fs-5 text-success">
+              <span className="fs-6 fs-sm-5 text-success fw-bold">
                 -{symbol} {formatCurrency(offerDiscountAmount)}
               </span>
             </li>
@@ -88,6 +88,7 @@ const PriceSummary = ({
             <Button
               variant="outline-primary"
               size="sm"
+              className="w-100"
               onClick={() => onApplyOffer(availableOffers[0])}
             >
               Apply Offer

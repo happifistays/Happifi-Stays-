@@ -131,7 +131,7 @@ const AvailabilityFilter = () => {
                 }
               >
                 <option value="">Select district</option>
-                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                <option value="Trivandrum">Trivandrum</option>
                 <option value="Kollam">Kollam</option>
                 <option value="Pathanamthitta">Pathanamthitta</option>
                 <option value="Alappuzha">Alappuzha</option>

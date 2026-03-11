@@ -142,6 +142,7 @@ const CustomerInformation = () => {
         text: "You profile updated!",
         icon: "success",
       });
+      window.location.reload();
     } catch (error) {
       setSubmitting(false);
       Swal.fire({
@@ -193,32 +194,34 @@ const CustomerInformation = () => {
                       </span>
                     </label>
 
-                   <label
-  className="btn btn-sm btn-primary-soft mb-0"
-  htmlFor="uploadfile-1"
->
-  Change
-</label>
-<input
-  id="uploadfile-1"
-  className="form-control d-none"
-  type="file"
-  accept="image/*"
-  onChange={(e) => {
-    const file = e.target.files[0];
-    if (file && file.size > 500 * 1024) {
-      setImageError("Image must be under 500KB");
-      e.target.value = "";
-      return;
-    }
-    setImageError("");
-    setSelectedFile(file);
-  }}
-/>
+                    <label
+                      className="btn btn-sm btn-primary-soft mb-0"
+                      htmlFor="uploadfile-1"
+                    >
+                      Change
+                    </label>
+                    <input
+                      id="uploadfile-1"
+                      className="form-control d-none"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file && file.size > 500 * 1024) {
+                          setImageError("Image must be under 500KB");
+                          e.target.value = "";
+                          return;
+                        }
+                        setImageError("");
+                        setSelectedFile(file);
+                      }}
+                    />
                   </div>
-{imageError && (
-  <small className="text-danger mt-1 d-block">{imageError}</small>
-)}
+                  {imageError && (
+                    <small className="text-danger mt-1 d-block">
+                      {imageError}
+                    </small>
+                  )}
                 </Col>
 
                 <TextFormInput

@@ -139,6 +139,7 @@ const HotelDetails = () => {
                 amenities: hotel.amenities ?? [],
                 rate: hotel.basePrice,
                 rating: hotel.starRating ?? 0,
+                highlights: hotel.highlights ?? [],
               }}
               propertyId={hotel._id}
               checkIn={checkIn}

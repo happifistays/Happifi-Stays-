@@ -23,7 +23,7 @@ const keralaDistricts = [
   "Malappuram",
   "Palakkad",
   "Pathanamthitta",
-  "Thiruvananthapuram",
+  "Trivandrum",
   "Thrissur",
   "Wayanad",
 ];

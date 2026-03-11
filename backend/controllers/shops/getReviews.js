@@ -44,7 +44,7 @@ export const getReviews = async (req, res) => {
     const totalReviewsCount = await Rating.countDocuments(query);
     const reviews = await Rating.find(query)
       .populate("propertyId", "listingName gallery")
-      //   .populate("roomId", "roomName roomThumbnail price")
+      .populate("fromId", "name avatar")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);

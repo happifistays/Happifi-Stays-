@@ -19,17 +19,26 @@ import {
 import { FaPaperPlane, FaStar } from "react-icons/fa";
 import { DEFAULT_AVATAR_IMAGE } from "../../../../constants/images";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
   const { isOpen, toggle } = useToggle();
-  const [replyText, setReplyText] = useState(review?.reply || "");
+  const [replyText, setReplyText] = useState("");
+
+  const avatar =
+    review?.fromId?.avatar?.trim()?.replace(/\s/g, "") || DEFAULT_AVATAR_IMAGE;
+
+  useEffect(() => {
+    setReplyText(review?.reply || "");
+  }, [review?.reply]);
 
   const handleReplySubmit = () => {
     if (!replyText.trim()) return;
     onReply(review._id, replyText);
     toggle();
   };
+
+  if (!review?._id) return null;
 
   return (
     <div
@@ -39,18 +48,24 @@ const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
         <div className="d-sm-flex align-items-center mb-3">
           <Image
             className="avatar avatar-md rounded-circle float-start me-3"
-            src={review?.fromId?.avatar ?? DEFAULT_AVATAR_IMAGE}
+            src={avatar}
             alt="avatar"
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              e.currentTarget.src = DEFAULT_AVATAR_IMAGE;
+            }}
           />
+
           <div>
             <h6 className="m-0">
-              {review?.fromId?.firstName ?? "User"}
+              {review?.fromId?.name || review?.fromId?.firstName || "User"}
               {!review.isActive && (
                 <Badge bg="danger" className="ms-2">
                   Disabled
                 </Badge>
               )}
             </h6>
+
             <span className="me-3 small">
               {review?.createdAt &&
                 format(new Date(review.createdAt), "dd MMM yyyy, hh:mm a")}
@@ -81,6 +96,7 @@ const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
             >
               <BsThreeDotsVertical />
             </Dropdown.Toggle>
+
             <Dropdown.Menu className="min-w-auto shadow">
               <Dropdown.Item
                 className="d-flex align-items-center"
@@ -96,6 +112,7 @@ const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
                   </>
                 )}
               </Dropdown.Item>
+
               <Dropdown.Item
                 className="text-danger d-flex align-items-center"
                 onClick={() => onDelete(review._id)}
@@ -111,13 +128,13 @@ const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
         <span className="text-body">Review on:&nbsp;</span>
         {review?.propertyId?.listingName ?? ""}
       </h6>
+
       <p>{review?.feedback}</p>
 
-      {/* Review Images */}
-      {review.reviewImages && review.reviewImages.length > 0 && (
+      {review?.reviewImages?.length > 0 && (
         <Row className="g-2 mb-3">
           {review.reviewImages.map((image, idx) => (
-            <Col key={idx} xs={4} sm={3} lg={2}>
+            <Col key={`${review._id}-img-${idx}`} xs={4} sm={3} lg={2}>
               <GlightBox image={image}>
                 <Image src={image} className="rounded w-100" />
               </GlightBox>
@@ -126,7 +143,6 @@ const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
         </Row>
       )}
 
-      {/* Display Existing Reply */}
       {review.reply && (
         <div className="bg-white p-3 rounded border-start border-primary border-4 mb-3">
           <h6 className="mb-1 text-primary small">Your Response:</h6>
@@ -135,13 +151,9 @@ const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
       )}
 
       <div className="mt-3">
-        <Button
-          variant="outline-primary"
-          size="sm"
-          onClick={toggle}
-          className="items-center"
-        >
-          <BsReply className="me-1" /> {review.reply ? "Edit Reply" : "Reply"}
+        <Button variant="outline-primary" size="sm" onClick={toggle}>
+          <BsReply className="me-1" />
+          {review.reply ? "Edit Reply" : "Reply"}
         </Button>
 
         <Collapse in={isOpen}>
@@ -154,6 +166,7 @@ const ReviewCard = ({ review = {}, onDelete, onReply, onToggleStatus }) => {
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
               />
+
               <Button
                 variant="primary"
                 size="sm"

@@ -2,23 +2,55 @@ import { FileFormInput, SelectFormInput, TextFormInput } from "@/components";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import ReactQuill from "react-quill-new";
 import { Card, CardBody, CardHeader, Col, Row, Button } from "react-bootstrap";
-import { BsPlusCircle, BsTrash } from "react-icons/bs";
 import { useWizard } from "react-use-wizard";
 import { amenities } from "../../../../constants/datas";
+import {
+  FaConciergeBell,
+  FaSwimmingPool,
+  FaDumbbell,
+  FaParking,
+  FaSpa,
+  FaUtensils,
+} from "react-icons/fa";
+import { FaSnowflake, FaWifi } from "react-icons/fa6";
+
+// Define the available highlights and their icons
+const MAIN_HIGHLIGHTS = [
+  { id: "Free Wifi", icon: <FaWifi size={22} /> },
+  { id: "Swimming Pool", icon: <FaSwimmingPool size={22} /> },
+  { id: "Central AC", icon: <FaSnowflake size={22} /> },
+  { id: "Free Service", icon: <FaConciergeBell size={22} /> },
+  { id: "Gym", icon: <FaDumbbell size={22} /> },
+  { id: "Parking", icon: <FaParking size={22} /> },
+  { id: "Spa", icon: <FaSpa size={22} /> },
+  { id: "Restaurant", icon: <FaUtensils size={22} /> },
+];
 
 const Step2 = () => {
-  const { control, trigger } = useFormContext();
+  const { control, trigger, watch, setValue } = useFormContext();
   const { previousStep, nextStep } = useWizard();
-  const { fields, append, remove } = useFieldArray({ control, name: "rooms" });
+
+  const selectedHighlights = watch("highlights") || [];
+
+  const toggleHighlight = (id) => {
+    const current = [...selectedHighlights];
+    const index = current.indexOf(id);
+    if (index > -1) {
+      current.splice(index, 1);
+    } else {
+      current.push(id);
+    }
+    setValue("highlights", current, { shouldValidate: true });
+  };
 
   const handleNext = async () => {
     const isValid = await trigger([
       "amenities",
+      "highlights",
       "description",
       "totalFloors",
       "totalRooms",
       "propertyArea",
-      // "rooms",
     ]);
     if (isValid) nextStep();
   };
@@ -26,6 +58,52 @@ const Step2 = () => {
   return (
     <div className="vstack gap-4">
       <h4 className="mb-0">Detailed Information</h4>
+
+      <Card className="shadow">
+        <CardHeader className="border-bottom">
+          <h5 className="mb-0">Main Highlights</h5>
+        </CardHeader>
+        <CardBody>
+          <p className="text-muted small mb-3">
+            Select the top features to display with icons on your property page.
+          </p>
+          <div className="d-flex flex-wrap gap-3">
+            {MAIN_HIGHLIGHTS.map((item) => {
+              const isActive = selectedHighlights.includes(item.id);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => toggleHighlight(item.id)}
+                  className={`rounded-3 flex-centered cursor-pointer transition-all`}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    backgroundColor: isActive ? "#242b33" : "#f5f7f9",
+                    color: isActive ? "#ffffff" : "#676a79",
+                    border: isActive
+                      ? "2px solid #066ac9"
+                      : "2px solid transparent",
+                    fontSize: "1.2rem",
+                  }}
+                  title={item.id}
+                >
+                  {item.icon}
+                </div>
+              );
+            })}
+          </div>
+          <Controller
+            name="highlights"
+            control={control}
+            render={({ fieldState: { error } }) =>
+              error && (
+                <div className="text-danger small mt-2">{error.message}</div>
+              )
+            }
+          />
+        </CardBody>
+      </Card>
+
       <Card className="shadow">
         <CardHeader className="border-bottom">
           <h5 className="mb-0">Overview</h5>
@@ -111,64 +189,6 @@ const Step2 = () => {
           </Row>
         </CardBody>
       </Card>
-
-      {/* {fields.map((item, index) => (
-        <Card className="shadow" key={item.id}>
-          <CardHeader className="border-bottom d-flex justify-content-between align-items-center">
-            <h5 className="mb-0">Room Option {index + 1}</h5>
-            {fields.length > 1 && (
-              <Button
-                variant="link"
-                className="text-danger p-0"
-                onClick={() => remove(index)}
-              >
-                <BsTrash size={20} />
-              </Button>
-            )}
-          </CardHeader>
-          <CardBody>
-            <Row className="g-4">
-              <TextFormInput
-                name={`rooms.${index}.roomName`}
-                label="Room name *"
-                control={control}
-                containerClass="col-md-6"
-              />
-              <Col md={6}>
-                <FileFormInput
-                  name={`rooms.${index}.roomThumbnail`}
-                  control={control}
-                  label="Room thumbnail image *"
-                />
-              </Col>
-              <TextFormInput
-                name={`rooms.${index}.price`}
-                label="Room Price *"
-                control={control}
-                containerClass="col-md-6"
-              />
-              <TextFormInput
-                name={`rooms.${index}.discount`}
-                label="Discount *"
-                control={control}
-                containerClass="col-md-6"
-              />
-            </Row>
-          </CardBody>
-        </Card>
-      ))} */}
-
-      {/* <div className="text-center">
-        <Button
-          variant="link"
-          className="p-0 text-primary"
-          onClick={() =>
-            append({ roomName: "", price: "", discount: "", roomThumbnail: "" })
-          }
-        >
-          <BsPlusCircle className="me-2" /> Add New Room
-        </Button>
-      </div> */}
 
       <div className="hstack gap-2 flex-wrap justify-content-between">
         <button
