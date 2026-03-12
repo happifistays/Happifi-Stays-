@@ -62,18 +62,18 @@ const HotelGridLayout = ({ filters }) => {
           {loading ? (
             <Col className="text-center">
               <Spinner />
-            </Col>
+            </Col> 
           ) : hotelsData.length > 0 ? (
             hotelsData.map((hotel, idx) => (
               <Col key={idx} md={6} xl={4} className="grid-height-style">
-                <HotelGridCard 
+                <HotelGridCard
                   id={hotel._id}
                   name={hotel.listingName}
                   price={hotel.basePrice}
                   feature={hotel.amenities}
                   images={hotel.gallery}
-                  rating={hotel.starRating}
-                  sale={hotel.discount} 
+                  rating={hotel?.averageRating ?? 0}
+                  sale={hotel.discount}
                   showChip={true}
                   offerText={hotel?.availableOffers[0]?.title ?? ""}
                 />

@@ -67,6 +67,14 @@ const ListingForms = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
 
+  // Helper to check base64 size (approximate)
+  const isBase64TooLarge = (base64String) => {
+    if (!base64String || typeof base64String !== "string") return false;
+    const padding = (base64String.match(/=/g) || []).length;
+    const sizeInBytes = (base64String.length * 3) / 4 - padding;
+    return sizeInBytes > 5 * 1024 * 1024; // 5MB limit
+  };
+
   const listingSchema = yup.object({
     listingName: yup.string().required("Listing name is required"),
     listingType: yup.string().required("Listing type is required"),
@@ -77,11 +85,35 @@ const ListingForms = () => {
     city: yup.string().required("City is required"),
     postalCode: yup.string().required("Postal code is required"),
     street: yup.string().required("Street is required"),
+    latitude: yup
+      .number()
+      .typeError("Latitude must be a number")
+      .min(-90, "Latitude must be between -90 and 90")
+      .max(90, "Latitude must be between -90 and 90")
+      .required("Latitude is required"),
+    longitude: yup
+      .number()
+      .typeError("Longitude must be a number")
+      .min(-180, "Longitude must be between -180 and 180")
+      .max(180, "Longitude must be between -180 and 180")
+      .required("Longitude is required"),
     thumbnail: yup.mixed().required("Thumbnail is required"),
     gallery: yup.array().min(1, "At least one gallery image is required"),
     amenities: yup.array().min(1, "Select at least one amenity"),
     description: yup.string().required("Description is required"),
     currency: yup.string().required("Currency is required"),
+    basePrice: yup
+      .number()
+      .typeError("Base price must be a number")
+      .positive("Price must be greater than zero")
+      .required("Base price is required"),
+    discount3: yup
+      .number()
+      .typeError("Discount must be a number")
+      .min(0, "Discount cannot be negative"),
+    listingPolicyDescription: yup
+      .string()
+      .required("Policy description is required"),
   });
 
   const methods = useForm({
@@ -108,7 +140,7 @@ const ListingForms = () => {
       rooms: [{ roomName: "", price: "", discount: "", roomThumbnail: "" }],
       currency: "INR",
       basePrice: "",
-      discount3: "",
+      discount3: 0,
       listingPolicyDescription: "",
       isOfferApplied: false,
       selectedOffer: "",
@@ -179,6 +211,23 @@ const ListingForms = () => {
   }, [id, reset, token]);
 
   const onSubmit = async (formData) => {
+    // 1. Validate Image Sizes before transforming
+    const thumbBase64 = formData.thumbnail?.base64 || formData.thumbnail;
+    if (isBase64TooLarge(thumbBase64)) {
+      return Swal.fire("Error", "Thumbnail image exceeds 5MB limit", "error");
+    }
+
+    const galleryImages = formData.gallery.map((img) => img?.base64 || img);
+    for (let i = 0; i < galleryImages.length; i++) {
+      if (isBase64TooLarge(galleryImages[i])) {
+        return Swal.fire(
+          "Error",
+          `Gallery image ${i + 1} exceeds 5MB limit`,
+          "error"
+        );
+      }
+    }
+
     const transformedData = {
       owner: user._id,
       listingName: formData.listingName,
@@ -201,8 +250,8 @@ const ListingForms = () => {
       },
       amenities: formData.amenities,
       description: formData.description,
-      thumbnail: formData.thumbnail?.base64 || formData.thumbnail,
-      gallery: formData.gallery.map((img) => img?.base64 || img),
+      thumbnail: thumbBase64,
+      gallery: galleryImages,
       policy: {
         description: formData.listingPolicyDescription,
         cancellationOption: "Flexible",
@@ -232,6 +281,16 @@ const ListingForms = () => {
         },
         body: JSON.stringify(transformedData),
       });
+
+      // Handle 413 Entity Too Large explicitly
+      if (response.status === 413) {
+        return Swal.fire({
+          title: "Payload Too Large",
+          text: "The total size of images is too large for the server. Please use smaller files.",
+          icon: "error",
+        });
+      }
+
       const result = await response.json();
       if (result.success) {
         Swal.fire({
@@ -240,9 +299,20 @@ const ListingForms = () => {
           icon: "success",
         });
         navigate("/agent/listings");
+      } else {
+        Swal.fire(
+          "Error",
+          result.message || "Failed to save property",
+          "error"
+        );
       }
     } catch (error) {
       console.error("Submission Error:", error);
+      Swal.fire(
+        "Error",
+        "A network error occurred. Check image sizes.",
+        "error"
+      );
     }
   };
 

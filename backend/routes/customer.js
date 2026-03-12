@@ -38,13 +38,13 @@ import { getBookingById } from "../controllers/getBookingById.js";
 const customerRouter = express.Router();
 customerRouter.get("/", (req, res) => {
   res.json({ message: "Customer route" });
-});
+}); 
 
 // customerRouter.get("/:propertyId", getPropertyById);
 
 customerRouter.post("/signup", signUp);
-customerRouter.get("/property/:propertyId", getPropertyById);
-customerRouter.get("/properties", getProperties);
+customerRouter.get("/property/:propertyId", getPropertyById); 
+customerRouter.get("/properties", getProperties); 
 customerRouter.get("/rooms/:roomId", getRoomById);
 customerRouter.get("/rooms/property/:propertyId", getRoomsByPropertyId);
 customerRouter.post("/create-order", createOrder);
@@ -65,11 +65,11 @@ customerRouter.get("/rooms/:roomId/all", getRoomMoreDetails);
 customerRouter.get("/property/reviews/:propertyId", getReviewsByProperty);
 
 customerRouter.put(
-  "/update-profile",
+  "/update-profile", 
   userVerification,
   upload.single("profileImage"),
   updateUserProfile
-); 
+);  
 customerRouter.get("/profile/details", userVerification, getUserProfile);
 customerRouter.get("/reviews-by-property-id/:id", getReviewsByPropertyId);
 customerRouter.get("/reviews-by-room-id/:id", getReviewsByRoomId);

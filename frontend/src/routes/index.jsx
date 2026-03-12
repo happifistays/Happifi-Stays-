@@ -97,7 +97,7 @@ const hotelRoutes = [
     name: "hotels.index",
     element: <HotelsHome />,
   },
-  {
+  { 
     path: "/hotels/chain",
     name: "hotels.chain",
     element: <HotelsChain />,
@@ -106,7 +106,7 @@ const hotelRoutes = [
     path: "/hotels/resort",
     name: "hotels.resort",
     element: <HotelsResort />,
-  },
+  }, 
   {
     path: "/hotels/grid",
     name: "hotels.grid",
