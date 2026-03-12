@@ -91,7 +91,7 @@ const HotelGridCard = ({
           </div>
         )}
 
-        <div className="tiny-slider arrow-round arrow-xs arrow-dark rounded-2 overflow-hidden">
+        <div className="tiny-slider arrow-round arrow-xs arrow-dark rounded-2 overflow-hidden new-added-type-arrow-adjust">
           <TinySlider settings={gridSliderSettings}>
             {images.map((image, idx) => (
               <div key={idx}>

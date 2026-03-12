@@ -89,9 +89,9 @@ const BookingTrafficChart = ({ shopID }) => {
     <Card className="border h-100">
       <CardHeader className="border-bottom d-flex justify-content-between align-items-center">
         <h5 className="card-header-title">Booking Traffic</h5>
-        <Link to="" className="btn btn-link p-0 mb-0">
+        {/* <Link to="" className="btn btn-link p-0 mb-0">
           View all
-        </Link>
+        </Link> */}
       </CardHeader>
       <CardBody className="p-3">
         <div className="d-flex justify-content-center">
